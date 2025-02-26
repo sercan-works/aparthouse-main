@@ -31,7 +31,7 @@ export const categories = [
 
 const CategoryBar = () => {
   return (
-    <div className='flex gap-4 overflow-x-auto whitespace-nowrap pb-4 mt-4 justify-start md:justify-center md:gap-8 '>
+    <div className='flex gap-4 overflow-x-auto whitespace-nowrap pb-4 mt-4 justify-start md:justify-center md:gap-8 z-50 '>
       {categories.map((category) => (
         <div key={category.name} className='flex-shrink-0 cursor-pointer'>
           <Image 

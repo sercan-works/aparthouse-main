@@ -16,7 +16,7 @@ export default function Header() {
   const shouldShowCategory = noCategoryPaths.includes(pathname);
 
   return (
-    <header className=" mt-20 md:mt-0 bg-white md:shadow">
+    <header className=" mt-20 md:mt-0 md:bg-white md:shadow">
       {/* Anons Bar */}
       {/* TODO: Anons bar yapılacak */}
 
