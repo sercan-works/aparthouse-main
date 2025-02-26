@@ -1,0 +1,10 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="restaurant" clip-path="url(#clip0_177_4228)">
+<path id="Vector" d="M13.3333 4.99996V11.6666H15.8333V18.3333H17.5V1.66663C15.2 1.66663 13.3333 3.53329 13.3333 4.99996ZM9.16667 7.49996H7.5V1.66663H5.83333V7.49996H4.16667V1.66663H2.5V7.49996C2.5 9.34163 3.99167 10.8333 5.83333 10.8333V18.3333H7.5V10.8333C9.34167 10.8333 10.8333 9.34163 10.8333 7.49996V1.66663H9.16667V7.49996Z" fill="#A2A2A2"/>
+</g>
+<defs>
+<clipPath id="clip0_177_4228">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>
