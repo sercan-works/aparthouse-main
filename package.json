@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@heroui/input": "^2.4.13",
     "@heroui/react": "^2.7.2",
+    "@mui/material": "^6.4.6",
     "@reduxjs/toolkit": "^2.5.1",
     "framer-motion": "^12.4.7",
     "next": "15.1.2",

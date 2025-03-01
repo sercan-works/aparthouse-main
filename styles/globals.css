@@ -59,3 +59,16 @@
     font-style: normal; */
 /* } */
 
+
+.custom-swiper .swiper-button-next,
+.custom-swiper .swiper-button-prev {
+  color: #989393;
+  scale: 0.7;
+  font-weight: bold;
+
+}
+
+.custom-swiper .swiper-button-next:after,
+.custom-swiper .swiper-button-prev:after {
+  font-size: 50px;
+}

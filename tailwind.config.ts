@@ -17,6 +17,8 @@ export default {
         colorThird: "#FE6CAC",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#C091D4",
+        secondary: "#7366FF",
       },
       fontFamily: {
         gilroy: ["Gilroy", "sans-serif"],

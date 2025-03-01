@@ -9,7 +9,6 @@ import { usePathname } from "next/navigation";
 import ContactBanner from "@/components/ContactBanner";
 import HomeInfoBanner from "@/components/HomeInfoBanner";
 import Highlights from "@/components/Highlights";
-import CentralAparts from "@/components/CentralAparts";
 
 // export const metadata: Metadata = {
 //   title: "Aparthouse || Hadi Yeni Evini Bul",
@@ -36,7 +35,7 @@ export default function RootLayout({
 
           {children}
 
-          {pathname === "/" && <CentralAparts />}
+          {/* {pathname === "/" && <CentralAparts />} */}
           <MobileNavBar />
         </ToastProviders>
         {pathname === "/" && <HomeInfoBanner />}

@@ -11,7 +11,7 @@ export default function Header() {
   const pathname = usePathname();
 
   // Kategorilerin görüneceği sayfalar
-  const noCategoryPaths = ["/"]; // Bu array'e istediğiniz path'leri ekleyebilirsiniz
+  const noCategoryPaths = ["/"]; 
 
   const shouldShowCategory = noCategoryPaths.includes(pathname);
 
