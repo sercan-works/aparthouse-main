@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
 @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy-Regular.woff') format('woff');
@@ -71,4 +77,12 @@
 .custom-swiper .swiper-button-next:after,
 .custom-swiper .swiper-button-prev:after {
   font-size: 50px;
+}
+
+.swiper-slide-custom {
+  transition: opacity 0.3s ease;
+}
+
+.swiper-slide-custom:not(.swiper-slide-active) {
+  opacity: 0.5;
 }

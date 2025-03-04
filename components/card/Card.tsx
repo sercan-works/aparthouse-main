@@ -12,7 +12,7 @@ import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
 import FavoriteIcon from "@/public/assets/icons/FavoritesIcon.svg";
-import CompareIcon from "@/public/assets/icons/CompareArrows.svg";
+import { MdCompareArrows } from "react-icons/md";
 import { Button } from "@heroui/react";
 
 const Card = () => {
@@ -60,7 +60,7 @@ const Card = () => {
           />
         </button>
         <button className="rounded-full">
-          <Image src={CompareIcon} alt="Karşılaştır" className="w-8 h-8 md:w-6 md:h-6" />
+          <MdCompareArrows className="w-8 h-8 md:w-6 md:h-6 text-white"  />
         </button>
       </div>
 
