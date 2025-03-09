@@ -14,4 +14,9 @@ export const baseApi = createApi({
         // },
     }),
     endpoints: () => ({}),
+    // SSR için önemli ayarlar
+    keepUnusedDataFor: 30, // 30 saniye veriyi saklıyoruz
+    refetchOnMountOrArgChange: true, // Component mount edildiğinde veriyi yeniden çekiyoruz
+    refetchOnFocus: false, // Sayfa fokuslanırsa veriyi yeniden çekmiyoruz
+    refetchOnReconnect: true, // Bağlantı geri gelince veriyi yeniden çekiyoruz
 });

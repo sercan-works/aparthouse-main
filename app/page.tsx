@@ -1,4 +1,10 @@
 import Aparts from "@/components/Aparts";
+
+export const metadata = {
+  title: "Aparthouse - Tüm Apartlar",
+  description: "Aparthouse platformunda bulunan tüm apartlar",
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col items-start justify-start my-4 max-w-screen-xl mx-auto ">

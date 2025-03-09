@@ -7,13 +7,128 @@ import Building from "@/public/assets/images/building.png";
 import GoogleLogo from "@/public/assets/images/google.png";
 import Girl from "@/public/assets/images/register_girl.png";
 import { Button, Input, Link, addToast } from "@heroui/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/store/api/authApi";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/store/features/AuthSlice";
+
+// DRF hata yanıtı için tip tanımlama
+interface DRFErrorResponse {
+  non_field_errors?: string[];
+  [key: string]: unknown;
+}
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isVisible2, setIsVisible2] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const result = await signIn("google", { redirect: true, callbackUrl: '/' });
+      console.log("SignIn result:", result);
+    } catch (error) {
+      console.error("SignIn error:", error);
+      addToast({
+        title: "Giriş Hatası",
+        description: "Google ile giriş yapılırken bir hata oluştu.",
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async () => {
+    try {
+      if (!email || !password) {
+        addToast({
+          title: "Giriş Hatası",
+          description: "Lütfen email ve şifre alanlarını doldurunuz.",
+          color: "danger",
+        });
+        return;
+      }
+
+      // RTK Query ile login
+      const result = await login({username: email, email: email, password: password}).unwrap();
+      
+      // Kullanıcı adını güzelleştir - email kullanıcı adı olarak görünecekse, @ işaretinden öncesini alalım
+      let displayName = result.user.username;
+      if (displayName.includes('@')) {
+        displayName = displayName.split('@')[0];
+      }
+      
+      // Display name'i büyük harfle başlatalım
+      if (displayName && displayName.length > 0) {
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      }
+      
+      // Kullanıcı objesini güzelleştirelim
+      const enhancedUser = {
+        ...result.user,
+        displayName: displayName || result.user.username
+      };
+      
+      // Redux store'a kullanıcı bilgilerini ve token'ları kaydet
+      dispatch(setCredentials({
+        user: enhancedUser,
+        access: result.access,
+        refresh: result.refresh
+      }));
+
+      addToast({
+        title: "Giriş Başarılı",
+        description: "Başarıyla giriş yaptınız, yönlendiriliyorsunuz.",
+        color: "success",
+      });
+
+      // Ana sayfaya yönlendir
+      router.push('/');
+    } catch (error) {
+      console.error("Login error:", error);
+      
+      // DRF'den gelen hata mesajlarını kontrol et
+      let errorMessage = "Giriş yapılırken bir hata oluştu.";
+      
+      // Hata response kontrol - RTK Query format
+      if (error && typeof error === 'object' && 'data' in error) {
+        const errorData = error.data as DRFErrorResponse;
+        
+        if (errorData?.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+          errorMessage = errorData.non_field_errors.join(", ");
+        } else if (errorData && typeof errorData === 'object') {
+          const allErrors = Object.entries(errorData)
+            .map(([field, msgs]) => {
+              if (Array.isArray(msgs)) {
+                return `${field}: ${msgs.join(', ')}`;
+              }
+              return `${field}: ${String(msgs)}`;
+            })
+            .filter(Boolean)
+            .join('\n');
+          
+          if (allErrors) {
+            errorMessage = allErrors;
+          }
+        }
+      }
+      
+      addToast({
+        title: "Giriş Hatası",
+        description: errorMessage,
+        color: "danger",
+      });
+    }
+  };
 
   return (
     <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3">
@@ -69,7 +184,13 @@ const Login = () => {
               Lütfen aşağıdaki bilgileri doldurunuz.
             </p>
 
-            <Input label="Email" type="email" variant="underlined" />
+            <Input 
+              label="Email" 
+              type="email" 
+              variant="underlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             <Input
               endContent={
@@ -90,17 +211,14 @@ const Login = () => {
               placeholder="Şifrenizi giriniz"
               type={isVisible ? "text" : "password"}
               variant="underlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-
-            <Button className="bg-colorFirst text-white font-bold mt-5" 
-            onPress={() =>
-              addToast({
-                title: "Toast title",
-                description: "Toast displayed successfully",
-                color: "secondary",
-              })
-            }
+            <Button 
+              className="bg-colorFirst text-white font-bold mt-5" 
+              onPress={handleEmailLogin}
+              isLoading={isLoginLoading || isLoading}
             >
               Giriş Yap
             </Button>
@@ -117,8 +235,12 @@ const Login = () => {
             </p>
 
             
-            <Button className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst">
-              <Image src={GoogleLogo} alt="google" width={20} height={20} />
+            <Button 
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst"
+              onPress={handleGoogleLogin}
+              isLoading={isLoading}
+            >
+              {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
               Google ile Giriş Yap
             </Button>
 
@@ -133,7 +255,7 @@ const Login = () => {
 
 export default Login;
 
-export const EyeSlashFilledIcon = (props) => {
+export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"
@@ -169,7 +291,7 @@ export const EyeSlashFilledIcon = (props) => {
   );
 };
 
-export const EyeFilledIcon = (props: any) => {
+export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"

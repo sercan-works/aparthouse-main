@@ -62,7 +62,7 @@ export const animals = [
     description: "A large semiaquatic reptile"
   }
 ];
-
+  
 const FilterBar = () => {
   return (
     <div className="flex justify-between items-center bg-gray-100 rounded-lg px-6">

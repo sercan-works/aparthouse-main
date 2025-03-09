@@ -8,7 +8,7 @@ import UserIcon from '@/public/assets/icons/UserIcon.svg'
 
 const MobileNavBar = () => {
   return (
-    <div className='fixed bottom-0 left-0 right-0 bg-white shadow-lg lg:hidden z-50'>
+    <div className='md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg lg:hidden z-50'>
       <div className='px-4 py-2 flex justify-between items-center'>
         <Link href="/" className='flex flex-col justify-center items-center'>
           <Image src={HomeIcon} alt="Home" />
