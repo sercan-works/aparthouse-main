@@ -79,7 +79,7 @@ export const authApi = createApi({
     // Google kimlik bilgilerini DRF'ye göndermek için endpoint
     socialLogin: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/social/google/',
+        url: '/api/google/login/',
         method: 'POST',
         body: credentials,
       }),
