@@ -48,7 +48,7 @@ export const authApi = createApi({
         };
         
         return {
-          url: '/api/token/',
+          url: '/user/token/',
           method: 'POST',
           body: payload,
         };
@@ -70,7 +70,7 @@ export const authApi = createApi({
     // Token yenilemek için endpoint
     refreshToken: builder.mutation<{ access: string }, { refresh: string }>({
       query: (refreshData) => ({
-        url: '/api/token/refresh/',
+        url: '/user/token/refresh/',
         method: 'POST',
         body: refreshData,
       }),
@@ -79,7 +79,7 @@ export const authApi = createApi({
     // Google kimlik bilgilerini DRF'ye göndermek için endpoint
     socialLogin: builder.mutation({
       query: (credentials) => ({
-        url: '/api/google/login/',
+        url: '/user/google/login/',
         method: 'POST',
         body: credentials,
       }),
