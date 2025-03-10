@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/store/api/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/features/AuthSlice";
+import ReCAPTCHA from "react-google-recaptcha";
 
 // DRF hata yanıtı için tip tanımlama
 interface DRFErrorResponse {
@@ -24,11 +25,17 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  // reCAPTCHA değişiklik handler'ı
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token || "");
+  };
 
   const handleGoogleLogin = async () => {
     try {
@@ -57,9 +64,22 @@ const Login = () => {
         });
         return;
       }
+      
+      if (!captchaToken) {
+        addToast({
+          title: "Giriş Hatası",
+          description: "Lütfen robot olmadığınızı doğrulayın",
+          color: "danger",
+        });
+        return;
+      }
 
       // RTK Query ile login
-      const result = await login({username: email, email: email, password: password}).unwrap();
+      const result = await login({
+        email: email, 
+        password: password,
+        recaptcha: captchaToken
+      }).unwrap();
       
       // Kullanıcı adını güzelleştir - email kullanıcı adı olarak görünecekse, @ işaretinden öncesini alalım
       let displayName = result.user.username;
@@ -213,6 +233,12 @@ const Login = () => {
               variant="underlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6Lds1KMnAAAAAForux7vzs6OfM23C-a-XxUk_Vkq"}
+              onChange={onCaptchaChange}
+              className="my-4 flex justify-center"
             />
 
             <Button 

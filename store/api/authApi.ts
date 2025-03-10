@@ -36,11 +36,34 @@ export const authApi = createApi({
   tagTypes: ['Profile', 'User'],
   endpoints: (builder) => ({
     // Email ve şifre ile giriş için endpoint
-    login: builder.mutation<AuthResponse, { username: string; email: string; password: string }>({
-      query: (credentials) => ({
-        url: '/api/token/',
+    login: builder.mutation<AuthResponse, { username?: string; email?: string; password: string; recaptcha?: string }>({
+      query: (credentials) => {
+        // API'nin beklediği formata uyarla
+        // DRF genellikle username ve password bekler
+        const payload = {
+          username: credentials.email || credentials.username, // Email'i username olarak kullan
+          email: credentials.email || credentials.username, // Username'i de email olarak kullan
+          password: credentials.password,
+          recaptcha: credentials.recaptcha
+        };
+        
+        return {
+          url: '/api/token/',
+          method: 'POST',
+          body: payload,
+        };
+      },
+    }),
+
+    // Kullanıcı kaydı için endpoint
+    register: builder.mutation<
+      { detail: string },
+      { username: string; email: string; password1: string; password2: string; recaptcha?: string }
+    >({
+      query: (userData) => ({
+        url: '/auth/registration/',
         method: 'POST',
-        body: credentials,
+        body: userData,
       }),
     }),
 
@@ -97,4 +120,5 @@ export const {
   useGetProfileQuery,
   useLogoutMutation,
   useUpdateProfileMutation,
+  useRegisterMutation,
 } = authApi;
