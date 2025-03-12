@@ -22,7 +22,9 @@ import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
 
-const MobileDetail = () => {
+const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
+  console.log('Apartment ID:', apartmentId);
+
   return (
     <div className="flex flex-col mx-auto max-w-sm my-10 gap-4 relative min-h-screen pb-24">
       <SwiperSlideImages />

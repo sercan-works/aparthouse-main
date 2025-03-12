@@ -1,9 +1,12 @@
 import Aparts from "@/components/Aparts";
+import { createMetadata } from "./utils/metadata";
 
-export const metadata = {
-  title: "Aparthouse - Tüm Apartlar",
-  description: "Aparthouse platformunda bulunan tüm apartlar",
-};
+export const metadata = createMetadata({
+  title: "Tüm Apartlar",
+  description: "Aparthouse platformunda öğrenciler için en uygun kiralık daireler ve apartlar. Tüm şehirlerde üniversite yakını konforlu, güvenli ve uygun fiyatlı daireleri keşfedin.",
+  keywords: "kiralık daire, öğrenci evi, apart, kiralık ev, apartlar, üniversite yakını ev, uygun fiyatlı daire",
+  path: "/",
+});
 
 export default function Home() {
   return (

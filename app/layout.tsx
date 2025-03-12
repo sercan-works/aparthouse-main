@@ -3,10 +3,25 @@ import "../styles/globals.css";
 import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "./nextAuth";
 import ReduxProvider from "./StoreProvider"
+import { BASE_METADATA, BASE_SOCIAL_METADATA } from "./utils/metadata";
 
 export const metadata: Metadata = {
-  title: "Aparthouse || Hadi Yeni Evini Bul",
-  description: "Öğrenciler için tasarlanmış ev arama platformu",
+  ...BASE_METADATA,
+  openGraph: BASE_SOCIAL_METADATA.openGraph,
+  twitter: BASE_SOCIAL_METADATA.twitter,
+  alternates: {
+    canonical: 'https://aparthouse.com',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 // Server component

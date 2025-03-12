@@ -15,7 +15,9 @@ import PinkPhone from "@/public/assets/images/pink-phone.png";
 import Image from "next/image";
 import SimilarAparts from "@/components/SimilarAparts";
 
-const DesktopDetail = () => {
+const DesktopDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
+  console.log('Apartment ID:', apartmentId);
+
   return (
     <div className="container mt-10">
       {/* DETAY HEADER KISMI */}
