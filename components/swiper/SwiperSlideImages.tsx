@@ -9,10 +9,10 @@ import "swiper/css/pagination";
 import Image from "next/image";
 import apart_image from "@/public/assets/apart.jpg";
 
-const SwiperSlideImages = () => {
+const SwiperSlideImages = ({ images }: { images: string[] }) => {
+  console.log(images);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const totalSlides = 3;
 
   const SwiperContent = () => (
     <>
@@ -24,34 +24,31 @@ const SwiperSlideImages = () => {
       onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       initialSlide={activeIndex}
     >
-      <SwiperSlide>
-        <Image
-          src={apart_image}
-          alt="apart"
-          className="object-cover w-full h-full cursor-pointer"
-          onClick={() => !isFullscreen && setIsFullscreen(true)}
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <Image
-          src={apart_image}
-          alt="apart"
-          className="object-cover w-full h-full cursor-pointer"
-          onClick={() => !isFullscreen && setIsFullscreen(true)}
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <Image
-          src={apart_image}
-          alt="apart"
-          className="object-cover w-full h-full cursor-pointer"
-          onClick={() => !isFullscreen && setIsFullscreen(true)}
+      {images.map((image, index) => (
+        <SwiperSlide key={index}>
+          <Image
+            src={image.image}
+            width={800}
+            height={600}
+            alt="apart"
+            className="object-cover w-full h-full cursor-pointer"
+            onClick={() => !isFullscreen && setIsFullscreen(true)}
           />
         </SwiperSlide>
+      ))}
+      {/* <SwiperSlide>
+        <Image
+          src={apart_image}
+          alt="apart"
+          className="object-cover w-full h-full cursor-pointer"
+          onClick={() => !isFullscreen && setIsFullscreen(true)}
+        />
+      </SwiperSlide> */}
+     
       </Swiper>
 {/* FOTOĞRAF SAYISI */}
       <div className="flex justify-center items-center text-gray-500 mt-2">
-        {activeIndex + 1} / {totalSlides}
+        {activeIndex + 1 } / {images.length}
       </div>
     </>
   );

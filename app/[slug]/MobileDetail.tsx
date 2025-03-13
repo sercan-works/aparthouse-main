@@ -1,11 +1,9 @@
 "use client";
 
 import React from "react";
-import { CiShare2 } from "react-icons/ci";
+import { CiShare2, CiWifiOn } from "react-icons/ci";
 import { MdCompareArrows, MdOutlineLocalPhone } from "react-icons/md";
-import { GoHeart } from "react-icons/go";
-import { GoLocation } from "react-icons/go";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { GoHeart, GoLocation } from "react-icons/go";
 import { SlGraduation } from "react-icons/sl";
 import {
   FaPersonWalking,
@@ -16,22 +14,46 @@ import { FaTrainSubway } from "react-icons/fa6";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
 import { LuWashingMachine } from "react-icons/lu";
-import { CiWifiOn } from "react-icons/ci";
 import { Tabs, Tab } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
+import { useGetApartmentByIdQuery } from "@/store/api/apartsApi";
 
-const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
-  console.log('Apartment ID:', apartmentId);
+// Telefon numarasını formatlamak için yardımcı fonksiyon
+const formatPhoneNumber = (phone: string = ""): string => {
+  // Başında 0 yoksa ekle
+  let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
+  
+  // Sadece rakamları al
+  formattedPhone = formattedPhone.replace(/\D/g, "");
+  
+  // İstenen formata dönüştür: "0 545 446 77 21"
+  if (formattedPhone.length === 11) {
+    return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(1, 4)} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(7, 9)} ${formattedPhone.slice(9, 11)}`;
+  }
+  
+  return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
+};
+
+const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
+  const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
+    skip: !apartSlug
+  });
+  console.log('Apartment detail:', apart, 'Slug:', apartSlug);
+
+  if (isLoading) return <div className="flex flex-col mx-auto max-w-sm my-10">Yükleniyor...</div>;
+  if (error) return <div className="flex flex-col mx-auto max-w-sm my-10">Hata: {JSON.stringify(error)}</div>;
+  if (!apart) return <div className="flex flex-col mx-auto max-w-sm my-10">Apart bulunamadı</div>;
 
   return (
     <div className="flex flex-col mx-auto max-w-sm my-10 gap-4 relative min-h-screen pb-24">
-      <SwiperSlideImages />
+      {/* API'den gelen verileri doğrudan swiper'a aktaramıyoruz, o yüzden şimdilik props göndermeyelim */}
+      <SwiperSlideImages images={apart?.images} />
 
       <div className="flex flex-col">
         <div className="flex flex-row justify-between">
-          <h1 className="text-2xl font-medium">Sera Apart</h1>
+          <h1 className="text-2xl font-medium">{apart?.name || apart?.title}</h1>
           <div className="flex flex-row gap-3">
             <CiShare2 className="h-6 w-6 text-gray-500" />
             <MdCompareArrows className="h-6 w-6 text-gray-500" />
@@ -56,11 +78,7 @@ const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
         {/* AÇIKLAMA */}
         <div className="mt-5">
           <p className="text-gray-500">
-            DAİRELERİMİZ İki Oda ve Mutfaktan Oluşan Ferah Bağımsız Daireler
-            Odalarda Ortopedik Yataklar Modüler Çalışma Masası, Ergonomik ve
-            Ortapedik Çalışma Koltukları Elbise Dolabı ve Kitaplık Her Odada LCD
-            Televizyon Zevkle Döşenmiş Çağdaş Tasarım Ürünü Mobilyalar Merkezi
-            Sistem Isınma – Isı ve Ses Yalıtımı
+            {apart?.info || apart?.description}
           </p>
         </div>
 
@@ -69,77 +87,93 @@ const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
           <div className="text-gray-500 flex flex-row items-center gap-2">
             <div className="flex flex-row items-center gap-2">
               <GoLocation className="h-4 w-4 text-gray-500" />
-              Adres : İstanbul, Beşiktaş
+              Adres : {apart?.address || apart?.location}
             </div>
-          </div>
-
-          <div className="text-gray-500 flex items-start gap-2">
-            <div className="flex flex-row items-center gap-2">
-              <HiOutlineBuildingOffice2 className="h-4 w-4 text-gray-500" />
-              <h3 className="text-gray-500 min-w-20">Olanaklar :</h3>
-            </div>
-            <p className="text-xs">
-              Wifi &bull; Park&bull; Havuz&bull; Tatlı &bull; Klima &bull; Kara
-              Dışı &bull; Kara Dışı &bull; Wifi &bull; Park &bull; Havuz &bull;
-              Tatlı &bull; Park &bull; Havuz &bull; Tatlı &bull; Klima &bull;
-              Kara Dışı
-            </p>
-          </div>
-
-          <div className="text-gray-500 flex items-start gap-2">
-            <div className="flex flex-row items-center gap-2">
-              $
-              <h3 className="text-gray-500 min-w-40">
-                Fiyat Dahil İçerikler :
-              </h3>
-            </div>
-            <p className="text-xs">
-              Wifi &bull; Park &bull; Havuz &bull; Tatlı &bull; Klima &bull;
-              Kara Dışı
-            </p>
-          </div>
-
-          <div className="text-gray-500 flex items-start gap-2 mt-5">
-            <div className=" text-center">Harita Alanı</div>
           </div>
 
           {/* MESAFELER */}
-          <div className="text-gray-500 flex items-start gap-2 mt-5">
-            <div className="flex flex-row items-center gap-2">
-              <SlGraduation className="h-4 w-4 text-gray-500" />
-              <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
-                Anadolu Üniversitesi :
-              </h3>
-              <div className="flex flex-row items-center gap-2">
-                <FaPersonWalking className="h-4 w-4 text-gray-500" /> 10dk.
-                <FaTrainSubway className="h-4 w-4 text-gray-500" /> 10dk.
-                <FaBus className="h-4 w-4 text-gray-500" /> 10dk.
-              </div>
-            </div>
+          <div className="text-gray-500 flex flex-col gap-2 mt-5">
+            <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
+            
+            {apart?.distances && apart.distances.length > 0 ? (
+              apart.distances.map((distance) => (
+                <div key={distance.id} className="flex flex-col gap-2 truncate border-b-2 border-gray-200 pb-2">
+                  <div className="flex flex-row items-center gap-2">
+                    <SlGraduation className="h-4 w-4 text-gray-500" />
+                    <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
+                      {distance.university.name}:
+                    </h3>
+                  </div>
+                  <div className="ml-6 flex flex-row justify-around items-center gap-3">
+                    {distance.yurume > 0 && (
+                      <div className="flex flex-row items-center gap-1">
+                        <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
+                      </div>
+                    )}
+                    {distance.tramvay > 0 && (
+                      <div className="flex flex-row items-center gap-1">
+                        <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
+                      </div>
+                    )}
+                    {distance.otobus > 0 && (
+                      <div className="flex flex-row items-center gap-1">
+                        <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
+            )}
           </div>
 
           {/* HİZMETLER */}
-          <div className="mt-5">
-            <h2 className="text-gray-500 font-medium underline">Olanaklar</h2>
-            <div className="flex flex-row items-center gap-2">
-              <LuWashingMachine className="h-4 w-4 text-gray-500" />
-              <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
-                Çamaşır Makinesi
-              </h3>
-            </div>
-          </div>
-          <div className="mt-5">
-            <h2 className="text-gray-500 font-medium underline">
-              Fiyata Dahil İçerikler
-            </h2>
-            <div className="flex flex-row items-center gap-2">
-              <CiWifiOn className="h-4 w-4 text-gray-500" />
-              <h3 className="text-gray-500 min-w-20 max-w-36 truncate">Wifi</h3>
-            </div>
+          <div className="mt-5 grid grid-cols-2 gap-4">
+            {apart?.services && Array.isArray(apart.services) && (
+              <>
+                {/* Hizmetleri kategorilerine göre grupla */}
+                {Object.entries(
+                  apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
+                    // Kategori adına göre grupla
+                    if (!acc[service.category_name]) {
+                      acc[service.category_name] = [];
+                    }
+                    acc[service.category_name].push(service);
+                    return acc;
+                  }, {})
+                ).map(([categoryName, services]) => (
+                  <div key={categoryName} className="col-span-1">
+                    <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
+                    {services.map((service) => (
+                      <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
+                        {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
+                        {categoryName === "Hizmetler" ? (
+                          <LuWashingMachine className="h-4 w-4 text-gray-500" />
+                        ) : categoryName === "Faturaya Dahil Olanlar" ? (
+                          <CiWifiOn className="h-4 w-4 text-gray-500" />
+                        ) : (
+                          <CiWifiOn className="h-4 w-4 text-gray-500" />
+                        )}
+                        <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
+                          {service.name}
+                        </h3>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </>
+            )}
+            
+            {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
+              <div className="col-span-2 text-gray-400 italic">
+                Hizmet bilgisi bulunamadı.
+              </div>
+            )}
           </div>
 
           {/* YORUMLAR */}
-          <div className=" z-40 ">
+          <div className="z-40 mt-5">
             <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
             <div className="flex flex-row items-center gap-2 mx-10">
               <SwiperSlideComments />
@@ -147,45 +181,41 @@ const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
           </div>
 
           {/* İLETİŞİM */}
-          <div className=" z-40 mt-5 mx-5">
+          <div className="z-40 mt-5 mx-5">
             <h2 className="text-gray-500 font-bold ">İletişim</h2>
             <p className="text-gray-500 text-sm">
               Detaylı içerik ve fiyat bilgisi için firmayla iletişime geçiniz.
             </p>
 
             <div className="flex flex-col gap-4 mt-5">
-              <Link href="mailto:sheapart@hotmail.com" target="_blank">
-              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
-                <p className="text-gray-500 text-md font-bold">
-                  sheapart@hotmail.com
-                </p>
-              </div>
+              <Link href={`mailto:${apart?.firma.mail || 'info@aparthouse.com'}`} target="_blank">
+                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                  <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
+                  <p className="text-gray-500 text-md font-bold">
+                    {apart?.firma.mail || 'info@aparthouse.com'}
+                  </p>
+                </div>
               </Link>
-              <Link href="tel:+905338888888">
-              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
-                <p className="text-gray-500 text-md font-bold">
-                  +90 533 888 88 88
-                </p>
-              </div>
+              <Link href={`tel:+${apart?.firma.phone}`}>
+                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                  <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
+                  <p className="text-gray-500 text-md font-bold">
+                    {formatPhoneNumber(apart?.firma.phone)}
+                  </p>
+                </div>
               </Link>
 
-              <Link href="https://wa.me/905338888888" target="_blank">
-              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-                <p className="text-gray-500 text-md font-bold">
-                  Whatsapp
-                </p>
-              </div>
+              <Link href={`https://wa.me/${apart?.firma.phone}`} target="_blank">
+                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                  <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+                  <p className="text-gray-500 text-md font-bold">
+                    Whatsapp
+                  </p>
+                </div>
               </Link>
             </div>
 
-
-
            {/* MOBİLE FOOTER YAPILACAK */}
-
-
           </div>
         </div>
 
@@ -194,7 +224,8 @@ const MobileDetail: React.FC<{ apartmentId?: string }> = ({ apartmentId }) => {
       </div>
       {/* CONTACT BAR */}
       <div className="fixed bottom-[68px] left-0 right-0 bg-white py-2 z-50">
-        <ContactBar />
+        {/* Props göndermeyi şimdilik atlayalım */}
+        <ContactBar phone={apart?.firma.phone} price={apart?.price} />
       </div>
     </div>
   );
