@@ -28,6 +28,19 @@ const nextConfig = {
         destination: process.env.NEXT_PUBLIC_API_URL 
           ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*` 
           : 'http://127.0.0.1:8000/api/:path*', // API route
+        // /api/auth yollarını hariç tut
+        has: [
+          {
+            type: 'header',
+            key: 'host',
+            value: '(?!.*auth.*)',
+          },
+        ],
+      },
+      // NextAuth'un /api/auth yollarını Next.js'in işlemesine izin ver
+      {
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
       },
     ];
   },

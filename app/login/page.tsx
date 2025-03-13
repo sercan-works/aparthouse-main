@@ -40,7 +40,11 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       setIsLoading(true);
-      const result = await signIn("google", { redirect: true, callbackUrl: '/' });
+      const result = await signIn("google", { 
+        redirect: true, 
+        callbackUrl: `${window.location.origin}/`,
+        // Kullanıcı istemcisindeki redirect url'i belirtiyoruz
+      });
       console.log("SignIn result:", result);
     } catch (error) {
       console.error("SignIn error:", error);
