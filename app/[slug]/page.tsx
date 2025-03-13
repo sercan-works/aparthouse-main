@@ -84,10 +84,10 @@ const DetailPage = async ({ params }: { params: { slug: string } }) => {
   return (
     <>
       <div className="block md:hidden">
-        <MobileDetail apartmentId={apartment.id.toString()} />
+        <MobileDetail apartSlug={apartment.slug.toString()} />
       </div>
       <div className="hidden md:block">
-        <DesktopDetail apartmentId={apartment.id.toString()} />
+        <DesktopDetail apartSlug={apartment.slug.toString()} />
       </div>
     </>
   );

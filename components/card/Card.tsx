@@ -143,9 +143,10 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                   <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-yellow-500"></span>
                   }
                 </h3>
-                {apart.universitys && apart.universitys.map((university) => (
-                  <p className="mt-1 md:text-xs" key={university.id}>
-                    {truncateText(`${university.name} `, 25)} 10 dk {/* varsayılan değer */}
+                {/* Distances - Maksimum ilk 2 üniversite mesafesini gösteriyoruz */}
+                {apart.distances && apart.distances.slice(0, 2).map((distance) => (
+                  <p className="mt-1 md:text-xs" key={distance.id}>
+                    {truncateText(`${distance.university.name} `, 15)} {distance.yurume} dk
                   </p>
                 ))}
               </div>

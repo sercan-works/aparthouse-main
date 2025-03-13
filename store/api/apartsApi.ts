@@ -3,63 +3,50 @@ import { baseApi } from '.';
 export interface Apartment {
   id: string;
   title: string;
+  name?: string;
   description: string;
   price: number;
   location: string;
   images: string[];
+  firma: {
+    phone: string;
+    mail: string;
+  };
+  info: string;
+  address: string;
+  distances: {
+    id: string;
+    university: {
+      name: string;
+    };
+    yurume: number;
+    tramvay: number;
+    otobus: number;
+  }[];
+  services?: {
+    id: number;
+    name: string;
+    icon: string;
+    category_name: string;
+  }[];
+
+
   // İhtiyacınıza göre daha fazla alan ekleyebilirsiniz
 }
-
-// Geçici olarak kullanacağımız mock veriler
-const MOCK_APARTMENTS: Apartment[] = [
-  {
-    id: '1',
-    title: 'Mono Kız Apart',
-    description: 'Öğrenciler için tasarlanmış, konforlu apart daire',
-    price: 10500,
-    location: 'Eskişehir, Tepebaşı',
-    images: ['/assets/apart.jpg']
-  },
-  {
-    id: '2',
-    title: 'Merkezi Erkek Apart',
-    description: 'Üniversiteye yakın, tam donanımlı erkek apart',
-    price: 11000,
-    location: 'Eskişehir, Odunpazarı',
-    images: ['/assets/apart.jpg']
-  },
-  {
-    id: '3',
-    title: 'Lüks Karma Apart',
-    description: 'Yeni yapılmış, lüks donanımlı öğrenci apart',
-    price: 12500,
-    location: 'Eskişehir, Merkez',
-    images: ['/assets/apart.jpg']
-  }
-];
 
 // baseApi'yi genişleterek apartlara özel endpointler ekliyoruz
 export const apartsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getApartments: builder.query<Apartment[], void>({
-      // API kullanıma hazır olana kadar mock veri döndürüyoruz
-      queryFn: () => ({ data: MOCK_APARTMENTS }),
-      // Gerçek API'ye geçtiğinizde bu satırı aktifleştirin:
-      // query: () => 'apartments',
+      // Gerçek API endpoint'ini kullanıyoruz
+      query: () => 'aparts',
       
       // SSR ile ilgili ek yapılandırmalar
       keepUnusedDataFor: 60, // Bu endpoint için veriyi 60 saniye saklayalım
     }),
     getApartmentById: builder.query<Apartment, string>({
-      // API kullanıma hazır olana kadar mock veri döndürüyoruz
-      queryFn: (id) => {
-        const apartment = MOCK_APARTMENTS.find(a => a.id === id);
-        return apartment 
-          ? { data: apartment } 
-          : { error: { status: 404, data: 'Apart bulunamadı' } };
-      },
-      // Gerçek API'ye geçtiğinizde bu satırı aktifleştirin:
-      // query: (id) => `apartments/${id}`,
+      // Gerçek API endpoint'ini kullanıyoruz
+      query: (slug) => `/api/aparts/${slug}`
     }),
   }),
   overrideExisting: false,
