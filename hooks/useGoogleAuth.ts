@@ -1,15 +1,19 @@
 import { useSocialLoginMutation } from '@/store/api/authApi';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { addToast } from '@heroui/react';
 
 export function useGoogleAuth() {
   const { data: session } = useSession();
   const [socialLogin, { isLoading, isSuccess, error }] = useSocialLoginMutation();
+  const hasLoggedInRef = useRef(false);
 
   useEffect(() => {
-    // Google ile giriş yaptıktan sonra session verisi varsa
-    if (session?.user) {
+    // Google ile giriş yaptıktan sonra session verisi varsa ve daha önce giriş yapmadıysa
+    if (session?.user && !hasLoggedInRef.current) {
+      // Ref'i true yap ki tekrar istek atmasın
+      hasLoggedInRef.current = true;
+      
       // Google kimlik bilgilerini DRF'ye gönderin
       socialLogin({
         email: session.user.email,
@@ -24,16 +28,17 @@ export function useGoogleAuth() {
         // }
       }).unwrap()
         .then(() => {
-          addToast({
-            title: "Başarılı",
-            description: "Google hesabınızla başarıyla giriş yaptınız",
-            color: "success",
-          });
+          // addToast({
+          //   title: "Başarılı",
+          //   description: "Google hesabınızla başarıyla giriş yaptınız",
+          //   color: "success",
+          // });
+          console.log("Google auth success");
         })
         .catch(err => {
           addToast({
             title: "Hata",
-            description: "Google ile giriş yapılırken bir hata oluştu",
+            description: "Google ile giriş yapılırken bir hata oluştu. Tekrar deneyiniz.",
             color: "danger",
           });
           console.error('Google auth error:', err);

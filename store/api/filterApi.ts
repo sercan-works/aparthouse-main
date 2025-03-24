@@ -25,7 +25,9 @@ export const filterApi = baseApi.injectEndpoints({
             query: () => '/apart-types',
         }),
         
-        // You can add more endpoints as needed
+        getFilters: builder.query<BaseItem[], void>({
+            query: () => '/api/filters/',
+        }),
     }),
     overrideExisting: false,
 });
@@ -34,4 +36,6 @@ export const {
     useGetCitiesQuery,
     useGetUniversitiesQuery,
     useGetApartTypesQuery,
+    useGetFiltersQuery,
 } = filterApi; 
+

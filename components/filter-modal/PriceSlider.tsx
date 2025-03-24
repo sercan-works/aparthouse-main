@@ -1,18 +1,36 @@
 import { Input, Slider } from '@heroui/react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const PriceSlider = () => {
-  const [value, setValue] = useState([100, 500]);
+interface PriceSliderProps {
+  min?: number;
+  max?: number;
+  onChange?: (values: number[]) => void;
+}
+
+const PriceSlider: React.FC<PriceSliderProps> = ({ 
+  min = 0, 
+  max = 1000,
+  onChange
+}) => {
+  const [value, setValue] = useState([min, max/2]);
+
+  useEffect(() => {
+    // Başlangıç değerini props'lardan güncelle
+    setValue([min, max/2]);
+  }, [min, max]);
 
   const handleSliderChange = (newValue: number | number[]) => {
-    setValue(newValue as number[]);
+    const values = newValue as number[];
+    setValue(values);
+    onChange?.(values);
   };
 
   const handleInputChange = (index: number, inputValue: string) => {
     const newValue = parseInt(inputValue) || 0;
     const updatedValue = [...value];
-    updatedValue[index] = Math.min(Math.max(newValue, 0), 1000);
+    updatedValue[index] = Math.min(Math.max(newValue, min), max);
     setValue(updatedValue);
+    onChange?.(updatedValue);
   };
 
   return (
@@ -23,8 +41,8 @@ const PriceSlider = () => {
           value={value}
           onChange={handleSliderChange}
           label=""
-          maxValue={1000}
-          minValue={0}
+          maxValue={max}
+          minValue={min}
           step={50}
           size="sm"
           color="primary"
@@ -36,8 +54,8 @@ const PriceSlider = () => {
           type="number" 
           value={value[0]}
           onChange={(e) => handleInputChange(0, e.target.value)}
-          min={0}
-          max={value[1]}
+          min={min.toString()}
+          max={value[1].toString()}
           placeholder="Min"
           size="lg"
           className="w-64"
@@ -54,8 +72,8 @@ const PriceSlider = () => {
           type="number"
           value={value[1]} 
           onChange={(e) => handleInputChange(1, e.target.value)}
-          min={value[0]}
-          max={1000}
+          min={value[0].toString()}
+          max={max.toString()}
           placeholder="Max"
           size="lg"
           className="w-64"

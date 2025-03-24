@@ -2,8 +2,8 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 
-export default function BasicRating() {
-  const [value, setValue] = React.useState<number | null>(2);
+export default function BasicRating(data: any) {
+  const [value, setValue] = React.useState<any>(data);
 
   return (
     <div className="flex flex-row justify-center items-center gap-2 mt-1"> 

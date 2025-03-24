@@ -7,9 +7,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
-import apart_image from "@/public/assets/apart.jpg";
 
-const SwiperSlideImages = ({ images }: { images: string[] }) => {
+// Update type definition to match actual data structure
+interface ImageItem {
+  image: string;
+}
+
+const SwiperSlideImages = ({ images }: { images: ImageItem[] }) => {
   console.log(images);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);

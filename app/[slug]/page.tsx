@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   
   return createMetadata({
     title: apartment.name,
-    description: `${apartment.name} - ${apartment.town.city_name} ${apartment.town.name} - ${apartment.category.name} öğrenci apartı`,
+    description: `${apartment?.name} - ${apartment?.town?.city_name} ${apartment?.town?.name} - ${apartment?.category?.name} öğrenci apartı`,
     path: `/${slug}`,
     type: 'article',
     // Varsayılan görsel kullanıyoruz, gerçek projede apart görselini kullanabilirsiniz

@@ -34,6 +34,46 @@ export interface Apartment {
   // İhtiyacınıza göre daha fazla alan ekleyebilirsiniz
 }
 
+// Filtreleme parametreleri için interface
+export interface FilterParams {
+  city?: string | number;
+  university?: string;
+  price_min?: number;
+  price_max?: number;
+  gender?: string;
+  category?: string;
+  features?: string;
+  [key: string]: string | number | undefined;
+}
+
+export interface SelectedFilters {
+  [key: string]: (string | number)[];
+}
+
+// Seçili filtreleri API parametrelerine dönüştürme
+export const prepareSearchParams = (selectedFilters: SelectedFilters): FilterParams => {
+  const params: FilterParams = {};
+  
+  // Temel filtreler
+  if (selectedFilters.city?.length) params.city = selectedFilters.city[0];
+  if (selectedFilters.university?.length) params.university = selectedFilters.university.join(',');
+  
+  // Fiyat aralığı
+  if (selectedFilters.price && selectedFilters.price.length >= 2) {
+    params.price_min = selectedFilters.price[0] as number;
+    params.price_max = selectedFilters.price[1] as number;
+  }
+
+  // Diğer filtreler için döngü
+  ['gender', 'category', 'features'].forEach(key => {
+    if (selectedFilters[key]?.length) {
+      params[key] = selectedFilters[key].join(',');
+    }
+  });
+  
+  return params;
+};
+
 // baseApi'yi genişleterek apartlara özel endpointler ekliyoruz
 export const apartsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -47,6 +87,13 @@ export const apartsApi = baseApi.injectEndpoints({
     getApartmentById: builder.query<Apartment, string>({
       // Gerçek API endpoint'ini kullanıyoruz
       query: (slug) => `/api/aparts/${slug}`
+
+    }),
+    getFilteredAparts: builder.query<Apartment[], FilterParams>({
+      query: (filters) => ({
+        url: '/api/aparts',
+        params: filters,
+      }),
     }),
   }),
   overrideExisting: false,
@@ -56,12 +103,14 @@ export const apartsApi = baseApi.injectEndpoints({
 export const { 
   useGetApartmentsQuery,
   useGetApartmentByIdQuery,
+  useGetFilteredApartsQuery,
 } = apartsApi;
 
 // SSR için gerekli olan endpoint referansları
 export const { 
   getApartments, 
-  getApartmentById 
+  getApartmentById,
+  getFilteredAparts,
 } = apartsApi.endpoints;
 
 // Çalışan tüm sorguları beklemek için gereken fonksiyon
