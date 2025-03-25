@@ -6,6 +6,12 @@ interface BaseItem {
     name: string;
 }
 
+interface CategoryItem {
+    id: number;
+    name: string;
+    image: string;
+}
+
 export const filterApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // Cities endpoints
@@ -13,6 +19,10 @@ export const filterApi = baseApi.injectEndpoints({
             query: () => '/cities',
             // Transform response if needed
             // transformResponse: (response: any) => response.data,
+        }),
+
+        getCategories: builder.query<CategoryItem[], void>({
+            query: () => '/api/categories',
         }),
 
         // Universities endpoints
@@ -37,5 +47,6 @@ export const {
     useGetUniversitiesQuery,
     useGetApartTypesQuery,
     useGetFiltersQuery,
+    useGetCategoriesQuery,
 } = filterApi; 
 

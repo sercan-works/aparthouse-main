@@ -23,6 +23,12 @@ export interface ApiApart {
     image: string;
     cover: boolean;
   }[];
+  images_thumbnail: {
+    id: number;
+    image: string;
+    cover: boolean;
+  }[];
+  image_thumbnail: string[];
   category: {
     id: number;
     name: string;

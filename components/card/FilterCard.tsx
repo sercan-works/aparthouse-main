@@ -125,7 +125,7 @@ const FilterCard = ({
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex flex-row items-center gap-2">
             <StarReadOnly />
-            <h4 className="text-xs font-bold">2.0</h4>
+            <h4 className="text-xs font-bold">0.0</h4>
             {/* <p className='text-xs text-gray-500'></p> */}
           </div>
           <div className="text-md font-bold">

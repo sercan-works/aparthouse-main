@@ -16,6 +16,7 @@ import FavoriteIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { MdCompareArrows } from "react-icons/md";
 import { Button } from "@heroui/react";
 import { ApiApart } from "@/store/apiSlice";
+import Loading from "../ui/Loading";
 
 // ApiApart tipini doğrudan kullanıyoruz
 const Card = ({ apart }: { apart: ApiApart }) => {
@@ -33,7 +34,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   if (!apart) {
     return (
       <div className="relative rounded-xl overflow-hidden w-[23rem] h-[22.5rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] flex justify-center items-center bg-gray-100">
-        <div className="text-gray-500">Yükleniyor...</div>
+        <div className="text-gray-500"><Loading /></div>
       </div>
     );
   }
@@ -44,6 +45,9 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   
   console.log("Apart ID:", apartId);
   console.log("Apart Slug:", apartSlug);
+  console.log("Apart Images:", apart.images);
+  
+
 
   return (
     <Link href={`/${apartSlug}`} className="block">
@@ -55,27 +59,20 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           loop={true}
           className="h-full w-full custom-swiper"
         >
-          {apart.images && apart.images.length > 0 ? (
-            apart.images.map((img, index) => (
-              <SwiperSlide key={img.id || index}>
+          
+           { apart?.image_thumbnail?.map((img, index) => (
+              <SwiperSlide key={index}>
                 <Image
-                  src={img.image || apart_image}
-                  alt={`${apart.name || 'Apart'} resim ${index + 1}`}
+                  src={img || apart_image}
+                  alt={`${apart.apart_name || 'Apart'} resim ${index + 1}`}
                   className="object-cover w-full h-full"
                   width={500}
                   height={500}
+                  priority
                 />
               </SwiperSlide>
-            ))
-          ) : (
-            <SwiperSlide>
-              <Image
-                src={apart_image}
-                alt="apart"
-                className="object-cover w-full h-full"
-              />
-            </SwiperSlide>
-          )}
+            ))}
+         
         </Swiper>
 
         {/* Icon buttons */}
@@ -104,16 +101,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           </button>
         </div>
 
-        {/* Daha Önce İncelediniz banner */}
-        {/* <div
-          className={`absolute ${
-            isExpanded ? "bottom-[33%]" : "bottom-[67%]"
-          } left-0 right-0 bg-gray-500/50 p-2 transition-all duration-300 z-10`}
-        >
-          <p className="text-gray-100 text-sm font-medium text-center">
-            Daha Önce İncelediniz
-          </p>
-        </div> */}
+
 
         <div
           className={`absolute bottom-0 left-0 right-0 bg-white p-4 md:p-3 transition-all duration-300 cursor-pointer z-10

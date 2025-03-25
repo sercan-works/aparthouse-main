@@ -3,6 +3,7 @@ import React from "react";
 import Card from "./card/Card";
 import { Button } from "@heroui/react";
 import { useGetApartsQuery } from "@/store/apiSlice"; // API'den veri çekmek için useGetApartsQuery hook'unu import ediyoruz
+import CardPlaceholder from "./ui/CardPlaceholder";
 
 const Aparts = () => {
   // RTK Query hook'unu kullanarak API'den veri çekiyoruz
@@ -20,6 +21,9 @@ const Aparts = () => {
     {
       id: 1,
       name: "Demo Apart 1",
+      apart_name: "Demo Apart 1",
+      phone: "5551234567",
+      gender: "K",
       price: 1500,
       price_type: "Aylık",
       info: "Demo bilgi",
@@ -50,16 +54,8 @@ const Aparts = () => {
       },
       services: [
         {
-          id: 1,
-          name: "WiFi",
-          icon: "",
-          category_name: "Hizmetler"
-        },
-        {
-          id: 2,
-          name: "Elektrik",
-          icon: "",
-          category_name: "Faturaya Dahil"
+          service_name: "Hizmetler",
+          service_data: ["WiFi", "Elektrik"]
         }
       ],
       bills: [{ id: 1, name: "250" }],
@@ -84,6 +80,9 @@ const Aparts = () => {
     {
       id: 2,
       name: "Demo Apart 2",
+      apart_name: "Demo Apart 2",
+      phone: "5557654321",
+      gender: "E",
       price: 2000,
       price_type: "Aylık",
       info: "Demo bilgi 2",
@@ -114,10 +113,8 @@ const Aparts = () => {
       },
       services: [
         {
-          id: 3,
-          name: "Çamaşır Makinesi",
-          icon: "",
-          category_name: "Hizmetler"
+          service_name: "Hizmetler",
+          service_data: ["Çamaşır Makinesi"]
         }
       ],
       bills: [{ id: 2, name: "300" }],
@@ -144,8 +141,10 @@ const Aparts = () => {
   // Yükleme durumunu kontrol et
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-10">
-        <div className="text-gray-500 text-lg">Apartlar yükleniyor...</div>
+      <div className="flex container flex-wrap gap-4 justify-center items-center py-10">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <CardPlaceholder key={index} />
+          ))}
       </div>
     );
   }
