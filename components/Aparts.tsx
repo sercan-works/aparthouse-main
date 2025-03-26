@@ -2,7 +2,7 @@
 import React from "react";
 import Card from "./card/Card";
 import { Button } from "@heroui/react";
-import { useGetApartsQuery } from "@/store/apiSlice"; // API'den veri çekmek için useGetApartsQuery hook'unu import ediyoruz
+import { useGetApartsQuery } from "@/store/api/apartsApi"; 
 import CardPlaceholder from "./ui/CardPlaceholder";
 
 const Aparts = () => {

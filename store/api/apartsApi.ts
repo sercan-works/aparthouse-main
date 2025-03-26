@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { baseApi } from '.';
 
 export interface Apartment {
@@ -46,6 +47,72 @@ export interface FilterParams {
   [key: string]: string | number | undefined;
 }
 
+
+export interface ApiApart {
+  phone: string | null;
+  gender: string;
+  apart_name: ReactNode | string;
+  id: number;
+  name: string;
+  price: number;
+  price_type: string;
+  info: string;
+  address: string;
+  lat: number;
+  lon: number;
+  slug: string;
+  food: boolean;
+  created_at: string;
+  is_approved: boolean;
+  images: {
+    id: number;
+    image: string;
+    cover: boolean;
+  }[];
+  images_thumbnail: {
+    id: number;
+    image: string;
+    cover: boolean;
+  }[];
+  image_thumbnail: string[];
+  category: {
+    id: number;
+    name: string;
+    icon: string;
+    sexualty: string;
+  };
+  town: {
+    id: number;
+    name: string;
+    city_name: string;
+  };
+  // Yeni servis formatı
+  services: {
+    service_name: string;
+    service_data: string[];
+  }[];
+  bills: {
+    id: number;
+    name: string;
+  }[];
+  firma: {
+    id: number;
+    name: string;
+    phone: string;
+    mail: string;
+    image: string | null;
+  };
+  universitys: {
+    id: number;
+    name: string;
+    address: string;
+    city_name: string;
+    image: string | null;
+  }[];
+  cover_image: string;
+}
+
+
 export interface SelectedFilters {
   [key: string]: (string | number)[];
 }
@@ -77,23 +144,21 @@ export const prepareSearchParams = (selectedFilters: SelectedFilters): FilterPar
 // baseApi'yi genişleterek apartlara özel endpointler ekliyoruz
 export const apartsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getApartments: builder.query<Apartment[], void>({
-      // Gerçek API endpoint'ini kullanıyoruz
-      query: () => 'aparts',
-      
-      // SSR ile ilgili ek yapılandırmalar
-      keepUnusedDataFor: 60, // Bu endpoint için veriyi 60 saniye saklayalım
-    }),
     getApartmentById: builder.query<Apartment, string>({
       // Gerçek API endpoint'ini kullanıyoruz
-      query: (slug) => `/api/aparts/${slug}`
-
+      query: (slug) => `/api/aparts/${slug}`,
     }),
     getFilteredAparts: builder.query<Apartment[], FilterParams>({
       query: (filters) => ({
         url: '/api/aparts',
         params: filters,
+        keepUnusedDataFor: 60,
       }),
+    }),
+
+    getAparts: builder.query<ApiApart[], void>({
+      query: () => '/api/aparts',
+      keepUnusedDataFor: 60,
     }),
   }),
   overrideExisting: false,
@@ -101,16 +166,16 @@ export const apartsApi = baseApi.injectEndpoints({
 
 // RTK Query tarafından otomatik oluşturulan hook'ları dışa aktarıyoruz
 export const { 
-  useGetApartmentsQuery,
   useGetApartmentByIdQuery,
   useGetFilteredApartsQuery,
+  useGetApartsQuery,
 } = apartsApi;
 
 // SSR için gerekli olan endpoint referansları
 export const { 
-  getApartments, 
   getApartmentById,
   getFilteredAparts,
+  getAparts,
 } = apartsApi.endpoints;
 
 // Çalışan tüm sorguları beklemek için gereken fonksiyon
