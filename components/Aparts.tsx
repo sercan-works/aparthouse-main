@@ -179,12 +179,15 @@ const Aparts = () => {
       
       {/* Aktif filtreleri göster */}
       {(selectedCategory || selectedCity || selectedUniversity) && (
-        <div className="w-full bg-blue-50 p-4 mb-5 rounded-lg">
+        <div className="fixed bottom-10 right-10 bg-colorFirst p-4 mb-5 rounded-lg z-50 shadow-lg bg-opacity-50">
           <p className="font-semibold">Aktif Filtreler:</p>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {selectedCategory && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Kategori: {selectedCategory}</span>}
-            {selectedCity && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Şehir: {selectedCity}</span>}
-            {selectedUniversity && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Üniversite: {selectedUniversity}</span>}
+          <div className="flex flex-col gap-2 mt-2">
+            {selectedCategory && <span className="px-3 py-1 bg-white rounded-full text-sm text-center">Kategori</span>}
+            {selectedCity && <span className="px-3 py-1 bg-white rounded-full text-sm text-center">Şehir</span>}
+            {selectedUniversity && <span className="px-3 py-1 bg-white rounded-full text-sm text-center">Üniversite</span>}
+            {/* {selectedCategory && <span className="px-3 py-1 bg-white rounded-full text-sm">Kategori: {selectedCategory}</span>}
+            {selectedCity && <span className="px-3 py-1 bg-white rounded-full text-sm">Şehir: {selectedCity}</span>}
+            {selectedUniversity && <span className="px-3 py-1 bg-white rounded-full text-sm">Üniversite: {selectedUniversity}</span>} */}
           </div>
         </div>
       )}
