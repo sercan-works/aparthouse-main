@@ -1,4 +1,5 @@
 import { baseApi } from './index';
+import { ApiApart } from './apartsApi';
 
 // Define types
 interface BaseItem {
@@ -43,6 +44,10 @@ export const filterApi = baseApi.injectEndpoints({
         getFilters: builder.query<BaseItem[], void>({
             query: () => '/api/filters/',
         }),
+
+        getSearchResults: builder.query<ApiApart[], string>({
+            query: (searchQuery) => `/api/aparts/?search=${searchQuery}`,
+        }),
     }),
     overrideExisting: false,
 });
@@ -53,5 +58,6 @@ export const {
     useGetApartTypesQuery,
     useGetFiltersQuery,
     useGetCategoriesQuery,
+    useGetSearchResultsQuery,
 } = filterApi; 
 
