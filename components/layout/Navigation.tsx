@@ -154,6 +154,7 @@ export default function Navigation() {
           onClick={toggleDropdown}
         >
           {userImage ? (
+            <>
             <Image 
               src={userImage} 
               alt="User" 
@@ -161,6 +162,12 @@ export default function Navigation() {
               height={32} 
               className="rounded-full"
             />
+            {compareApartIds.length > 0 && (
+            <div className="absolute top-4 -right-3 w-5 h-5 bg-colorFirst text-white text-xs rounded-full flex items-center justify-center">
+              {compareApartIds.length}
+            </div>
+            )}
+            </>
           ) : (
             <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
               {userEmail ? (
@@ -168,7 +175,13 @@ export default function Navigation() {
                   {userEmail.charAt(0).toUpperCase()}
                 </span>
               ) : (
+                <>
                 <Image src={UserIcon} alt="User" width={24} height={24} />
+                {/* compare chip */}
+                <div className="h-4 w-4 bg-gray-200 rounded-full">
+                <Chip color="primary" size="sm">{compareAparts.length}</Chip>
+                </div>
+                </>
               )}
             </div>
           )}
