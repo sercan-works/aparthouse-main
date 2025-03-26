@@ -1,24 +1,51 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Select, SelectItem, Switch } from "@heroui/react";
+import { Switch } from "@heroui/react";
 import FilterCard from "@/components/card/FilterCard";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useGetFilteredApartsQuery } from "@/store/api/apartsApi";
+import { 
+  useGetCitiesQuery, 
+  useGetUniversitiesQuery, 
+  useGetCategoriesQuery,
+  useGetFiltersQuery
+} from "@/store/api/filterApi";
 import Loading from "@/components/ui/Loading";
 
 const DesktopFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
   const searchParams = useSearchParams();
+  const router = useRouter();
   
   // URL'deki parametreleri al
   const params = Object.fromEntries(searchParams.entries());
+  
+  // API'den filtreleri çek
+  const { data: cities = [] } = useGetCitiesQuery();
+  const { data: universities = [] } = useGetUniversitiesQuery();
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: filters = [] } = useGetFiltersQuery();
   
   // Filtrelenmiş apartları API'den getir
   const { data: filteredAparts, isLoading, error } = useGetFilteredApartsQuery(params);
 
   // Sonuç sayısını hesapla
   const resultCount = filteredAparts ? filteredAparts.length : 0;
+
+  // Sıralama işlemi için handler fonksiyonu
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // Mevcut URL parametrelerini al
+    const currentParams = new URLSearchParams(searchParams.toString());
+    
+    // Ordering parametresini ekle - seçilen değeri al
+    if (e.target.value) {
+      currentParams.set('ordering', e.target.value);
+    }
+    
+    // URL'yi güncelle
+    router.push(`/filter?${currentParams.toString()}`, { scroll: false });
+  };
 
   // Add useEffect for scroll listener with max scroll limit
   useEffect(() => {
@@ -43,11 +70,45 @@ const DesktopFilter = () => {
     setFilterVisible(!filterVisible);
   };
 
+  // Filtre değerlerini öğelerin ID'sine göre bulmak için yardımcı fonksiyon
+  const getFilterDisplayValue = (key: string, value: string): string => {
+    // Önce anahtara göre hangi filtre tipini kullanacağımızı belirle
+    switch (key) {
+      case 'city':
+        return cities.find(city => city.id.toString() === value)?.name || value;
+      
+      case 'university':
+        return universities.find(uni => uni.id.toString() === value)?.name || `Üniversite: ${value}`;
+      
+      case 'category':
+        return categories.find(cat => cat.id.toString() === value)?.name || value;
+      
+      case 'gender':
+        // Cinsiyet için manuel dönüşüm
+        return value === 'E' ? 'Erkek' : value === 'K' ? 'Kadın' : value === 'K+E' ? 'Karışık' : value;
+      
+      default:
+        // Diğer filtreler için güvenli kontrol
+        try {
+          // Önce filters'in dizi olup olmadığını kontrol et
+          if (Array.isArray(filters) && filters.length > 0) {
+            const filter = filters.find(f => f.id.toString() === value);
+            if (filter && filter.name) return filter.name;
+          }
+          // Eğer filters dizi değilse veya filtre bulunamazsa, değeri doğrudan döndür
+          return value;
+        } catch (error) {
+          console.error('Filtre çözümleme hatası:', error);
+          return value; // Hata durumunda değeri olduğu gibi döndür
+        }
+    }
+  };
+
   // Uygulanan filtreleri gösteren chips bileşeni
   const FilterChips = () => {
     // Filtre parametrelerini hazırla
     const filterKeys = Object.keys(params).filter(key => 
-      !['price_min', 'price_max'].includes(key)
+      !['price_min', 'price_max', 'ordering'].includes(key)
     );
     
     // Price aralığı için özel durumu kontrol et
@@ -55,19 +116,92 @@ const DesktopFilter = () => {
     
     if (filterKeys.length === 0 && !hasPriceFilter) return null;
     
+    // Filtre chip'ini kaldırmak için fonksiyon
+    const removeFilter = (key: string, specificValue?: string) => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+      
+      if (key === 'price_filter') {
+        // Fiyat filtresini kaldır
+        currentParams.delete('price_min');
+        currentParams.delete('price_max');
+      } else if (specificValue) {
+        // Virgülle ayrılmış değerlerden biri kaldırılıyorsa
+        const values = currentParams.get(key)?.split(',') || [];
+        const filteredValues = values.filter(v => v !== specificValue);
+        
+        if (filteredValues.length > 0) {
+          currentParams.set(key, filteredValues.join(','));
+        } else {
+          currentParams.delete(key);
+        }
+      } else {
+        // Normal filtreyi kaldır
+        currentParams.delete(key);
+      }
+      
+      // URL'yi güncelle
+      router.push(`/filter?${currentParams.toString()}`, { scroll: false });
+    };
+    
+    // Virgülle ayrılmış değerleri içeren chipleri oluştur
+    const renderCommaDelimitedChips = (key: string, value: string) => {
+      // Değeri virgülle bölüp dizi haline getir
+      const valueArray = value.split(',');
+      
+      // Her değer için ayrı bir chip oluştur
+      return (
+        <>
+          {valueArray.map((val) => (
+            <div key={`${key}-${val}`} className="px-2 py-1 border border-gray-300 bg-white rounded-lg z-50 text-center gap-2 flex items-center">
+              <span>{getFilterDisplayValue(key, val)}</span>
+              <button 
+                onClick={() => removeFilter(key, val)}
+                className="ml-2 text-gray-500 hover:text-red-500 transition-colors focus:outline-none"
+                aria-label={`Remove ${key} filter`}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </>
+      );
+    };
+    
     return (
       <div className="flex gap-2 flex-wrap">
         {hasPriceFilter && (
-          <div className="px-2 py-1 border border-gray-300 bg-white rounded-lg z-50 text-center gap-2">
-            {params.price_min} ₺ - {params.price_max} ₺
+          <div className="px-2 py-1 border border-gray-300 bg-white rounded-lg z-50 text-center gap-2 flex items-center">
+            <span>Fiyat: {params.price_min} ₺ - {params.price_max} ₺</span>
+            <button
+              onClick={() => removeFilter('price_filter')}
+              className="ml-2 text-gray-500 hover:text-red-500 transition-colors focus:outline-none"
+              aria-label="Remove price filter"
+            >
+              ✕
+            </button>
           </div>
         )}
         
-        {filterKeys.map(key => (
-          <div key={key} className="px-2 py-1 border border-gray-300 bg-white rounded-lg z-50 text-center gap-2">
-            {params[key]}
-          </div>
-        ))}
+        {filterKeys.map(key => {
+          // Virgülle ayrılmış değerler için ayrı işlem yap
+          if (params[key].includes(',')) {
+            return renderCommaDelimitedChips(key, params[key]);
+          }
+          
+          // Tek değerli filterler için normal chip göster
+          return (
+            <div key={key} className="px-2 py-1 border border-gray-300 bg-white rounded-lg z-50 text-center gap-2 flex items-center">
+              <span>{getFilterDisplayValue(key, params[key])}</span>
+              <button 
+                onClick={() => removeFilter(key)}
+                className="ml-2 text-gray-500 hover:text-red-500 transition-colors focus:outline-none"
+                aria-label={`Remove ${key} filter`}
+              >
+                ✕
+              </button>
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -110,13 +244,17 @@ const DesktopFilter = () => {
             <FilterChips />
           </div>
           <div className="flex justify-end w-1/2">
-            <Select className="w-1/2" placeholder="Sıralama" variant="bordered">
-              <SelectItem key="1">Artan Fiyat</SelectItem>
-              <SelectItem key="2">Azalan Fiyat</SelectItem>
-              <SelectItem key="3">En Yeni</SelectItem>
-              <SelectItem key="4">En Eski</SelectItem>
-              <SelectItem key="5">En Popüler</SelectItem>
-            </Select>
+            <select 
+              className="w-1/2 border border-gray-300 rounded-md p-2" 
+              onChange={handleSortChange}
+              value={params.ordering || ''}
+            >
+              <option value="" disabled>Sıralama</option>
+              <option value="price">Artan Fiyat</option>
+              <option value="-price">Azalan Fiyat</option>
+              <option value="created_at">En Yeni</option>
+              <option value="-created_at">En Eski</option>
+            </select>
           </div>
         
         </div>

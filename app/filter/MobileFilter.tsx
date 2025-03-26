@@ -1,27 +1,88 @@
 "use client";
 import React, { useState } from "react";
-import { Select, SelectItem, Switch } from "@heroui/react";
+import { Switch } from "@heroui/react";
 import MobileMap from "@/components/maps/MobileMap";
 import FilterCard from "@/components/card/FilterCard";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useGetFilteredApartsQuery } from "@/store/api/apartsApi";
+import { 
+  useGetCitiesQuery, 
+  useGetUniversitiesQuery, 
+  useGetCategoriesQuery,
+  useGetFiltersQuery
+} from "@/store/api/filterApi";
 import Loading from "@/components/ui/Loading";
 
 const MobileFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   
   // URL'deki parametreleri al
   const params = Object.fromEntries(searchParams.entries());
   
+  // API'den filtreleri çek
+  const { data: cities = [] } = useGetCitiesQuery();
+  const { data: universities = [] } = useGetUniversitiesQuery();
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: filters = [] } = useGetFiltersQuery();
+  
   // Filtrelenmiş apartları API'den getir
   const { data: filteredAparts, isLoading, error } = useGetFilteredApartsQuery(params);
+  
+  // Sıralama işlemi için handler fonksiyonu
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // Mevcut URL parametrelerini al
+    const currentParams = new URLSearchParams(searchParams.toString());
+    
+    // Ordering parametresini ekle - seçilen değeri al
+    if (e.target.value) {
+      currentParams.set('ordering', e.target.value);
+    }
+    
+    // URL'yi güncelle
+    router.push(`/filter?${currentParams.toString()}`, { scroll: false });
+  };
+
+  // Filtre değerlerini öğelerin ID'sine göre bulmak için yardımcı fonksiyon
+  const getFilterDisplayValue = (key: string, value: string): string => {
+    // Önce anahtara göre hangi filtre tipini kullanacağımızı belirle
+    switch (key) {
+      case 'city':
+        return cities.find(city => city.id.toString() === value)?.name || value;
+      
+      case 'university':
+        return universities.find(uni => uni.id.toString() === value)?.name || `Üniversite: ${value}`;
+      
+      case 'category':
+        return categories.find(cat => cat.id.toString() === value)?.name || value;
+      
+      case 'gender':
+        // Cinsiyet için manuel dönüşüm
+        return value === 'E' ? 'Erkek' : value === 'K' ? 'Kadın' : value === 'K+E' ? 'Karışık' : value;
+      
+      default:
+        // Diğer filtreler için güvenli kontrol
+        try {
+          // Önce filters'in dizi olup olmadığını kontrol et
+          if (Array.isArray(filters) && filters.length > 0) {
+            const filter = filters.find(f => f.id.toString() === value);
+            if (filter && filter.name) return filter.name;
+          }
+          // Eğer filters dizi değilse veya filtre bulunamazsa, değeri doğrudan döndür
+          return value;
+        } catch (error) {
+          console.error('Filtre çözümleme hatası:', error);
+          return value; // Hata durumunda değeri olduğu gibi döndür
+        }
+    }
+  };
   
   // Uygulanan filtreleri gösteren chips bileşeni
   const FilterChips = () => {
     // Filtre parametrelerini hazırla
     const filterKeys = Object.keys(params).filter(key => 
-      !['price_min', 'price_max'].includes(key)
+      !['price_min', 'price_max', 'ordering'].includes(key)
     );
     
     // Price aralığı için özel durumu kontrol et
@@ -29,23 +90,61 @@ const MobileFilter = () => {
     
     if (filterKeys.length === 0 && !hasPriceFilter) return null;
 
+    // Virgülle ayrılmış değerleri işleyen yardımcı fonksiyon
+    const processCommaDelimitedValues = (key: string, value: string): string[] => {
+      if (value.includes(',')) {
+        return value.split(',').map(v => getFilterDisplayValue(key, v));
+      }
+      return [getFilterDisplayValue(key, value)];
+    };
+
     // Gösterilecek maksimum etiket sayısı
     const maxVisibleChips = 2;
-    const extraChipsCount = filterKeys.length + (hasPriceFilter ? 1 : 0) - maxVisibleChips;
+    
+    // İşlenmemiş chip sayısını hesapla
+    let totalChipsCount = (hasPriceFilter ? 1 : 0);
+    const processedChips: {key: string, values: string[]}[] = [];
+    
+    // Tüm filtreleri işle
+    filterKeys.forEach(key => {
+      const displayValues = processCommaDelimitedValues(key, params[key]);
+      processedChips.push({key, values: displayValues});
+      totalChipsCount += displayValues.length;
+    });
+    
+    // Kaç tane daha etiket gösterilmeyecek
+    const extraChipsCount = totalChipsCount - maxVisibleChips;
+    
+    // Kaç tane etiket gösterildi (fiyat etiketi dahil)
+    let shownChipsCount = hasPriceFilter ? 1 : 0;
     
     return (
       <div className="flex -space-x-16">
         {hasPriceFilter && (
           <div className="p-2 min-w-28 border border-gray-300 bg-white rounded-lg z-50 text-center">
-            {params.price_min} ₺ - {params.price_max} ₺
+            Fiyat: {params.price_min} ₺ - {params.price_max} ₺
           </div>
         )}
         
-        {filterKeys.slice(0, maxVisibleChips - (hasPriceFilter ? 1 : 0)).map((key, index) => (
-          <div key={key} className={`p-2 min-w-28 border border-gray-300 bg-white rounded-lg z-${50 - (index + 1) * 10} text-center`}>
-            {params[key]}
-          </div>
-        ))}
+        {/* Öncelikle tüm işlenmiş chipleri göster, maxVisibleChips sınırına kadar */}
+        {processedChips.map(({key, values}) => {
+          return values.map((displayValue, valueIndex) => {
+            // Maksimum görünür chip sayısını aştıysak gösterme
+            if (shownChipsCount >= maxVisibleChips) return null;
+            
+            // Bu chip'i gösterdiğimizi takip et
+            shownChipsCount++;
+            
+            return (
+              <div 
+                key={`${key}-${valueIndex}`} 
+                className={`p-2 min-w-28 border border-gray-300 bg-white rounded-lg z-${50 - shownChipsCount * 10} text-center`}
+              >
+                {displayValue}
+              </div>
+            );
+          });
+        }).flat().filter(Boolean)}
         
         {extraChipsCount > 0 && (
           <div className="relative">
@@ -67,13 +166,17 @@ const MobileFilter = () => {
       <div className="flex flex-row justify-between items-center gap-4 overflow-hidden mt-5">
         <h1 className="text-xl font-medium">Filtrelenmiş Sonuçlar</h1>
         <div className="flex items-center w-1/3">
-          <Select className="w-full" placeholder="Sıralama" variant="bordered">
-            <SelectItem key="1">Artan Fiyat</SelectItem>
-            <SelectItem key="2">Azalan Fiyat</SelectItem>
-            <SelectItem key="3">En Yeni</SelectItem>
-            <SelectItem key="4">En Eski</SelectItem>
-            <SelectItem key="5">En Popüler</SelectItem>
-          </Select>
+          <select 
+            className="w-full border border-gray-300 rounded-md p-2" 
+            onChange={handleSortChange}
+            value={params.ordering || ''}
+          >
+            <option value="" disabled>Sıralama</option>
+            <option value="price">Artan Fiyat</option>
+            <option value="-price">Azalan Fiyat</option>
+            <option value="created_at">En Yeni</option>
+            <option value="-created_at">En Eski</option>
+          </select>
         </div>
       </div>
 

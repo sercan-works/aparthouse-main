@@ -16,10 +16,12 @@ interface BaseItem {
   name: string;
 }
 
+const STORAGE_KEY_CITY = 'selectedCity';
+
 const FilterBar = () => {
-  const { data: citiesData, isLoading: isCitiesLoading } = useGetCitiesQuery();
-  const { data: universitiesData, isLoading: isUniversitiesLoading } = useGetUniversitiesQuery();
-  const { data: categoriesData, isLoading: isCategoriesLoading } = useGetCategoriesQuery();
+  const { data: citiesData } = useGetCitiesQuery("");
+  const { data: universitiesData } = useGetUniversitiesQuery();
+  const { data: categoriesData } = useGetCategoriesQuery();
   const dispatch = useDispatch();
 
   // Redux'tan seçili değerleri al
@@ -30,6 +32,22 @@ const FilterBar = () => {
 
   // Kullanılabilir üniversitelerin listesi için state
   const [availableUniversities, setAvailableUniversities] = useState<BaseItem[]>([]);
+
+  // Sayfa yüklendiğinde localStorage'dan şehir bilgisini al ve Redux'a yaz
+  useEffect(() => {
+    try {
+      const savedCity = localStorage.getItem(STORAGE_KEY_CITY);
+      if (savedCity && citiesData) {
+        const cityId = parseInt(savedCity);
+        const cityExists = citiesData.some(city => city.id === cityId);
+        if (cityExists) {
+          dispatch(setSelectedCity(cityId));
+        }
+      }
+    } catch (error) {
+      console.error("LocalStorage erişiminde hata oluştu:", error);
+    }
+  }, [citiesData, dispatch]);
 
   // Şehir değiştiğinde üniversiteleri güncelle
   useEffect(() => {
@@ -70,10 +88,27 @@ const FilterBar = () => {
       // ID doğrudan sayı olarak gönderiliyor
       const cityId = citiesData?.find(c => c.id.toString() === key.toString())?.id || null;
       dispatch(setSelectedCity(cityId));
+      
+      // Şehir seçimini localStorage'a kaydet
+      try {
+        if (cityId !== null) {
+          localStorage.setItem(STORAGE_KEY_CITY, cityId.toString());
+        } else {
+          localStorage.removeItem(STORAGE_KEY_CITY);
+        }
+      } catch (error) {
+        console.error("LocalStorage kaydetme hatası:", error);
+      }
+      
       // Şehir değiştiğinde üniversite seçimini sıfırla
       dispatch(setSelectedUniversity(null));
     } else {
       dispatch(setSelectedCity(null));
+      try {
+        localStorage.removeItem(STORAGE_KEY_CITY);
+      } catch (error) {
+        console.error("LocalStorage silme hatası:", error);
+      }
     }
   };
 
@@ -127,8 +162,6 @@ const FilterBar = () => {
     if (!selectedCategory) return "";
     return selectedCategory.toString();
   };
-
-
 
   return (
     <div className="flex justify-between items-center bg-gray-100 rounded-lg px-6">

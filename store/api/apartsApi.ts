@@ -163,6 +163,13 @@ export const apartsApi = baseApi.injectEndpoints({
         keepUnusedDataFor: 60,
       }),
     }),
+    getHiglightAparts: builder.query<ApiApart[], FilterParams>({
+      query: (filters) => ({
+        url: '/api/highlight-aparts/',
+        params: filters,
+        keepUnusedDataFor: 60,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -172,6 +179,7 @@ export const {
   useGetApartmentByIdQuery,
   useGetFilteredApartsQuery,
   useGetApartsQuery,
+  useGetHiglightApartsQuery,
 } = apartsApi;
 
 // SSR için gerekli olan endpoint referansları
@@ -179,6 +187,7 @@ export const {
   getApartmentById,
   getFilteredAparts,
   getAparts,
+  getHiglightAparts,
 } = apartsApi.endpoints;
 
 // Çalışan tüm sorguları beklemek için gereken fonksiyon

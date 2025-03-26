@@ -15,8 +15,13 @@ interface CategoryItem {
 export const filterApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // Cities endpoints
-        getCities: builder.query<BaseItem[], void>({
-            query: () => '/api/cities',
+        getCities: builder.query<BaseItem[], string>({
+            query: (city) => ({
+                url: '/api/cities',
+                params: {
+                    city: city || undefined,
+                },
+            }),
             // Transform response if needed
             // transformResponse: (response: any) => response.data,
         }),

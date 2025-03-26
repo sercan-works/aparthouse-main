@@ -1,3 +1,4 @@
+"use client";
 import {
   Modal,
   ModalContent,
@@ -50,6 +51,8 @@ interface SelectedFilters {
   [key: string]: (string | number)[];
 }
 
+const STORAGE_KEY_CITY = 'selectedCity';
+
 export default function FilterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { data, isSuccess } = useGetFiltersQuery();
@@ -57,6 +60,42 @@ export default function FilterButton() {
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
   const [filteredUniversities, setFilteredUniversities] = useState<FilterOption[]>([]);
   const router = useRouter();
+
+  // LocalStorage'dan şehir bilgisini al
+  useEffect(() => {
+    try {
+      const savedCity = localStorage.getItem(STORAGE_KEY_CITY);
+      if (savedCity && filters?.filters) {
+        const cityId = parseInt(savedCity);
+        // Filtre verilerinde bu şehrin olup olmadığını kontrol et
+        const cityExists = filters.filters.find(f => f.filter_key === "city")?.options?.some(
+          option => Number(option.value) === cityId
+        );
+
+        if (cityExists) {
+          // Mevcut selectedFilters'a şehri ekle
+          setSelectedFilters(prev => ({
+            ...prev,
+            city: [cityId]
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("LocalStorage erişiminde hata oluştu:", error);
+    }
+  }, [filters]);
+
+  // Şehir değişikliğini localStorage'a kaydet
+  useEffect(() => {
+    const cityId = selectedFilters["city"]?.[0];
+    if (cityId !== undefined) {
+      try {
+        localStorage.setItem(STORAGE_KEY_CITY, cityId.toString());
+      } catch (error) {
+        console.error("LocalStorage kaydetme hatası:", error);
+      }
+    }
+  }, [selectedFilters["city"]]);
 
   // Seçili şehir ID'sini al - number tipinde dönüştürdüm
   const selectedCityId = useMemo(() => {
@@ -122,6 +161,12 @@ export default function FilterButton() {
         // Şehir değişirse veya temizlenirse üniversite seçimini de temizle
         if (filterKey === "city") {
           newFilters["university"] = [];
+          // Şehir seçimi kaldırıldıysa localStorage'dan da kaldır
+          try {
+            localStorage.removeItem(STORAGE_KEY_CITY);
+          } catch (error) {
+            console.error("LocalStorage silme hatası:", error);
+          }
         }
         
         return newFilters;
@@ -151,6 +196,12 @@ export default function FilterButton() {
 
   const clearAllFilters = () => {
     setSelectedFilters({});
+    // Tüm filtreler temizlendiğinde localStorage'dan da şehir bilgisini temizle
+    try {
+      localStorage.removeItem(STORAGE_KEY_CITY);
+    } catch (error) {
+      console.error("LocalStorage silme hatası:", error);
+    }
   };
 
   const handleSearch = (onClose: () => void) => {
