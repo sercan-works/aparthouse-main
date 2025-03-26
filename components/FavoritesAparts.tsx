@@ -9,13 +9,7 @@ const FavoritesAparts = () => {
       <div className="flex flex-wrap gap-4 justify-center items-center">
   
         <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+
       </div>
       <div className="flex flex-row gap-4">
       <Button className="hidden w-48 md:flex border-colorFirst border-2 my-4 mx-auto text-colorFirst  justify-center items-center bg-opacity-0">
