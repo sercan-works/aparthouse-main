@@ -5,6 +5,7 @@ import { baseApi } from './api';
 import AuthSlice from './features/AuthSlice';
 import FilterSlice from './features/FilterSlice';
 import FavoriteSlice from './features/FavoriteSlice';
+import CompareSlice from './features/CompareSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     auth: AuthSlice,
     filter: FilterSlice,
     favorite: FavoriteSlice,
+    compare: CompareSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

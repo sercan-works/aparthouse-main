@@ -19,6 +19,7 @@ import Loading from "../ui/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
+import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 
 // ApiApart tipini doğrudan kullanıyoruz
@@ -26,7 +27,9 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
   const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
   const [localIsFavorite, setLocalIsFavorite] = useState(false);
+  const [localIsCompare, setLocalIsCompare] = useState(false);
 
   // Redux state'inden favori durumunu güncelle
   useEffect(() => {
@@ -34,6 +37,13 @@ const Card = ({ apart }: { apart: ApiApart }) => {
       setLocalIsFavorite(favoriteApartIds.includes(apart.id));
     }
   }, [apart, favoriteApartIds]);
+
+  // Redux state'inden karşılaştırma durumunu güncelle
+  useEffect(() => {
+    if (apart && apart.id) {
+      setLocalIsCompare(compareApartIds.includes(apart.id));
+    }
+  }, [apart, compareApartIds]);
 
   // Favorilere ekleme/çıkarma işlemi
   const handleToggleFavorite = async (e: React.MouseEvent) => {
@@ -49,6 +59,30 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     
     // Not: API entegrasyonu devre dışı bırakıldı - Sadece localStorage kullanılıyor
     // Kullanıcı giriş yapmış olsa bile API'ye istek göndermiyoruz
+  };
+
+  // Karşılaştırmaya ekleme/çıkarma işlemi
+  const handleToggleCompare = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Link'in çalışmasını engelle
+    
+    if (!apart) return;
+
+    // Eğer zaten karşılaştırma listesindeyse, çıkarma işlemini yap
+    if (localIsCompare) {
+      setLocalIsCompare(false);
+      dispatch(toggleCompare(apart.id));
+      return;
+    }
+    
+    // Eğer karşılaştırma listesinde değilse ve liste doluysa (3 öğe), kullanıcıya bildir
+    if (compareApartIds.length >= 3) {
+      alert("Karşılaştırma listesine en fazla 3 apart eklenebilir. Lütfen önce listeden bir apart çıkarınız.");
+      return;
+    }
+
+    // Karşılaştırma listesine ekle
+    setLocalIsCompare(true);
+    dispatch(toggleCompare(apart.id));
   };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
@@ -117,12 +151,9 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           </button>
           <button 
             className="rounded-full"
-            onClick={(e) => {
-              e.preventDefault(); // Link'in çalışmasını engelle
-              // Karşılaştırma işlemi
-            }}
+            onClick={handleToggleCompare}
           >
-            <MdCompareArrows className="w-8 h-8 md:w-6 md:h-6 text-white"  />
+            <MdCompareArrows className={`w-8 h-8 md:w-6 md:h-6 ${localIsCompare ? 'text-blue-400' : 'text-white'}`}  />
           </button>
         </div>
 

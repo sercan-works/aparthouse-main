@@ -1,12 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import BannerImage from "@/public/assets/images/banner_image_2.jpeg";
 import { FaXmark } from "react-icons/fa6";
 import { FaCheckCircle, FaLongArrowAltRight, FaTimes, FaGripVertical } from "react-icons/fa";
 import apart1 from "@/public/assets/apart.jpg"; // Varsayılan apart resmi
-import { StaticImageData } from "next/image";
 import { ReactSortable } from "react-sortablejs";
+import { ApiApart } from "@/store/api/apartsApi";
+import { useDispatch } from "react-redux";
+import { toggleCompare } from "@/store/features/CompareSlice";
 
 // Hizmet listesini tanımlayalım
 const hizmetListesi = [
@@ -28,104 +30,87 @@ const hizmetListesi = [
   "Güvenlik"
 ];
 
-// Özellikler için tip tanımı
-type OzelliklerTipi = {
-  [key: string]: boolean | string;
-};
-
-// Apart tipi
-type ApartTipi = {
+// SortableJS için gerekli olan tip
+interface SortableApartTipi {
   id: number;
   isim: string;
   pinned: boolean;
-  resim: StaticImageData;
-  ozellikler: OzelliklerTipi;
-};
-
-// SortableJS için gerekli olan id özelliğini ekleyen tip
-type SortableApartTipi = ApartTipi & {
+  resim: string;
+  ozellikler: {
+    [key: string]: boolean | string;
+  };
   chosen?: boolean;
-};
+}
 
-// Mock apart verileri
-const baslangicApartVerileri: SortableApartTipi[] = [
-  {
-    id: 1,
-    isim: "Mono Kız Apart",
-    pinned: true,
-    resim: apart1,
-    ozellikler: {
-      "Fiyat": "₺3500",
-      "Yemek hizmeti": true,
-      "Wifi": true,
-      "Isıtma": true,
-      "Klima": true,
-      "Temizlik Hizmeti": true,
-      "Ortak alan": true,
-      "Çalışma odası": true,
-      "Çamaşırhane": true,
-      "Otopark": false,
-      "Gym": true,
-      "Evcil hayvan dostu": false,
-      "Konum": "Merkezi",
-      "Erişebilirlik": true,
-      "Çevre": "Güvenli",
-      "Güvenlik": true
-    }
-  },
-  {
-    id: 2,
-    isim: "Lüks Erkek Apart",
-    pinned: false,
-    resim: apart1,
-    ozellikler: {
-      "Fiyat": "₺4200",
-      "Yemek hizmeti": true,
-      "Wifi": true,
-      "Isıtma": true,
-      "Klima": true,
-      "Temizlik Hizmeti": true,
-      "Ortak alan": true,
-      "Çalışma odası": true,
-      "Çamaşırhane": true,
-      "Otopark": true,
-      "Gym": true,
-      "Evcil hayvan dostu": false,
-      "Konum": "Kampüse yakın",
-      "Erişebilirlik": true,
-      "Çevre": "Sakin",
-      "Güvenlik": true
-    }
-  },
-  {
-    id: 3,
-    isim: "Ekonomik Karma Apart",
-    pinned: false,
-    resim: apart1,
-    ozellikler: {
-      "Fiyat": "₺2800",
-      "Yemek hizmeti": false,
-      "Wifi": true,
-      "Isıtma": true,
-      "Klima": false,
-      "Temizlik Hizmeti": false,
-      "Ortak alan": true,
-      "Çalışma odası": false,
-      "Çamaşırhane": true,
-      "Otopark": false,
-      "Gym": false,
-      "Evcil hayvan dostu": true,
-      "Konum": "Şehir dışı",
-      "Erişebilirlik": false,
-      "Çevre": "Doğa içinde",
-      "Güvenlik": true
-    }
+interface MobileCompareProps {
+  aparts: ApiApart[];
+}
+
+const MobileCompare: React.FC<MobileCompareProps> = ({ aparts }) => {
+  const dispatch = useDispatch();
+  
+  // API'den gelen verileri formatla ve state'e aktar
+  const [apartVerileri, setApartVerileri] = useState<SortableApartTipi[]>([]);
+  
+  // API'den gelen verileri formata dönüştür
+  useEffect(() => {
+    if (!aparts || aparts.length === 0) return;
+    
+    const formatlananVeriler = aparts.map((apart, index) => {
+      // Özellikleri hazırla
+      const ozellikler: {[key: string]: boolean | string} = {
+        "Fiyat": `₺${apart.price}`,
+        "Yemek hizmeti": !!apart.food,
+        "Wifi": hasService(apart, "wifi"),
+        "Isıtma": hasService(apart, "ısıtma") || hasService(apart, "isitma"),
+        "Klima": hasService(apart, "klima"),
+        "Temizlik Hizmeti": hasService(apart, "temizlik"),
+        "Ortak alan": hasService(apart, "ortak alan"),
+        "Çalışma odası": hasService(apart, "çalışma") || hasService(apart, "calisma"),
+        "Çamaşırhane": hasService(apart, "çamaşır") || hasService(apart, "camasir"),
+        "Otopark": hasService(apart, "otopark") || hasService(apart, "park"),
+        "Gym": hasService(apart, "gym") || hasService(apart, "spor"),
+        "Evcil hayvan dostu": hasService(apart, "evcil") || hasService(apart, "hayvan"),
+        "Konum": apart.address || "Belirtilmemiş",
+        "Erişebilirlik": hasService(apart, "engelli") || hasService(apart, "erişim") || hasService(apart, "erisim"),
+        "Çevre": apart.address ? "Detaylar için tıklayın" : "Belirtilmemiş",
+        "Güvenlik": hasService(apart, "güvenlik") || hasService(apart, "guvenlik")
+      };
+      
+      // Resim URL'sini al
+      const resimUrl = (apart.image_thumbnail && apart.image_thumbnail.length > 0) 
+        ? apart.image_thumbnail[0] 
+        : apart1.src; // Varsayılan resim olarak apart1'in src'sini kullan
+      
+      return {
+        id: apart.id,
+        isim: String(apart.apart_name || ""),
+        pinned: index === 0, // İlk apart pinli olsun
+        resim: resimUrl,
+        ozellikler
+      };
+    });
+    
+    setApartVerileri(formatlananVeriler);
+  }, [aparts]);
+  
+  // Hizmet kontrolü yardımcı fonksiyonu
+  function hasService(apart: ApiApart, serviceName: string): boolean {
+    if (!apart.services || !Array.isArray(apart.services)) return false;
+    
+    // Servis isimlerinin küçük harfe çevrilmiş halini kontrol et
+    const lowerServiceName = serviceName.toLowerCase();
+    
+    // Tüm servis kategorilerini düz bir diziye çevir
+    const allServices = apart.services.flatMap((serviceCategory) => {
+      return (serviceCategory.service_data && Array.isArray(serviceCategory.service_data)) 
+        ? serviceCategory.service_data.map(s => s.toLowerCase())
+        : [];
+    });
+    
+    // Servis adının içerip içermediğini kontrol et
+    return allServices.some(service => service.includes(lowerServiceName));
   }
-];
-
-const MobileFavorites = () => {
-  // Apart verilerini state olarak tutuyoruz
-  const [apartVerileri, setApartVerileri] = useState<SortableApartTipi[]>(baslangicApartVerileri);
   
   // Pin butonuna basıldığında çalışacak fonksiyon
   const handlePin = (apartId: number) => {
@@ -163,8 +148,11 @@ const MobileFavorites = () => {
     }
   };
 
-  // X (kapat) butonuna basıldığında çalışacak fonksiyon
+  // Kaldır butonuna basıldığında çalışacak fonksiyon
   const handleRemove = (apartId: number) => {
+    // Redux'a bildir - karşılaştırmadan kaldır
+    dispatch(toggleCompare(apartId));
+    
     // Kaldırılacak apartın indeksini buluyoruz
     const removeIndex = apartVerileri.findIndex(apart => apart.id === apartId);
     if (removeIndex === -1) return;
@@ -197,6 +185,16 @@ const MobileFavorites = () => {
   // 3. apartın ismini alıyoruz (eğer varsa)
   const ucuncuApartIsmi = apartVerileri.length >= 3 ? apartVerileri[2].isim : "Karşılaştır";
 
+  // Eğer hiç veri yoksa boş durum göster
+  if (apartVerileri.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h2 className="text-2xl font-bold mb-4">Karşılaştırma Listeniz Boş</h2>
+        <p className="text-gray-600">Karşılaştırmak istediğiniz apartları ekleyin.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-row mx-auto max-w-[1250px] my-10">
       <div className="absolute top-0 left-0 w-full h-[300px] -z-40">
@@ -214,9 +212,6 @@ const MobileFavorites = () => {
             Yüzlerce konaklama arasından seçin, karşılaştırın <br />
             size en uygun yaşam alanının keyfine varın.
           </p>
-          {/* <div className="mt-4">
-            <AMPButton />
-          </div> */}
         </div>
         
       </div>
@@ -326,4 +321,4 @@ const MobileFavorites = () => {
   );
 };
 
-export default MobileFavorites;
+export default MobileCompare;

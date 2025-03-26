@@ -2,13 +2,43 @@
 import React from "react";
 import Image from "next/image";
 import BannerImage from "@/public/assets/images/banner_image_2.jpeg";
-import apart from "@/public/assets/apart.jpg";
-
+import default_image from "@/public/assets/apart.jpg";
+import { ApiApart } from "@/store/api/apartsApi";
 import { FaXmark } from "react-icons/fa6";
-
 import { FaCheckCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { toggleCompare } from "@/store/features/CompareSlice";
 
-const DesktopFavorites = () => {
+interface DesktopCompareProps {
+  aparts: ApiApart[];
+}
+
+const DesktopCompare: React.FC<DesktopCompareProps> = ({ aparts }) => {
+  const dispatch = useDispatch();
+
+  // Karşılaştırma listesinden apart kaldırma
+  const handleRemoveApart = (apartId: number) => {
+    dispatch(toggleCompare(apartId));
+  };
+
+  // Hizmet özelliklerini kontrol eden yardımcı fonksiyon
+  const hasService = (apart: ApiApart, serviceName: string): boolean => {
+    if (!apart.services || !Array.isArray(apart.services)) return false;
+    
+    // Servis isimlerinin küçük harfe çevrilmiş hallerini kontrol et
+    const lowerServiceName = serviceName.toLowerCase();
+    
+    // Tüm servis kategorilerini düz bir diziye çevir
+    const allServices = apart.services.flatMap((serviceCategory) => {
+      return (serviceCategory.service_data && Array.isArray(serviceCategory.service_data)) 
+        ? serviceCategory.service_data.map(s => s.toLowerCase())
+        : [];
+    });
+    
+    // Servis adının içerip içermediğini kontrol et
+    return allServices.some(service => service.includes(lowerServiceName));
+  };
+
   // Hizmet listesini tanımlayalım
   const hizmetListesi = [
     "Fiyat",
@@ -75,94 +105,91 @@ const DesktopFavorites = () => {
                 ))}
               </ul>
             </div>
-            {/* APART 1 */}
-            <div className=" rounded-lg p-8 -mt-20">
-              <div className="flex flex-row justify-between items-center w-full text-lg">
-                <h3 className="text-gray-500">Mono Kız Apart</h3>
+            
+            {/* APARTS */}
+            {aparts.map((apart) => (
+              <div key={apart.id} className="rounded-lg p-8 -mt-20">
+                <div className="flex flex-row justify-between items-center w-full text-lg">
+                  <h3 className="text-gray-500">{apart.apart_name}</h3>
+                  <FaXmark 
+                    className="text-gray-500 h-5 w-5 cursor-pointer mb-10" 
+                    onClick={() => handleRemoveApart(apart.id)}
+                  />
+                </div>
+                <div className="relative w-full h-44 mb-4">
+                  <Image
+                    src={apart.image_thumbnail && apart.image_thumbnail[0] ? apart.image_thumbnail[0] : default_image}
+                    alt={`${apart.apart_name} Image`}
+                    fill
+                    className="object-cover rounded-lg"
+                  />
+                </div>
 
-                <FaXmark className="text-gray-500 h-5 w-5 cursor-pointer mb-10" />
-
+                <ul className="">
+                  {hizmetListesi.map((hizmet, hizmetIndex) => {
+                    // Fiyat için özel gösterim
+                    if (hizmet === "Fiyat") {
+                      return (
+                        <li
+                          key={hizmetIndex}
+                          className="py-2 border-b border-gray-200 last:border-b-0 h-14"
+                        >
+                          <p className="flex items-center justify-center text-md p-2">
+                            <span className="font-bold text-gray-700">{apart.price} ₺</span>
+                          </p>
+                        </li>
+                      );
+                    }
+                    
+                    // Yemek hizmeti için özel kontrol
+                    if (hizmet === "Yemek hizmeti") {
+                      return (
+                        <li
+                          key={hizmetIndex}
+                          className="py-2 border-b border-gray-200 last:border-b-0 h-14"
+                        >
+                          <p className="flex items-center text-md p-2">
+                            <span className="mr-2"></span>{" "}
+                            {apart.food ? (
+                              <FaCheckCircle className="text-green-500 h-5 w-5 mx-auto" />
+                            ) : (
+                              <FaXmark className="text-red-500 h-5 w-5 mx-auto" />
+                            )}
+                          </p>
+                        </li>
+                      );
+                    }
+                    
+                    // Diğer hizmetler için servis kontrolü
+                    return (
+                      <li
+                        key={hizmetIndex}
+                        className="py-2 border-b border-gray-200 last:border-b-0 h-14"
+                      >
+                        <p className="flex items-center text-md p-2">
+                          <span className="mr-2"></span>{" "}
+                          {hasService(apart, hizmet) ? (
+                            <FaCheckCircle className="text-green-500 h-5 w-5 mx-auto" />
+                          ) : (
+                            <FaXmark className="text-red-500 h-5 w-5 mx-auto" />
+                          )}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-              <div className="relative w-full h-44 mb-4">
-                <Image
-                  src={apart}
-                  alt="Apart Image"
-                  fill
-                  className="object-cover rounded-lg"
-                />
+            ))}
+            
+            {/* Boş slotlar için placeholder göster */}
+            {[...Array(3 - aparts.length)].map((_, index) => (
+              <div key={`empty-${index}`} className="rounded-lg p-8 -mt-20 flex flex-col items-center justify-center">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg h-full w-full flex flex-col items-center justify-center p-4">
+                  <p className="text-gray-400 text-center">Karşılaştırma için apart ekleyin</p>
+                </div>
               </div>
+            ))}
 
-              <ul className="">
-                {hizmetListesi.map((hizmet, index) => (
-                  <li
-                    key={index}
-                    className="py-2 border-b border-gray-200 last:border-b-0 h-14"
-                  >
-                    <p className="flex items-center text-md p-2">
-                      <span className="mr-2"></span>{" "}
-                      <FaCheckCircle className="text-green-500 h-5 w-5 mx-auto" />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-                <div className=" rounded-lg p-8 -mt-20">
-                  <div className="flex flex-row justify-between items-center w-full text-lg">
-                    <h3 className="text-gray-500">Mono Kız Apart</h3>
-                    <FaXmark className="text-gray-500 h-5 w-5 cursor-pointer mb-10" />
-                    </div>
-              <div className="relative w-full h-44 mb-4">
-                <Image
-                  src={apart}
-                  alt="Apart Image"
-                  fill
-                  className="object-cover rounded-lg"
-                />
-              </div>
-
-              <ul className="">
-                {hizmetListesi.map((hizmet, index) => (
-                  <li
-                    key={index}
-                    className="py-2 border-b border-gray-200 last:border-b-0 h-14"
-                  >
-                    <p className="flex items-center text-md p-2">
-                      <span className="mr-2"></span>{" "}
-                      <FaCheckCircle className="text-green-500 h-5 w-5 mx-auto" />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className=" rounded-lg p-8 -mt-20">
-              <div className="flex flex-row justify-between items-center w-full text-lg">
-                <h3 className="text-gray-500">Mono Kız Apart</h3>
-                <FaXmark className="text-gray-500 h-5 w-5 cursor-pointer mb-10" />
-              </div>
-              <div className="relative w-full h-44 mb-4">
-                <Image
-                  src={apart}
-                  alt="Apart Image"
-                  fill
-                  className="object-cover rounded-lg"
-                />
-              </div>
-
-              <ul className="">
-                {hizmetListesi.map((hizmet, index) => (
-                  <li
-                    key={index}
-                    className="py-2 border-b border-gray-200 last:border-b-0 h-14"
-                  >
-                    <p className="flex items-center text-md p-2">
-                      <span className="mr-2"></span>{" "}
-                      <FaXmark className="text-red-500 h-5 w-5 mx-auto" />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
       </div>
@@ -170,4 +197,4 @@ const DesktopFavorites = () => {
   );
 };
 
-export default DesktopFavorites;
+export default DesktopCompare;
