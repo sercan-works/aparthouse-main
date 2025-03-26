@@ -9,26 +9,40 @@ import "swiper/css/pagination";
 import Image from "next/image";
 
 // Update type definition to match actual data structure
-interface ImageItem {
+type ImageItem = {
   image: string;
-}
+  id?: number;
+  cover?: boolean;
+} | string;
 
-const SwiperSlideImages = ({ images }: { images: ImageItem[] }) => {
-  console.log(images);
+const SwiperSlideImages = ({ images = [] }: { images: ImageItem[] }) => {
+  console.log('Images received in SwiperSlideImages:', images);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Normalize images to ensure each one has an image property
+  const normalizedImages = React.useMemo(() => {
+    return images.map((img) => {
+      if (typeof img === 'string') {
+        return { image: img };
+      } else if (typeof img === 'object' && img !== null) {
+        return img;
+      }
+      return { image: '' }; // Fallback
+    });
+  }, [images]);
 
   const SwiperContent = () => (
     <>
     <Swiper
       modules={[Navigation]}
       navigation
-      loop={true}
+      loop={normalizedImages.length > 1}
       className="h-full w-full custom-swiper rounded-xl"
       onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       initialSlide={activeIndex}
     >
-      {images.map((image, index) => (
+      {normalizedImages.map((image, index) => (
         <SwiperSlide key={index}>
           <Image
             src={image.image}
@@ -51,9 +65,11 @@ const SwiperSlideImages = ({ images }: { images: ImageItem[] }) => {
      
       </Swiper>
 {/* FOTOĞRAF SAYISI */}
-      <div className="flex justify-center items-center text-gray-500 mt-2">
-        {activeIndex + 1 } / {images.length}
-      </div>
+      {normalizedImages.length > 0 && (
+        <div className="flex justify-center items-center text-gray-500 mt-2">
+          {activeIndex + 1 } / {normalizedImages.length}
+        </div>
+      )}
     </>
   );
 

@@ -1,7 +1,7 @@
 "use client";
 import DesktopImageGallery from "@/components/DesktopImageGallery";
 import { Button, Link, Tab, Tabs } from "@heroui/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CiShare2, CiWifiOn } from "react-icons/ci";
 import { FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
 import { FaBus } from "react-icons/fa";
@@ -15,6 +15,11 @@ import PinkPhone from "@/public/assets/images/pink-phone.png";
 import Image from "next/image";
 import SimilarAparts from "@/components/SimilarAparts";
 import { useGetApartmentByIdQuery } from "@/store/api/apartsApi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { toggleFavorite } from "@/store/features/FavoriteSlice";
+import { toggleCompare } from "@/store/features/CompareSlice";
+import { BsHeartFill } from "react-icons/bs";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -38,10 +43,52 @@ const formatCurrency = (amount: number) => {
 }
 
 const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
+  const dispatch = useDispatch();
+  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isCompare, setIsCompare] = useState(false);
+
   const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
     skip: !apartSlug
   });
-  console.log('Apartment detail:', apart, 'Slug:', apartSlug);
+
+  // Update favorite state when Redux state changes
+  useEffect(() => {
+    if (apart && apart.id) {
+      setIsFavorite(favoriteApartIds.includes(Number(apart.id)));
+      setIsCompare(compareApartIds.includes(Number(apart.id)));
+    }
+  }, [apart, favoriteApartIds, compareApartIds]);
+
+  // Handle favorite toggle
+  const handleToggleFavorite = () => {
+    if (!apart) return;
+    setIsFavorite(!isFavorite);
+    dispatch(toggleFavorite(Number(apart.id)));
+  };
+
+  // Handle compare toggle
+  const handleToggleCompare = () => {
+    if (!apart) return;
+    
+    // If already in compare list, remove it
+    if (isCompare) {
+      setIsCompare(false);
+      dispatch(toggleCompare(Number(apart.id)));
+      return;
+    }
+    
+    // If not in compare list and list is full (3 items), notify user
+    if (compareApartIds.length >= 3) {
+      alert("Karşılaştırma listesine en fazla 3 apart eklenebilir. Lütfen önce listeden bir apart çıkarınız.");
+      return;
+    }
+
+    // Add to compare list
+    setIsCompare(true);
+    dispatch(toggleCompare(Number(apart.id)));
+  };
 
   if (isLoading) return <div className="container mt-10">Yükleniyor...</div>;
   if (error) return <div className="container mt-10">Hata: {JSON.stringify(error)}</div>;
@@ -55,8 +102,20 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           <h1 className="text-2xl font-bold text-gray-700">{apart?.name}</h1>
           <div className="flex flex-row gap-3">
             <CiShare2 className="h-6 w-6 text-gray-500" />
-            <MdCompareArrows className="h-6 w-6 text-gray-500" />
-            <GoHeart className="h-6 w-6 text-gray-500" />
+            
+            {/* Compare Button */}
+            <button onClick={handleToggleCompare}>
+              <MdCompareArrows className={`h-6 w-6 ${isCompare ? 'text-blue-400' : 'text-gray-500'}`} />
+            </button>
+            
+            {/* Favorite Button */}
+            <button onClick={handleToggleFavorite}>
+              {isFavorite ? (
+                <BsHeartFill className="h-6 w-6 text-rose-400" />
+              ) : (
+                <GoHeart className="h-6 w-6 text-gray-500" />
+              )}
+            </button>
           </div>
         </div>
       </div>

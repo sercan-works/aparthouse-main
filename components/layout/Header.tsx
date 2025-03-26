@@ -46,7 +46,7 @@ export default function Header() {
       <div className="block md:hidden overflow-hidden">
         <div className="flex items-center justify-between gap-4 mx-4 max-w-full">
           <div className="w-3/4">
-          <SearchBar placeholder="Şehir, Üniversite, Apart Adı ile ara" />
+          <SearchBar placeholder="Şehir, Apart Adı ile ara" />
 
           </div>
           <div className="w-1/4">

@@ -213,7 +213,7 @@ const FilterBar = () => {
       <div className="relative left-28 -top-6">
         <Button 
           className="absolute bg-colorFirst right-4 text-white rounded-lg p-6"
-          onClick={handleSearch}
+          onPress={handleSearch}
         >
           Bul
         </Button>
