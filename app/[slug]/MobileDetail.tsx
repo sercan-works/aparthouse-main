@@ -14,7 +14,7 @@ import { FaTrainSubway } from "react-icons/fa6";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
 import { LuWashingMachine } from "react-icons/lu";
-import { Tabs, Tab } from "@heroui/react";
+import { Tabs, Tab, Skeleton } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
@@ -24,6 +24,7 @@ import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeartFill } from "react-icons/bs";
+import Loading from "@/components/ui/Loading";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -89,7 +90,9 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     dispatch(toggleCompare(Number(apart.id)));
   };
 
-  if (isLoading) return <div className="flex flex-col mx-auto max-w-sm my-10">Yükleniyor...</div>;
+  if (isLoading) return <div className="flex justify-center items-center mt-48">
+    <Loading />
+  </div>;
   if (error) return <div className="flex flex-col mx-auto max-w-sm my-10">Hata: {JSON.stringify(error)}</div>;
   if (!apart) return <div className="flex flex-col mx-auto max-w-sm my-10">Apart bulunamadı</div>;
 

@@ -20,6 +20,7 @@ import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeartFill } from "react-icons/bs";
+import Highlights from "@/components/Highlights";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -375,7 +376,8 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         </div>
       </div>
 
-      <SimilarAparts />
+      {/* <SimilarAparts /> */}
+      <Highlights />
     </div>
   );
 };
