@@ -21,8 +21,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <StoreProvider>
       {shouldShowHeaderFooter && <Header />}
       <ToastProviders>
-        {pathname === "/" && <Highlights />}
-        {children}
+          {pathname === "/" && <Highlights />}
+          {children}
         <MobileNavBar />
       </ToastProviders>
       {pathname === "/" && <HomeInfoBanner />}

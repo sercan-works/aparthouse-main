@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCredentials } from "@/store/features/AuthSlice";
 import FavoritesIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { RootState } from "@/store";
+import { MdCompareArrows } from "react-icons/md";
+import { Chip } from "@heroui/react";
 
 export default function Navigation() {
   const { data: session } = useSession();
@@ -18,6 +20,7 @@ export default function Navigation() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const [favorites, setFavorites] = useState<any[]>([]);
+  const [compareAparts, setCompareAparts] = useState<any[]>([]);
   // Redux store kullanıcı durumunu al
   const authState = useSelector((state: any) => state.auth);
   const reduxUser = authState?.user;
@@ -25,6 +28,8 @@ export default function Navigation() {
   
   // Favori apartları Redux store'dan al
   const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  // Karşılaştırma apartlarını Redux store'dan al
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
   
   // Google kimlik bilgilerini backend'e göndermek için hook
   useGoogleAuth();
@@ -44,7 +49,9 @@ export default function Navigation() {
   // localStorage'dan favori apartları yükle
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+    const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
     setFavorites(storedFavorites);
+    setCompareAparts(storedCompareAparts);
   }, []);
   
   // Redux favoriteApartIds değiştiğinde favori sayısını güncelle
@@ -52,11 +59,18 @@ export default function Navigation() {
     setFavorites(favoriteApartIds);
   }, [favoriteApartIds]);
   
+  // Redux compareApartIds değiştiğinde karşılaştırma sayısını güncelle
+  useEffect(() => {
+    setCompareAparts(compareApartIds);
+  }, [compareApartIds]);
+  
   // localStorage değişikliklerini dinle
   useEffect(() => {
     const handleStorageChange = () => {
       const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+      const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
       setFavorites(storedFavorites);
+      setCompareAparts(storedCompareAparts);
     };
     
     // Storage event'ini dinle (farklı sekmelerde güncellemeler için)
@@ -173,6 +187,14 @@ export default function Navigation() {
                     {userEmail}
                   </p>
                 </div>
+                <Link 
+                  href="/compare" 
+                  className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                >
+                  <MdCompareArrows className="w-4 h-4" />
+                  Karşılaştırma
+                  <Chip color="primary" size="sm">{compareAparts.length}</Chip>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
@@ -193,6 +215,13 @@ export default function Navigation() {
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Kayıt Ol
+                </Link>
+                <Link 
+                  href="/compare" 
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <MdCompareArrows className="w-4 h-4" />
+                  Karşılaştırma
                 </Link>
               </>
             )}

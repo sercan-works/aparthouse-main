@@ -9,9 +9,10 @@ import { clearCredentials } from "@/store/features/AuthSlice";
 import { useLogoutMutation } from "@/store/api/authApi";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import HomeIcon from '@/public/assets/icons/HomeIcon.svg'
-import SearchIcon from '@/public/assets/icons/SearchIcon.svg'
-import FavoritesIcon from '@/public/assets/icons/FavoritesIcon.svg'
 import UserIcon from '@/public/assets/icons/UserIcon.svg'
+import { MdCompareArrows } from "react-icons/md";
+import { RootState } from "@/store";
+import { BsHeart, BsHeartFill } from 'react-icons/bs';
 
 // Kullanıcı tipi için arayüz
 interface User {
@@ -26,11 +27,19 @@ const MobileNavBar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+  const [compareAparts, setCompareAparts] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
   
   // Redux store kullanıcı durumunu al
   const authState = useSelector((state: { auth: { user: User | null; isAuthenticated: boolean } }) => state.auth);
   const reduxUser = authState?.user;
   const reduxIsAuthenticated = authState?.isAuthenticated;
+  
+  // Karşılaştırma apartlarını Redux store'dan al
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
+  
+  // Favori apartları Redux store'dan al
+  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
   
   // Google kimlik bilgilerini backend'e göndermek için hook
   useGoogleAuth();
@@ -46,6 +55,41 @@ const MobileNavBar = () => {
   const userEmail = session?.user?.email || reduxUser?.email || "";
   const userName = session?.user?.name || reduxUser?.displayName || reduxUser?.username || reduxUser?.email || "Kullanıcı";
   const userImage = session?.user?.image || null;
+
+  // localStorage'dan karşılaştırma apartlarını yükle
+  useEffect(() => {
+    const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
+    const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+    setCompareAparts(storedCompareAparts);
+    setFavorites(storedFavorites);
+  }, []);
+  
+  // Redux compareApartIds değiştiğinde karşılaştırma sayısını güncelle
+  useEffect(() => {
+    setCompareAparts(compareApartIds);
+  }, [compareApartIds]);
+  
+  // Redux favoriteApartIds değiştiğinde favori sayısını güncelle
+  useEffect(() => {
+    setFavorites(favoriteApartIds);
+  }, [favoriteApartIds]);
+  
+  // localStorage değişikliklerini dinle
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
+      const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+      setCompareAparts(storedCompareAparts);
+      setFavorites(storedFavorites);
+    };
+    
+    // Storage event'ini dinle (farklı sekmelerde güncellemeler için)
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   // User menü dışına tıklandığında menüyü kapat
   useEffect(() => {
@@ -85,19 +129,30 @@ const MobileNavBar = () => {
   };
 
   return (
-    <div className='md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg lg:hidden z-50'>
-      <div className='px-4 py-2 flex justify-between items-center'>
+    <div className='md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-[1000] border-t border-gray-200 w-full' style={{ touchAction: 'none', transform: 'translateZ(0)' }}>
+      <div className='px-4 py-2 flex justify-between items-center h-16'>
         <Link href="/" className='flex flex-col justify-center items-center'>
           <Image src={HomeIcon} alt="Home" />
           <p>Anasayfa</p>
         </Link>
-        <Link href="/search" className='flex flex-col justify-center items-center'>
-          <Image src={SearchIcon} alt="Search" />
-          <p>Arama Yap</p>
-        </Link>
-        <Link href="/favorites" className='flex flex-col justify-center items-center'>
-          <Image src={FavoritesIcon} alt="Favorites" />
+        <Link href="/favorites" className='flex flex-col justify-center items-center relative'>
+          <BsHeart className="w-6 h-6" />
           <p>Favoriler</p>
+          {favorites.length > 0 && (
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-rose-400 text-white text-xs rounded-full flex items-center justify-center">
+              {favorites.length}
+            </div>
+          )}
+        </Link>
+        
+        <Link href="/compare" className='flex flex-col justify-center items-center relative'>
+          <MdCompareArrows className="w-6 h-6" />
+          <p>Karşılaştır</p>
+          {compareAparts.length > 0 && (
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+              {compareAparts.length}
+            </div>
+          )}
         </Link>
         
         {/* Kullanıcı profili bölümü */}

@@ -43,7 +43,7 @@ const MobileFavorites = () => {
               Favorileri Temizle
             </div>
           </div>
-          <div className="flex w-full justify-between items-center container mx-auto">
+          {/* <div className="flex w-full justify-between items-center container mx-auto">
             <p>Temizlemek istediğiniz konaklamaları tıklayarak seçiniz.</p>
 
             <div className="text-sm font-bold text-gray-500  mb-10 mx-2  cursor-pointer">
@@ -51,7 +51,7 @@ const MobileFavorites = () => {
                 <FaTrash /> Temizle
               </div>
             </div>
-          </div>
+          </div> */}
           <FavoritesAparts />
 
 

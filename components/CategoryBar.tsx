@@ -46,7 +46,7 @@ const CategoryBar = () => {
   }
 
   return (
-    <div className='flex gap-4 container mx-auto justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4  md:justify-center md:gap-8 z-50 ' >
+    <div className='flex gap-4 container mx-auto justify-start md:justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4  md:gap-8 z-50 ' >
       {categories && categories.map((category) => (
         <div 
           key={category.name} 
