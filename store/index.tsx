@@ -4,6 +4,7 @@ import { authApi } from './api/authApi';
 import { baseApi } from './api';
 import AuthSlice from './features/AuthSlice';
 import FilterSlice from './features/FilterSlice';
+import FavoriteSlice from './features/FavoriteSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     // Geleneksel reducers
     auth: AuthSlice,
     filter: FilterSlice,
+    favorite: FavoriteSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

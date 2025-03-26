@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 // import Swiper and modules styles
@@ -12,16 +12,44 @@ import apart_image from "@/public/assets/apart.jpg";
 import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
-import FavoriteIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { MdCompareArrows } from "react-icons/md";
 import { Button } from "@heroui/react";
-import { ApiApart } from "@/store/apiSlice";
+import { ApiApart } from "@/store/api/apartsApi";
 import Loading from "../ui/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { toggleFavorite } from "@/store/features/FavoriteSlice";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 
 // ApiApart tipini doğrudan kullanıyoruz
 const Card = ({ apart }: { apart: ApiApart }) => {
   const [isExpanded, setIsExpanded] = useState(true);
-  console.log("Card Data", apart);
+  const dispatch = useDispatch();
+  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  const [localIsFavorite, setLocalIsFavorite] = useState(false);
+
+  // Redux state'inden favori durumunu güncelle
+  useEffect(() => {
+    if (apart && apart.id) {
+      setLocalIsFavorite(favoriteApartIds.includes(apart.id));
+    }
+  }, [apart, favoriteApartIds]);
+
+  // Favorilere ekleme/çıkarma işlemi
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Link'in çalışmasını engelle
+    
+    if (!apart) return;
+
+    // UI'da anında geri bildirim için önce yerel durumu güncelle
+    setLocalIsFavorite(!localIsFavorite);
+
+    // Redux store'da favori durumunu güncelle
+    dispatch(toggleFavorite(apart.id));
+    
+    // Not: API entegrasyonu devre dışı bırakıldı - Sadece localStorage kullanılıyor
+    // Kullanıcı giriş yapmış olsa bile API'ye istek göndermiyoruz
+  };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
   const truncateText = (text: string, maxLength: number) => {
@@ -60,7 +88,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           className="h-full w-full custom-swiper"
         >
           
-           { apart?.image_thumbnail?.map((img, index) => (
+           { apart?.image_thumbnail?.map((img: string, index: number) => (
               <SwiperSlide key={index}>
                 <Image
                   src={img || apart_image}
@@ -79,16 +107,13 @@ const Card = ({ apart }: { apart: ApiApart }) => {
         <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
           <button 
             className="rounded-full"
-            onClick={(e) => {
-              e.preventDefault(); // Link'in çalışmasını engelle
-              // Favoriye ekleme işlemi
-            }}
+            onClick={handleToggleFavorite}
           >
-            <Image
-              src={FavoriteIcon}
-              alt="Favoriye Ekle"
-              className="w-8 h-8 md:w-6 md:h-6 brightness-0 invert"
-            />
+{localIsFavorite ? (
+  <BsHeartFill className={`w-8 h-8 md:w-6 md:h-6 text-rose-400`}  />
+) : (
+  <BsHeart className={`w-8 h-8 md:w-6 md:h-6 text-white`}  />
+)}
           </button>
           <button 
             className="rounded-full"
@@ -182,7 +207,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                   }
                   
                   // Tüm service_data dizilerini tek bir düz dizide birleştir
-                  const allServices = apart.services.flatMap(serviceCategory => {
+                  const allServices = apart.services.flatMap((serviceCategory) => {
                     // Eğer service_data varsa ve bir dizi ise kullan, yoksa boş dizi döndür
                     return (serviceCategory.service_data && Array.isArray(serviceCategory.service_data)) 
                       ? serviceCategory.service_data 

@@ -11,6 +11,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/store/api/authApi";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
 import { setCredentials } from "@/store/features/AuthSlice";
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -27,7 +28,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);

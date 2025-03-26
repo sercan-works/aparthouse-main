@@ -10,6 +10,14 @@ import RecentlyAparts from "@/components/RecentlyAparts";
 import ContactBanner from "@/components/ContactBanner";
 
 const DesktopFavorites = () => {
+  // Tüm favorileri temizle
+  const handleClearAllFavorites = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('favoriteAparts');
+      window.location.reload(); // Sayfayı yenile
+    }
+  };
+
   return (
     <>
       <div className="flex flex-row mx-4 lg:mx-auto max-w-7xl my-10 overflow-x-hidden">
@@ -50,11 +58,14 @@ const DesktopFavorites = () => {
               <SelectItem key="asss">Seçim</SelectItem>
             </Select>
 
-            <div className="text-sm font-normal text-gray-500 mb-10 mx-2 underline cursor-pointer ">
+            <div 
+              className="text-sm font-normal text-gray-500 mb-10 mx-2 underline cursor-pointer"
+              onClick={handleClearAllFavorites}
+            >
               Favorileri Temizle
             </div>
           </div>
-          <div className="flex w-full justify-between items-center container mx-auto">
+          <div className="hidden w-full justify-between items-center container mx-auto">
             <p>Temizlemek istediğiniz konaklamaları tıklayarak seçiniz.</p>
 
             <div className="text-sm font-bold text-gray-500  mb-10 mx-2  cursor-pointer">

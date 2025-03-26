@@ -11,6 +11,7 @@ import { Button, Input, Link, addToast } from "@heroui/react";
 import { useRegisterMutation, useLoginMutation } from "@/store/api/authApi";
 import { signIn } from "next-auth/react";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
 import { setCredentials } from "@/store/features/AuthSlice";
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -22,7 +23,7 @@ interface DRFErrorResponse {
 
 const Register = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);

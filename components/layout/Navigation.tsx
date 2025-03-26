@@ -10,17 +10,21 @@ import { useLogoutMutation } from "@/store/api/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCredentials } from "@/store/features/AuthSlice";
 import FavoritesIcon from "@/public/assets/icons/FavoritesIcon.svg";
+import { RootState } from "@/store";
 
 export default function Navigation() {
   const { data: session } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-  
+  const [favorites, setFavorites] = useState<any[]>([]);
   // Redux store kullanıcı durumunu al
   const authState = useSelector((state: any) => state.auth);
   const reduxUser = authState?.user;
   const reduxIsAuthenticated = authState?.isAuthenticated;
+  
+  // Favori apartları Redux store'dan al
+  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
   
   // Google kimlik bilgilerini backend'e göndermek için hook
   useGoogleAuth();
@@ -36,6 +40,32 @@ export default function Navigation() {
   const userEmail = session?.user?.email || reduxUser?.email || "";
   const userName = session?.user?.name || reduxUser?.displayName || reduxUser?.username || reduxUser?.email || "Kullanıcı";
   const userImage = session?.user?.image || null;
+
+  // localStorage'dan favori apartları yükle
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+    setFavorites(storedFavorites);
+  }, []);
+  
+  // Redux favoriteApartIds değiştiğinde favori sayısını güncelle
+  useEffect(() => {
+    setFavorites(favoriteApartIds);
+  }, [favoriteApartIds]);
+  
+  // localStorage değişikliklerini dinle
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+      setFavorites(storedFavorites);
+    };
+    
+    // Storage event'ini dinle (farklı sekmelerde güncellemeler için)
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   // Dropdown dışına tıklandığında menüyü kapat
   useEffect(() => {
@@ -81,6 +111,26 @@ export default function Navigation() {
       </Link>
       <Link href="/favorites" className="text-gray-700 hover:text-gray-900">
         <Image src={FavoritesIcon} alt="Favorites" width={20} height={20} />
+        {/* Favori sayısını gösteren chip */}
+        {favorites.length > 0 && (
+        <div className="relative">
+        <div className="absolute -top-2 -right-2 w-5 h-5 bg-rose-400 text-white text-xs rounded-full flex items-center justify-center">
+              {(() => {
+                // Client-side rendering kontrolü
+                if (typeof window !== 'undefined') {
+                  try {
+                   
+                    return Array.isArray(favorites) ? favorites.length : 0;
+                  } catch (e) {
+                    console.error('Favori apartlar parse edilemedi:', e);
+                    return 0;
+                  }
+                }
+                return 0;
+              })()}
+            </div>
+        </div>
+        )}
       </Link>
       
       {/* User Icon ve Dropdown */}

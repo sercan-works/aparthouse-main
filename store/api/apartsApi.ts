@@ -110,6 +110,16 @@ export interface ApiApart {
     image: string | null;
   }[];
   cover_image: string;
+  distances?: {
+    id: number;
+    university: {
+      id: number;
+      name: string;
+    };
+    yurume: number;
+    tramvay?: number;
+    otobus?: number;
+  }[];
 }
 
 

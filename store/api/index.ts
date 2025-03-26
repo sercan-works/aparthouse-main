@@ -1,18 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithErrorHandling from './baseQueryWithErrorHandling';
     
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    baseQuery: fetchBaseQuery({ 
-        baseUrl: process.env.NEXT_PUBLIC_API_URL,
-        // prepareHeaders: (headers, { getState }) => {
-        //     const state = getState() as IRootState;
-        //     const token = "000000000000000000000";
-        //     if (token) {
-        //         headers.set('Authorization', `Bearer ${token}`);
-        //     }
-        //     return headers;
-        // },
-    }),
+    baseQuery: baseQueryWithErrorHandling,
     endpoints: () => ({}),
     // SSR için önemli ayarlar
     keepUnusedDataFor: 30, // 30 saniye veriyi saklıyoruz
