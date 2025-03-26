@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from './api/authApi';
 import { baseApi } from './api';
 import AuthSlice from './features/AuthSlice';
+import FilterSlice from './features/FilterSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     [baseApi.reducerPath]: baseApi.reducer,
     // Geleneksel reducers
     auth: AuthSlice,
+    filter: FilterSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

@@ -28,8 +28,12 @@ export default function Header() {
           </Link>
 
           {/* ARAMA BARI */}
+          <div className="flex items-center gap-4">
           <SearchBar placeholder="Arama Yap" />
-
+          {pathname === "/filter" && (
+            <FilterButton />
+          )}
+          </div>
           {/* NAVIGATION */}
           <Navigation />
         </div>

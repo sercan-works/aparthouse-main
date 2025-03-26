@@ -132,7 +132,7 @@ export const prepareSearchParams = (selectedFilters: SelectedFilters): FilterPar
   }
 
   // Diğer filtreler için döngü
-  ['gender', 'category', 'features'].forEach(key => {
+  ['gender', 'category', 'features','cacik'].forEach(key => {
     if (selectedFilters[key]?.length) {
       params[key] = selectedFilters[key].join(',');
     }
@@ -143,6 +143,7 @@ export const prepareSearchParams = (selectedFilters: SelectedFilters): FilterPar
 
 // baseApi'yi genişleterek apartlara özel endpointler ekliyoruz
 export const apartsApi = baseApi.injectEndpoints({
+
   endpoints: (builder) => ({
     getApartmentById: builder.query<Apartment, string>({
       // Gerçek API endpoint'ini kullanıyoruz
@@ -155,10 +156,12 @@ export const apartsApi = baseApi.injectEndpoints({
         keepUnusedDataFor: 60,
       }),
     }),
-
-    getAparts: builder.query<ApiApart[], void>({
-      query: () => '/api/aparts',
-      keepUnusedDataFor: 60,
+    getAparts: builder.query<ApiApart[], FilterParams>({
+      query: (filters) => ({
+        url: '/api/aparts',
+        params: filters,
+        keepUnusedDataFor: 60,
+      }),
     }),
   }),
   overrideExisting: false,
@@ -180,4 +183,5 @@ export const {
 
 // Çalışan tüm sorguları beklemek için gereken fonksiyon
 // Next.js SSR ile kullanılmak üzere dışa aktarılıyor
-export const { getRunningQueriesThunk } = apartsApi.util; 
+export const { getRunningQueriesThunk } = apartsApi.util;
+

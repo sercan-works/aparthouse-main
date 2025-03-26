@@ -16,7 +16,7 @@ export const filterApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // Cities endpoints
         getCities: builder.query<BaseItem[], void>({
-            query: () => '/cities',
+            query: () => '/api/cities',
             // Transform response if needed
             // transformResponse: (response: any) => response.data,
         }),
@@ -27,7 +27,7 @@ export const filterApi = baseApi.injectEndpoints({
 
         // Universities endpoints
         getUniversities: builder.query<BaseItem[], void>({
-            query: () => '/universities',
+            query: () => '/api/universities',
         }),
 
         // Apart types endpoints

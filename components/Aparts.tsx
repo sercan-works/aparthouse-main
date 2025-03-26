@@ -4,10 +4,25 @@ import Card from "./card/Card";
 import { Button } from "@heroui/react";
 import { useGetApartsQuery } from "@/store/api/apartsApi"; 
 import CardPlaceholder from "./ui/CardPlaceholder";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const Aparts = () => {
-  // RTK Query hook'unu kullanarak API'den veri çekiyoruz
-  const { data: apiAparts, error, isLoading } = useGetApartsQuery();
+  // Redux store'dan seçilen filtreleri al
+  const selectedCategory = useSelector((state: RootState) => state.filter.selectedCategory);
+  const selectedCity = useSelector((state: RootState) => state.filter.selectedCity);
+  const selectedUniversity = useSelector((state: RootState) => state.filter.selectedUniversity);
+  
+  // Parametreler için boş bir nesne oluştur
+  const queryParams: Record<string, string> = {};
+  
+  // Seçili değerler varsa parametrelere ekle
+  if (selectedCategory) queryParams.category = selectedCategory.toString();
+  if (selectedCity) queryParams.city = selectedCity.toString();
+  if (selectedUniversity) queryParams.university = selectedUniversity.toString();
+  
+  // Tüm seçili filtreleri kullanarak API'yi çağır
+  const { data: apiAparts, error, isLoading } = useGetApartsQuery(queryParams);
   
   // Hata detaylarını konsola yazdır
   React.useEffect(() => {
@@ -159,6 +174,18 @@ const Aparts = () => {
           <p className="font-bold">API Bağlantı Hatası</p>
           <p>API bağlantısı sırasında bir hata oluştu. Demo veriler gösteriliyor.</p>
           <p className="text-xs mt-1">Geliştirici için: Konsola bakın veya API endpoint&apos;i kontrol edin.</p>
+        </div>
+      )}
+      
+      {/* Aktif filtreleri göster */}
+      {(selectedCategory || selectedCity || selectedUniversity) && (
+        <div className="w-full bg-blue-50 p-4 mb-5 rounded-lg">
+          <p className="font-semibold">Aktif Filtreler:</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {selectedCategory && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Kategori: {selectedCategory}</span>}
+            {selectedCity && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Şehir: {selectedCity}</span>}
+            {selectedUniversity && <span className="px-3 py-1 bg-blue-100 rounded-full text-sm">Üniversite: {selectedUniversity}</span>}
+          </div>
         </div>
       )}
       
