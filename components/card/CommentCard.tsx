@@ -7,10 +7,10 @@ const CommentCard = () => {
       <div className="flex flex-col  gap-2">
         <BiSolidQuoteAltLeft className="h-20 w-20 text-colorFirst text-left" />
         <p className="text-gray-500 font-medium min-h-20">
-          Burada kalmak tüm üniversite hayalimin parçasıydı.
+          Henüz yorum yapılmamış.
         </p>
         <h4 className="text-gray-500 font-medium mt-10">
-            Mahmut, Eskişehir
+            
         </h4>
       </div>
     </div>

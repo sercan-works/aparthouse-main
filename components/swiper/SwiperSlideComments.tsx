@@ -41,22 +41,8 @@ const SwiperSlideComments = () => {
         <CommentCard />
         </div>
       </SwiperSlide>
-      <SwiperSlide>
-        <div className=' mx-auto'>
-        <CommentCard />
-        </div>
- 
-      </SwiperSlide>
-      <SwiperSlide>
-        <div className=' mx-auto'>
-        <CommentCard />
-        </div>
-        </SwiperSlide>
-      <SwiperSlide>
-        <div className=' mx-auto'>
-        AHAHA
-        </div>
-        </SwiperSlide>
+     
+      
       </Swiper>
 {/* FOTOĞRAF SAYISI */}
       <div className="flex justify-center items-center text-gray-500 mt-2">

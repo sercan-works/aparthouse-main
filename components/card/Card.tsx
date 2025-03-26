@@ -188,14 +188,14 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                 {/* Distances - Maksimum ilk 2 üniversite mesafesini gösteriyoruz */}
                 {apart.distances &&
                   apart.distances.slice(0, 2).map((distance) => (
-                    <>
-                    <p className="mt-1 md:text-xs" key={distance.id}>
+                    <React.Fragment key={distance.id}>
+                    <p className="mt-1 md:text-xs">
                       {truncateText(`${distance.university.name} `, 15)}{" "}
                       {distance.yurume} dk
                     </p>
                     {/* placeholder */}
-                    {apart?.distances.length < 2 &&  <div className="h-6 w-6 bg-white rounded-full opacity-0">placeholder</div>}
-                    </>
+                    {apart.distances && apart.distances.length < 2 &&  <div className="h-6 w-6 bg-white rounded-full opacity-0">placeholder</div>}
+                    </React.Fragment>
                   ))}
               </div>
               <div className="w-1/3">
