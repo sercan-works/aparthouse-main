@@ -22,6 +22,7 @@ import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeartFill } from "react-icons/bs";
 import Highlights from "@/components/Highlights";
 import ShareModal from "@/components/modals/ShareModal";
+import LocationViewer from "@/components/maps/LocationViewer";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -246,8 +247,11 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 </div>
               </Link>
             </div>
+            <div className="mt-5">
+              <h2 className="text-2xl font-bold">Harita</h2>
+              <LocationViewer apart={apart}/>
+            </div>
 
-            <h2 className="text-2xl font-bold">Harita</h2>
             {/* MESAFELER */}
             <div className="text-gray-500 flex flex-col gap-5 mt-5 text-xs">
               <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
