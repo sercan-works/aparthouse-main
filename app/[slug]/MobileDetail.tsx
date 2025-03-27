@@ -8,13 +8,14 @@ import { SlGraduation } from "react-icons/sl";
 import {
   FaPersonWalking,
   FaRegEnvelope,
+  FaTrainSubway,
   FaWhatsapp
 } from "react-icons/fa6";
-import { FaTrainSubway } from "react-icons/fa6";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
 import { LuWashingMachine } from "react-icons/lu";
-import { Tabs, Tab } from "@heroui/react";
+import { Tabs, Tab, Button } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
@@ -26,6 +27,7 @@ import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeartFill } from "react-icons/bs";
 import Loading from "@/components/ui/Loading";
 import ShareModal from "@/components/modals/ShareModal";
+import LocationViewer from "@/components/maps/LocationViewer";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -50,6 +52,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCompare, setIsCompare] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
 
   const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
     skip: !apartSlug
@@ -95,6 +98,19 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   // Handle share modal
   const handleShareClick = () => {
     setIsShareOpen(true);
+  };
+
+  // Handle tab change
+  const handleTabChange = (key: React.Key) => {
+    setActiveTab(key.toString());
+  };
+
+  // Google Haritalar'ı aç
+  const openInGoogleMaps = () => {
+    if (apart && apart.lat && apart.lon) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${apart.lat},${apart.lon}`;
+      window.open(url, '_blank');
+    }
   };
 
   if (isLoading) return <div className="flex justify-center items-center mt-48">
@@ -147,156 +163,204 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             aria-label="Tabs variants"
             variant="underlined"
             color="primary"
+            selectedKey={activeTab}
+            onSelectionChange={handleTabChange}
           >
             <Tab key="general" title="Genel Özellikler" />
-            <Tab key="services" title="Hizmetler" />
-            <Tab key="comments" title="Yorumlar" />
-            <Tab key="contact" title="İletişim" />
+            <Tab key="map" title="Harita" />
+            {/* <Tab key="comments" title="Yorumlar" />
+            <Tab key="contact" title="İletişim" /> */}
           </Tabs>
         </div>
 
-        {/* AÇIKLAMA */}
-        <div className="mt-5">
-          <p className="text-gray-500">
-            {apart?.info || apart?.description}
-          </p>
-        </div>
+        {/* TAB İÇERİKLERİ */}
+        {activeTab === "general" && (
+          <div className="mt-5 overflow-hidden flex flex-col gap-2">
+            {/* AÇIKLAMA */}
+            <div>
+              <p className="text-gray-500">
+                {apart?.info || apart?.description}
+              </p>
+            </div>
 
-        {/* ÖZET KISMI ADRES, OLANAKLAR, FİYAT DAHİL İÇERİKLER */}
-        <div className="mt-5 overflow-hidden flex flex-col gap-2">
-          <div className="text-gray-500 flex flex-row items-center gap-2">
-            <div className="flex flex-row items-center gap-2">
-              <GoLocation className="h-4 w-4 text-gray-500" />
-              Adres : {apart?.address || apart?.location}
+            {/* ÖZET KISMI ADRES, OLANAKLAR, FİYAT DAHİL İÇERİKLER */}
+            <div className="mt-5 text-gray-500 flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-2">
+                <GoLocation className="h-4 w-4 text-gray-500" />
+                Adres : {apart?.address || apart?.location}
+              </div>
+            </div>
+
+            {/* Google Haritalar'da Aç Butonu */}
+            {apart && apart.lat && apart.lon && (
+              <div className="mt-2">
+                <Button 
+                  color="primary" 
+                  variant="ghost" 
+                  startContent={<FaExternalLinkAlt />}
+                  className="w-full"
+                  onPress={openInGoogleMaps}
+                >
+                  Google Haritalar&apos;da Aç
+                </Button>
+              </div>
+            )}
+
+            {/* MESAFELER */}
+            <div className="text-gray-500 flex flex-col gap-2 mt-5">
+              <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
+              
+              {apart?.distances && apart.distances.length > 0 ? (
+                apart.distances.map((distance) => (
+                  <div key={distance.id} className="flex flex-col gap-2 truncate border-b-2 border-gray-200 pb-2">
+                    <div className="flex flex-row items-center gap-2">
+                      <SlGraduation className="h-4 w-4 text-gray-500" />
+                      <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
+                        {distance.university.name}:
+                      </h3>
+                    </div>
+                    <div className="ml-6 flex flex-row justify-around items-center gap-3">
+                      {distance.yurume > 0 && (
+                        <div className="flex flex-row items-center gap-1">
+                          <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
+                        </div>
+                      )}
+                      {distance.tramvay > 0 && (
+                        <div className="flex flex-row items-center gap-1">
+                          <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
+                        </div>
+                      )}
+                      {distance.otobus > 0 && (
+                        <div className="flex flex-row items-center gap-1">
+                          <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
+              )}
+            </div>
+
+            {/* HİZMETLER */}
+            <div className="mt-5 grid grid-cols-2 gap-4">
+              {apart?.services && Array.isArray(apart.services) && (
+                <>
+                  {/* Hizmetleri kategorilerine göre grupla */}
+                  {Object.entries(
+                    apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
+                      // Kategori adına göre grupla
+                      if (!acc[service.category_name]) {
+                        acc[service.category_name] = [];
+                      }
+                      acc[service.category_name].push(service);
+                      return acc;
+                    }, {})
+                  ).map(([categoryName, services]) => (
+                    <div key={categoryName} className="col-span-1">
+                      <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
+                      {services.map((service) => (
+                        <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
+                          {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
+                          {categoryName === "Hizmetler" ? (
+                            <LuWashingMachine className="h-4 w-4 text-gray-500" />
+                          ) : categoryName === "Faturaya Dahil Olanlar" ? (
+                            <CiWifiOn className="h-4 w-4 text-gray-500" />
+                          ) : (
+                            <CiWifiOn className="h-4 w-4 text-gray-500" />
+                          )}
+                          <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
+                            {service.name}
+                          </h3>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </>
+              )}
+              
+              {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
+                <div className="col-span-2 text-gray-400 italic">
+                  Hizmet bilgisi bulunamadı.
+                </div>
+              )}
+            </div>
+
+            {/* YORUMLAR */}
+            <div className="z-40 mt-5">
+              <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
+              <div className="flex flex-row items-center gap-2 mx-10">
+                <SwiperSlideComments />
+              </div>
             </div>
           </div>
+        )}
 
-          {/* MESAFELER */}
-          <div className="text-gray-500 flex flex-col gap-2 mt-5">
-            <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
+        {/* HARİTA TAB İÇERİĞİ */}
+        {activeTab === "map" && (
+          <div className="mt-5">
+            <h2 className="text-gray-600 font-medium mb-3">Konum Bilgisi</h2>
+            {apart && <LocationViewer apart={apart} height="350px" />}
             
-            {apart?.distances && apart.distances.length > 0 ? (
-              apart.distances.map((distance) => (
-                <div key={distance.id} className="flex flex-col gap-2 truncate border-b-2 border-gray-200 pb-2">
-                  <div className="flex flex-row items-center gap-2">
-                    <SlGraduation className="h-4 w-4 text-gray-500" />
-                    <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
-                      {distance.university.name}:
-                    </h3>
-                  </div>
-                  <div className="ml-6 flex flex-row justify-around items-center gap-3">
-                    {distance.yurume > 0 && (
-                      <div className="flex flex-row items-center gap-1">
-                        <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
-                      </div>
-                    )}
-                    {distance.tramvay > 0 && (
-                      <div className="flex flex-row items-center gap-1">
-                        <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
-                      </div>
-                    )}
-                    {distance.otobus > 0 && (
-                      <div className="flex flex-row items-center gap-1">
-                        <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
-            )}
-          </div>
-
-          {/* HİZMETLER */}
-          <div className="mt-5 grid grid-cols-2 gap-4">
-            {apart?.services && Array.isArray(apart.services) && (
-              <>
-                {/* Hizmetleri kategorilerine göre grupla */}
-                {Object.entries(
-                  apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
-                    // Kategori adına göre grupla
-                    if (!acc[service.category_name]) {
-                      acc[service.category_name] = [];
-                    }
-                    acc[service.category_name].push(service);
-                    return acc;
-                  }, {})
-                ).map(([categoryName, services]) => (
-                  <div key={categoryName} className="col-span-1">
-                    <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
-                    {services.map((service) => (
-                      <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
-                        {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
-                        {categoryName === "Hizmetler" ? (
-                          <LuWashingMachine className="h-4 w-4 text-gray-500" />
-                        ) : categoryName === "Faturaya Dahil Olanlar" ? (
-                          <CiWifiOn className="h-4 w-4 text-gray-500" />
-                        ) : (
-                          <CiWifiOn className="h-4 w-4 text-gray-500" />
-                        )}
-                        <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
-                          {service.name}
-                        </h3>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </>
-            )}
+            <div className="mt-4 text-sm text-gray-500">
+              <p>Üniversite seçerek yürüme rotasını görebilirsiniz.</p>
+              <p className="mt-1 text-xs">powered by Google Maps</p>
+            </div>
             
-            {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
-              <div className="col-span-2 text-gray-400 italic">
-                Hizmet bilgisi bulunamadı.
+            {/* Google Haritalar'da Aç Butonu */}
+            {apart && apart.lat && apart.lon && (
+              <div className="mt-3">
+                <Button 
+                  color="primary" 
+                  variant="solid" 
+                  startContent={<FaExternalLinkAlt />}
+                  className="w-full"
+                  onPress={openInGoogleMaps}
+                >
+                  Google Haritalar&apos;da Aç
+                </Button>
               </div>
             )}
           </div>
+        )}
 
-          {/* YORUMLAR */}
-          <div className="z-40 mt-5">
-            <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
-            <div className="flex flex-row items-center gap-2 mx-10">
-              <SwiperSlideComments />
-            </div>
+        {/* İLETİŞİM KISMI */}
+        <div className="z-40 mt-5 mx-5">
+          <h2 className="text-gray-500 font-bold ">İletişim</h2>
+          <p className="text-gray-500 text-sm">
+            Detaylı içerik ve fiyat bilgisi için firmayla iletişime geçiniz.
+          </p>
+
+          <div className="flex flex-col gap-4 mt-5">
+            <Link href={`mailto:${apart?.firma.mail || 'info@aparthouse.com'}`} target="_blank">
+              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  {apart?.firma.mail || 'info@aparthouse.com'}
+                </p>
+              </div>
+            </Link>
+            <Link href={`tel:+${apart?.firma.phone}`}>
+              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  {formatPhoneNumber(apart?.firma.phone)}
+                </p>
+              </div>
+            </Link>
+
+            <Link href={`https://wa.me/${apart?.firma.phone}`} target="_blank">
+              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  Whatsapp
+                </p>
+              </div>
+            </Link>
           </div>
 
-          {/* İLETİŞİM */}
-          <div className="z-40 mt-5 mx-5">
-            <h2 className="text-gray-500 font-bold ">İletişim</h2>
-            <p className="text-gray-500 text-sm">
-              Detaylı içerik ve fiyat bilgisi için firmayla iletişime geçiniz.
-            </p>
-
-            <div className="flex flex-col gap-4 mt-5">
-              <Link href={`mailto:${apart?.firma.mail || 'info@aparthouse.com'}`} target="_blank">
-                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 text-md font-bold">
-                    {apart?.firma.mail || 'info@aparthouse.com'}
-                  </p>
-                </div>
-              </Link>
-              <Link href={`tel:+${apart?.firma.phone}`}>
-                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 text-md font-bold">
-                    {formatPhoneNumber(apart?.firma.phone)}
-                  </p>
-                </div>
-              </Link>
-
-              <Link href={`https://wa.me/${apart?.firma.phone}`} target="_blank">
-                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 text-md font-bold">
-                    Whatsapp
-                  </p>
-                </div>
-              </Link>
-            </div>
-
-           {/* MOBİLE FOOTER YAPILACAK */}
-          </div>
+          {/* MOBİLE FOOTER YAPILACAK */}
         </div>
 
         {/* blank */}

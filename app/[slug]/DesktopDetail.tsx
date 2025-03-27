@@ -4,7 +4,7 @@ import { Button, Link, Tab, Tabs } from "@heroui/react";
 import React, { useState, useEffect } from "react";
 import { CiShare2, CiWifiOn } from "react-icons/ci";
 import { FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
-import { FaBus } from "react-icons/fa";
+import { FaBus, FaExternalLinkAlt } from "react-icons/fa";
 import { FaTrainSubway } from "react-icons/fa6";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { MdCompareArrows, MdOutlineLocalPhone } from "react-icons/md";
@@ -52,6 +52,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCompare, setIsCompare] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
 
   const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
     skip: !apartSlug
@@ -97,6 +98,19 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   // Handle share modal
   const handleShareClick = () => {
     setIsShareOpen(true);
+  };
+
+  // Handle tab change
+  const handleTabChange = (key: React.Key) => {
+    setActiveTab(key.toString());
+  };
+
+  // Google Haritalar'ı aç
+  const openInGoogleMaps = () => {
+    if (apart && apart.lat && apart.lon) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${apart.lat},${apart.lon}`;
+      window.open(url, '_blank');
+    }
   };
 
   if (isLoading) return <div className="container mt-10">Yükleniyor...</div>;
@@ -152,9 +166,12 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             aria-label="Tabs variants"
             variant="underlined"
             color="primary"
+            selectedKey={activeTab}
+            onSelectionChange={handleTabChange}
           >
             <Tab key="general" title="Genel Özellikler" />
             <Tab key="services" title="Hizmetler" />
+            <Tab key="map" title="Harita" />
             <Tab key="comments" title="Yorumlar" />
             <Tab key="contact" title="İletişim" />
           </Tabs>
@@ -178,226 +195,278 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         </div>
       </div>
 
-      {/* açıklama ve harita kısmı */}
-      <div className="mt-5">
-        <div className="grid grid-cols-4 gap-4">
-          <div className="col-span-3">
-            <h2 className="text-2xl font-bold">Açıklama</h2>
+      {/* TAB İÇERİKLERİ */}
+      {activeTab === "general" && (
+        <div className="mt-5">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-3">
+              <h2 className="text-2xl font-bold">Açıklama</h2>
 
-            <div className="mt-5">
-              <p className="text-gray-500">
-                {apart?.info}
-              </p>
-            </div>
-
-            <div className="text-gray-500 flex flex-row items-center gap-2 mt-5">
-              <div className="flex flex-row items-center gap-2">
-                <GoLocation className="h-4 w-4 text-gray-500" />
-                Adres : {apart?.address}
+              <div className="mt-5">
+                <p className="text-gray-500">
+                  {apart?.info}
+                </p>
               </div>
-            </div>
 
-            {/* <div className="text-gray-500 flex items-start gap-2 mt-5">
-              <div className="flex flex-row items-center gap-2">
-                <HiOutlineBuildingOffice2 className="h-4 w-4 text-gray-500" />
-                <h3 className="text-gray-500 min-w-20">Olanaklar :</h3>
-              </div>
-              <p className="text-xs">
-                Wifi &bull; Park&bull; Havuz&bull; Tatlı &bull; Klima &bull;
-                Kara Dışı &bull; Kara Dışı &bull; Wifi &bull; Park &bull; Havuz
-                &bull; Tatlı &bull; Park &bull; Havuz &bull; Tatlı &bull; Klima
-                &bull; Kara Dışı
-              </p>
-            </div> */}
-
-            {/* <div className="text-gray-500 flex items-start gap-2 mt-5">
-              <div className="flex flex-row items-center gap-2">
-                $
-                <h3 className="text-gray-500 min-w-40">
-                  Fiyat Dahil İçerikler :
-                </h3>
-              </div>
-              <p className="text-xs">
-                Wifi &bull; Park &bull; Havuz &bull; Tatlı &bull; Klima &bull;
-                Kara Dışı
-              </p>
-            </div> */}
-
-
-          </div>
-          <div className="col-span-1">
-            <div className="grid grid-cols-1 justify-between gap-2 text-xs mb-5">
-              {/* <Link href="tel:+905338888888" className="grid grid-cols-1">
-                <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 font-bold text-md">
-                    Ara
-                  </p>
+              <div className="text-gray-500 flex flex-row items-center gap-2 mt-5">
+                <div className="flex flex-row items-center gap-2">
+                  <GoLocation className="h-4 w-4 text-gray-500" />
+                  Adres : {apart?.address}
                 </div>
-              </Link> */}
+              </div>
 
-              <Link
-                href={`https://wa.me/${apart?.firma.phone}`}
-                target="_blank"
-                className="grid grid-cols-1"
-              >
-                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 text-md font-bold">{formatPhoneNumber(apart?.firma.phone)}</p>
+              {/* Google Haritalar'da Aç Butonu */}
+              {apart && apart.lat && apart.lon && (
+                <div className="mt-3">
+                  <Button 
+                    color="primary" 
+                    variant="ghost" 
+                    startContent={<FaExternalLinkAlt />}
+                    onClick={openInGoogleMaps}
+                  >
+                    Google Haritalar&apos;da Aç
+                  </Button>
                 </div>
-              </Link>
-            </div>
-            <div className="mt-5">
-              <h2 className="text-2xl font-bold">Harita</h2>
-              <LocationViewer apart={apart}/>
-            </div>
-
-            {/* MESAFELER */}
-            <div className="text-gray-500 flex flex-col gap-5 mt-5 text-xs">
-              <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
-              
-              {apart?.distances && apart.distances.length > 0 ? (
-                apart.distances.map((distance) => (
-                  <div key={distance.id} className="flex flex-col gap-3 truncate border-b-2 border-gray-200 pb-2">
-                    <div className="flex flex-row items-center gap-2">
-                      <SlGraduation className="h-4 w-4 text-gray-500" />
-                      <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
-                        {distance.university.name}:
-                      </h3>
-                    </div>
-                    <div className="ml-6 flex flex-row justify-around items-center gap-3 ">
-                      {distance.yurume > 0 && (
-                        <div className="flex flex-row items-center gap-1">
-                          <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
-                        </div>
-                      )}
-                      {distance.tramvay > 0 && (
-                        <div className="flex flex-row items-center gap-1">
-                          <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
-                        </div>
-                      )}
-                      {distance.otobus > 0 && (
-                        <div className="flex flex-row items-center gap-1">
-                          <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
               )}
             </div>
-            <p className="text-gray-500 text-xs">powered by Google Maps</p>
+            <div className="col-span-1">
+              <div className="grid grid-cols-1 justify-between gap-2 text-xs mb-5">
+                <Link
+                  href={`https://wa.me/${apart?.firma.phone}`}
+                  target="_blank"
+                  className="grid grid-cols-1"
+                >
+                  <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                    <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+                    <p className="text-gray-500 text-md font-bold">{formatPhoneNumber(apart?.firma.phone)}</p>
+                  </div>
+                </Link>
+              </div>
+              <div className="mt-5">
+                <h2 className="text-2xl font-bold">Harita</h2>
+                <LocationViewer apart={apart}/>
+              </div>
+
+              {/* MESAFELER */}
+              <div className="text-gray-500 flex flex-col gap-5 mt-5 text-xs">
+                <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
+                
+                {apart?.distances && apart.distances.length > 0 ? (
+                  apart.distances.map((distance) => (
+                    <div key={distance.id} className="flex flex-col gap-3 truncate border-b-2 border-gray-200 pb-2">
+                      <div className="flex flex-row items-center gap-2">
+                        <SlGraduation className="h-4 w-4 text-gray-500" />
+                        <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
+                          {distance.university.name}:
+                        </h3>
+                      </div>
+                      <div className="ml-6 flex flex-row justify-around items-center gap-3 ">
+                        {distance.yurume > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
+                          </div>
+                        )}
+                        {distance.tramvay > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
+                          </div>
+                        )}
+                        {distance.otobus > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
+                )}
+              </div>
+              <p className="text-gray-500 text-xs">powered by Google Maps</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* HİZMETLER KISMI */}
-      <div className="mt-5 grid grid-cols-3 gap-4">
-        {apart?.services && Array.isArray(apart.services) && (
-          <>
-            {/* Hizmetleri kategorilerine göre grupla */}
-            {Object.entries(
-              apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
-                // Kategori adına göre grupla
-                if (!acc[service.category_name]) {
-                  acc[service.category_name] = [];
-                }
-                acc[service.category_name].push(service);
-                return acc;
-              }, {})
-            ).map(([categoryName, services]) => (
-              <div key={categoryName} className="col-span-1">
-                <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
-                {services.map((service) => (
-                  <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
-                    {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
-                    {categoryName === "Hizmetler" ? (
-                      <LuWashingMachine className="h-4 w-4 text-gray-500" />
-                    ) : categoryName === "Faturaya Dahil Olanlar" ? (
-                      <CiWifiOn className="h-4 w-4 text-gray-500" />
-                    ) : (
-                      <CiWifiOn className="h-4 w-4 text-gray-500" />
-                    )}
-                    <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
-                      {service.name}
-                    </h3>
-                  </div>
-                ))}
+      {activeTab === "services" && (
+        <div className="mt-5 grid grid-cols-3 gap-4">
+          {apart?.services && Array.isArray(apart.services) && (
+            <>
+              {/* Hizmetleri kategorilerine göre grupla */}
+              {Object.entries(
+                apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
+                  // Kategori adına göre grupla
+                  if (!acc[service.category_name]) {
+                    acc[service.category_name] = [];
+                  }
+                  acc[service.category_name].push(service);
+                  return acc;
+                }, {})
+              ).map(([categoryName, services]) => (
+                <div key={categoryName} className="col-span-1">
+                  <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
+                  {services.map((service) => (
+                    <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
+                      {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
+                      {categoryName === "Hizmetler" ? (
+                        <LuWashingMachine className="h-4 w-4 text-gray-500" />
+                      ) : categoryName === "Faturaya Dahil Olanlar" ? (
+                        <CiWifiOn className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <CiWifiOn className="h-4 w-4 text-gray-500" />
+                      )}
+                      <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
+                        {service.name}
+                      </h3>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </>
+          )}
+          
+          {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
+            <div className="col-span-3 text-gray-400 italic">
+              Hizmet bilgisi bulunamadı.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* HARİTA TAB İÇERİĞİ */}
+      {activeTab === "map" && (
+        <div className="mt-5">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-3">
+              <h2 className="text-2xl font-bold">Konum Bilgisi</h2>
+              <div className="mt-5">
+                <LocationViewer apart={apart} height="450px" />
               </div>
-            ))}
-          </>
-        )}
-        
-        {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
-          <div className="col-span-3 text-gray-400 italic">
-            Hizmet bilgisi bulunamadı.
+              <div className="mt-3 text-sm text-gray-500">
+                <p>Üniversite seçerek yürüme rotasını görebilirsiniz.</p>
+                
+                {/* Google Haritalar'da Aç Butonu */}
+                {apart && apart.lat && apart.lon && (
+                  <div className="mt-3">
+                    <Button 
+                      color="primary" 
+                      startContent={<FaExternalLinkAlt />}
+                      onClick={openInGoogleMaps}
+                    >
+                      Google Haritalar&apos;da Aç
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-gray-500 flex flex-col gap-5 text-xs">
+                <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
+                
+                {apart?.distances && apart.distances.length > 0 ? (
+                  apart.distances.map((distance) => (
+                    <div key={distance.id} className="flex flex-col gap-3 truncate border-b-2 border-gray-200 pb-2">
+                      <div className="flex flex-row items-center gap-2">
+                        <SlGraduation className="h-4 w-4 text-gray-500" />
+                        <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
+                          {distance.university.name}:
+                        </h3>
+                      </div>
+                      <div className="ml-6 flex flex-row justify-around items-center gap-3 ">
+                        {distance.yurume > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
+                          </div>
+                        )}
+                        {distance.tramvay > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
+                          </div>
+                        )}
+                        {distance.otobus > 0 && (
+                          <div className="flex flex-row items-center gap-1">
+                            <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
+                )}
+              </div>
+              <p className="text-gray-500 text-xs mt-2">powered by Google Maps</p>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* YORUMLAR KISMI */}
-      <div className=" z-40 mt-10 ">
-        <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
-        <div className="flex flex-row items-center gap-2 mx-10">
-          <SwiperSlideComments />
+      {activeTab === "comments" && (
+        <div className="z-40 mt-10 ">
+          <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
+          <div className="flex flex-row items-center gap-2 mx-10">
+            <SwiperSlideComments />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* İLETİŞİM KISMI */}
-      <div className=" z-40 mt-10 mx-5 bg-colorFirst bg-opacity-10 rounded-xl p-5">
-        <h2 className="text-gray-500 font-bold ">İletişim</h2>
-        <p className="text-gray-500 text-sm">
-          Detaylı içerik ve fiyat bilgisi için firmayla iletişime geçiniz.
-        </p>
+      {activeTab === "contact" && (
+        <div className="z-40 mt-10 mx-5 bg-colorFirst bg-opacity-10 rounded-xl p-5">
+          <h2 className="text-gray-500 font-bold ">İletişim</h2>
+          <p className="text-gray-500 text-sm">
+            Detaylı içerik ve fiyat bilgisi için firmayla iletişime geçiniz.
+          </p>
 
-        <div className="grid grid-cols-3 gap-4 mt-5">
-          <Link
-            href="mailto:sheapart@hotmail.com"
-            target="_blank"
-            className="grid grid-cols-1"
-          >
-            <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-              <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
-              <p className="text-gray-500 text-md font-bold">
-                {apart?.firma.mail}
-              </p>
-            </div>
-          </Link>
-          <Link href={`tel:+${apart?.firma.phone}`} className="grid grid-cols-1">
-            <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-              <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
-              <p className="text-gray-500 text-md font-bold">
-                {formatPhoneNumber(apart?.firma.phone)}
-              </p>
-            </div>
-          </Link>
+          <div className="grid grid-cols-3 gap-4 mt-5">
+            <Link
+              href="mailto:sheapart@hotmail.com"
+              target="_blank"
+              className="grid grid-cols-1"
+            >
+              <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  {apart?.firma.mail}
+                </p>
+              </div>
+            </Link>
+            <Link href={`tel:+${apart?.firma.phone}`} className="grid grid-cols-1">
+              <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  {formatPhoneNumber(apart?.firma.phone)}
+                </p>
+              </div>
+            </Link>
 
-          <Link
-            href={`https://wa.me/${apart?.firma.phone}`}
-            target="_blank"
-            className="grid grid-cols-1"
-          >
-            <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-              <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-              <p className="text-gray-500 text-md font-bold">Whatsapp</p>
-            </div>
-          </Link>
-          {/* PINK PHONE */}
-          <div className="relative">
-            <div className="absolute -top-36 -right-[780px]">
-              <Image
-                src={PinkPhone}
-                alt="Pink Phone"
-                className="w-36 h-full opacity-30 scale-x-[-1]"
-              />
+            <Link
+              href={`https://wa.me/${apart?.firma.phone}`}
+              target="_blank"
+              className="grid grid-cols-1"
+            >
+              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+                <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">Whatsapp</p>
+              </div>
+            </Link>
+            {/* PINK PHONE */}
+            <div className="relative">
+              <div className="absolute -top-36 -right-[780px]">
+                <Image
+                  src={PinkPhone}
+                  alt="Pink Phone"
+                  className="w-36 h-full opacity-30 scale-x-[-1]"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* <SimilarAparts /> */}
       <Highlights />
     </div>
   );

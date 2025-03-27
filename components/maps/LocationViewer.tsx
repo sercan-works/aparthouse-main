@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer, Libraries } from '@react-google-maps/api';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 // API anahtarı
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -74,6 +75,15 @@ const LocationViewer: React.FC<LocationViewerProps> = ({
 
   // Apartın koordinatları
   const apartLocation = apart?.lat && apart?.lon ? { lat: apart.lat, lng: apart.lon } : null;
+
+  // Google Haritalar'ı aç
+  const openInGoogleMaps = () => {
+    if (apartLocation) {
+      // Mobil cihazlarda çalışması için
+      const url = `https://www.google.com/maps/search/?api=1&query=${apartLocation.lat},${apartLocation.lng}`;
+      window.open(url, '_blank');
+    }
+  };
 
   // Haritanın sınırlarını ayarla ve her iki konumu da ortala
   useEffect(() => {
@@ -255,6 +265,18 @@ const LocationViewer: React.FC<LocationViewerProps> = ({
         <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded text-xs text-gray-600">
           {apartLocation ? `Lat: ${apartLocation.lat.toFixed(6)}, Lng: ${apartLocation.lng.toFixed(6)}` : 'Konum belirlenmemiş'}
         </div>
+        
+        {/* Google Haritalar'da Aç Butonu */}
+        {apartLocation && (
+          <button 
+            onClick={openInGoogleMaps}
+            className="absolute top-2 right-2 bg-white p-2 rounded-md shadow-md hover:bg-gray-100 transition-colors flex items-center gap-1"
+            title="Google Haritalar'da Aç"
+          >
+            <FaExternalLinkAlt className="text-gray-700" />
+            <span className="text-xs font-medium">Google Maps</span>
+          </button>
+        )}
       </div>
       
       {selectedUniversity && directions?.routes[0]?.legs[0] && (
