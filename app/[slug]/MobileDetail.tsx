@@ -14,7 +14,7 @@ import { FaTrainSubway } from "react-icons/fa6";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
 import { LuWashingMachine } from "react-icons/lu";
-import { Tabs, Tab, Skeleton } from "@heroui/react";
+import { Tabs, Tab } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
@@ -25,6 +25,7 @@ import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeartFill } from "react-icons/bs";
 import Loading from "@/components/ui/Loading";
+import ShareModal from "@/components/modals/ShareModal";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -48,6 +49,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const { compareApartIds } = useSelector((state: RootState) => state.compare);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCompare, setIsCompare] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
     skip: !apartSlug
@@ -90,6 +92,11 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     dispatch(toggleCompare(Number(apart.id)));
   };
 
+  // Handle share modal
+  const handleShareClick = () => {
+    setIsShareOpen(true);
+  };
+
   if (isLoading) return <div className="flex justify-center items-center mt-48">
     <Loading />
   </div>;
@@ -105,7 +112,9 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         <div className="flex flex-row justify-between">
           <h1 className="text-2xl font-medium">{apart?.name || apart?.title}</h1>
           <div className="flex flex-row gap-3">
-            <CiShare2 className="h-6 w-6 text-gray-500" />
+            <button onClick={handleShareClick}>
+              <CiShare2 className="h-6 w-6 text-gray-500" />
+            </button>
             
             {/* Compare Button */}
             <button onClick={handleToggleCompare}>
@@ -122,6 +131,15 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </button>
           </div>
         </div>
+        
+        {/* Share Modal */}
+        <ShareModal 
+          isOpen={isShareOpen} 
+          onOpenChange={() => setIsShareOpen(!isShareOpen)}
+          title={apart.name || apart.title || "ApartHouse Detay"}
+          url={typeof window !== 'undefined' ? window.location.href : `https://aparthouse.com/${apartSlug}`}
+        />
+        
         {/* TABS */}
         <div className="mt-5">
           <Tabs
