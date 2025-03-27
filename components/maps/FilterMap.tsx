@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect, useRef, useMemo } from 'react'
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer, Libraries } from '@react-google-maps/api';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { ApiApart } from '@/store/api/apartsApi';
+import { useRouter } from 'next/navigation';
 
 // API anahtarı
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -52,6 +53,7 @@ const FilterMap: React.FC<FilterMapProps> = ({
   selectedApart = null,
   onApartSelect
 }) => {
+  const router = useRouter();
   const [selectedUniversity, setSelectedUniversity] = useState<MapUniversity | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [activeApart, setActiveApart] = useState<ApiApart | null>(selectedApart);
@@ -231,14 +233,6 @@ const FilterMap: React.FC<FilterMapProps> = ({
     mapRef.current = null;
   }, []);
 
-  // Apart seçildiğinde
-  const handleApartSelect = (apart: ApiApart) => {
-    setActiveApart(apart);
-    if (onApartSelect) {
-      onApartSelect(apart);
-    }
-  };
-
   // Üniversite seçildiğinde
   const handleUniversityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const uniId = parseInt(e.target.value);
@@ -271,6 +265,13 @@ const FilterMap: React.FC<FilterMapProps> = ({
     }
   };
 
+  // Detay sayfasına yönlendiren fonksiyon
+  const goToApartDetail = (apart: ApiApart) => {
+    if (apart.id) {
+      router.push(`/${apart.slug}`);
+    }
+  };
+
   if (!isLoaded) {
     return <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ height }}>Harita yükleniyor...</div>;
   }
@@ -282,38 +283,8 @@ const FilterMap: React.FC<FilterMapProps> = ({
 
   return (
     <div className="flex flex-col gap-2 h-full">
-      {/* Aktif apart varsa ve mesafeleri gösterilecekse */}
-      {activeApart && activeApart.distances && activeApart.distances.length > 0 && (
-        <div className="px-4 pt-4">
-          <select 
-            className="w-full p-2 rounded-md text-sm bg-gray-100 py-3"
-            onChange={handleUniversityChange}
-            defaultValue=""
-          >
-            <option value=""><span></span>Üniversite seçiniz</option>
-            {activeApart.distances.map(distance => (
-              <option key={distance.university.id} value={distance.university.id}>
-                {distance.university.name} ({distance.yurume} dk yürüme)
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+
       
-      {/* Aktif apart bilgisi */}
-      {activeApart && (
-        <div className="px-4 py-2 bg-white shadow-md rounded-md mx-4 border-l-4 border-green-500">
-          <h3 className="font-medium text-md">{activeApart.name || `Apart #${activeApart.id || ''}`}</h3>
-          {activeApart.price && (
-            <p className="text-sm text-green-600 font-medium">{activeApart.price} ₺</p>
-          )}
-          {activeApart.lat && activeApart.lon && (
-            <p className="text-xs text-gray-500 mt-1">
-              Konum: {activeApart.lat.toFixed(6)}, {activeApart.lon.toFixed(6)}
-            </p>
-          )}
-        </div>
-      )}
       
       <div className="relative flex-grow mt-2 p-2">
         <GoogleMap
@@ -357,7 +328,7 @@ const FilterMap: React.FC<FilterMapProps> = ({
                   scaledSize: new google.maps.Size(isActive ? 48 : 32, isActive ? 48 : 32),
                   labelOrigin: new google.maps.Point(isActive ? 24 : 16, -10)
                 }}
-                onClick={() => handleApartSelect(apart)}
+                onClick={() => goToApartDetail(apart)}
                 label={{
                   text: (apart.apart_name || apart.name || `${index + 1}`).toString(),
                   className: `text-xs font-bold ${isActive ? 'text-green-700' : 'text-gray-700'}`
