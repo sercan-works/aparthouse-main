@@ -11,6 +11,7 @@ import {
   useGetFiltersQuery
 } from "@/store/api/filterApi";
 import Loading from "@/components/ui/Loading";
+import FilterMap from "@/components/maps/FilterMap";
 
 const DesktopFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -212,7 +213,7 @@ const DesktopFilter = () => {
       {/* <div className="w-1/2 bg-colorFirst h-[calc(100vh-10rem)] fixed top-50 left-5 ml-4 lg:ml-auto max-w-[calc(50%-2.5rem)]">HARİTA</div> */}
       <div className={`col-span-1 bg-colorFirst h-[calc(100vh-10rem)] w-full ml-4 lg:ml-auto transition-all duration-300 rounded-xl`} 
            style={{ marginTop: `${scrollOffset}px` }}>
-        HARİTA
+        {/* <FilterMap /> */}
       </div>
 
       {/* FİLTRELER */}

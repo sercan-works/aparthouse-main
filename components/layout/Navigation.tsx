@@ -176,10 +176,14 @@ export default function Navigation() {
                 </span>
               ) : (
                 <>
+                <div className="relative">
                 <Image src={UserIcon} alt="User" width={24} height={24} />
                 {/* compare chip */}
-                <div className="h-4 w-4 bg-gray-200 rounded-full">
-                <Chip color="primary" size="sm">{compareAparts.length}</Chip>
+                { compareAparts.length > 0 && (
+                <div className="absolute top-3 -right-3 w-5 h-5 bg-colorFirst text-white text-xs rounded-full flex items-center justify-center">
+              {compareAparts.length}
+                </div>
+                )}
                 </div>
                 </>
               )}
