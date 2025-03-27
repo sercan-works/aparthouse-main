@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Switch } from "@heroui/react";
 import FilterCard from "@/components/card/FilterCard";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useGetFilteredApartsQuery } from "@/store/api/apartsApi";
+import { useGetApartsQuery, ApiApart } from "@/store/api/apartsApi";
 import { 
   useGetCitiesQuery, 
   useGetUniversitiesQuery, 
@@ -16,6 +16,7 @@ import FilterMap from "@/components/maps/FilterMap";
 const DesktopFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [selectedApart, setSelectedApart] = useState<ApiApart | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -23,13 +24,13 @@ const DesktopFilter = () => {
   const params = Object.fromEntries(searchParams.entries());
   
   // API'den filtreleri çek
-  const { data: cities = [] } = useGetCitiesQuery();
+  const { data: cities = [] } = useGetCitiesQuery('');
   const { data: universities = [] } = useGetUniversitiesQuery();
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: filters = [] } = useGetFiltersQuery();
   
   // Filtrelenmiş apartları API'den getir
-  const { data: filteredAparts, isLoading, error } = useGetFilteredApartsQuery(params);
+  const { data: filteredAparts, isLoading, error } = useGetApartsQuery(params);
 
   // Sonuç sayısını hesapla
   const resultCount = filteredAparts ? filteredAparts.length : 0;
@@ -207,13 +208,23 @@ const DesktopFilter = () => {
     );
   };
 
+  // Apartın seçilmesi için handler
+  const handleApartSelect = (apart: ApiApart) => {
+    setSelectedApart(apart);
+  };
+
   return (
     <div className=" justify-center mx-auto  max-w-6xl my-10 overflow-x-hidden gap-10 grid grid-cols-2">
       {/* HARİTA */}
       {/* <div className="w-1/2 bg-colorFirst h-[calc(100vh-10rem)] fixed top-50 left-5 ml-4 lg:ml-auto max-w-[calc(50%-2.5rem)]">HARİTA</div> */}
       <div className={`col-span-1 bg-colorFirst h-[calc(100vh-10rem)] w-full ml-4 lg:ml-auto transition-all duration-300 rounded-xl`} 
            style={{ marginTop: `${scrollOffset}px` }}>
-        {/* <FilterMap /> */}
+        <FilterMap 
+          aparts={filteredAparts || []} 
+          selectedApart={selectedApart}
+          onApartSelect={handleApartSelect}
+          height="100%"
+        />
       </div>
 
       {/* FİLTRELER */}
