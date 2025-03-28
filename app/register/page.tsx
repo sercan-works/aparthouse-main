@@ -357,27 +357,27 @@ const Register = () => {
             />
 
             <Button 
-              className="bg-colorFirst text-white font-bold mt-5"
+              className="bg-colorFirst text-white font-bold mt-0"
               onPress={handleRegister}
               isLoading={isLoading}
             >
               Hesap Oluştur
             </Button>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-0">
               Zaten bir hesabınız var mı?{" "}
               <Link href="/login" className="text-colorFirst font-bold">
                 Giriş Yap
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-0">
               - veya -
             </p>
 
             
             <Button 
-              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst"
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-0 w-full md:w-1/2 border border-colorFirst"
               onPress={handleGoogleSignIn}
               isLoading={isGoogleLoading}
             >
