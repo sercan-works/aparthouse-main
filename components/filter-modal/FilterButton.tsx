@@ -196,12 +196,13 @@ export default function FilterButton() {
 
   const clearAllFilters = () => {
     setSelectedFilters({});
-    // Tüm filtreler temizlendiğinde localStorage'dan da şehir bilgisini temizle
-    try {
-      localStorage.removeItem(STORAGE_KEY_CITY);
-    } catch (error) {
-      console.error("LocalStorage silme hatası:", error);
-    }
+
+    // Tüm filtreler temizlendiğinde localStorage'dan da şehir bilgisini temizle işlemini devre dışı bırakıyorum
+    // try {
+    //   localStorage.removeItem(STORAGE_KEY_CITY);
+    // } catch (error) {
+    //   console.error("LocalStorage silme hatası:", error);
+    // }
   };
 
   const handleSearch = (onClose: () => void) => {

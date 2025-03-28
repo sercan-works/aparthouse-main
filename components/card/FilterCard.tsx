@@ -4,13 +4,38 @@ import apart_image from "@/public/assets/apart.jpg";
 import FavoriteIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { Checkbox, Chip } from "@heroui/react";
 import StarReadOnly from "../rating/StarReadOnly";
-import { ApiApart } from "@/store/apiSlice";
+import { ApiApart } from "@/types/ApiApart";
 import { useRouter } from "next/navigation";
 
 // ApiApart türünü genişletiyoruz
 interface ExtendedApart extends ApiApart {
   accessibility?: boolean;
   pet?: boolean;
+  slug?: string;
+  apart_name?: string;
+  services?: {
+    service_data: string[];
+  }[];
+  gender?: string;
+  price?: number;
+  price_type?: string;
+  images?: {
+    image: string;
+  }[];
+  food?: boolean;
+  address?: string;
+  location?: string;
+  info?: string;
+  lat?: number;
+  lon?: number;
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
+  is_favorite?: boolean;
+  is_compare?: boolean;
+  is_active?: boolean;
+  is_deleted?: boolean;
+  
 }
 
 const FilterCard = ({
@@ -38,7 +63,7 @@ const FilterCard = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`flex flex-row gap-4 items-center w-full bg-white rounded-xl p-4 shadow-sm md:shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200`}
+      className={`flex flex-row gap-4 min-w-[20rem] items-center w-full bg-white rounded-xl p-4 shadow-sm md:shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200`}
     >
       {/* IMAGE */}
       <div className="w-[115px] h-[115px] flex-shrink-0 rounded-xl overflow-hidden">
