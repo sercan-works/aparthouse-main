@@ -197,7 +197,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       </div>
 
       {/* TAB İÇERİKLERİ */}
-      {activeTab === "general" && (
+     
         <div className="mt-5">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-3">
@@ -288,10 +288,10 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </div>
           </div>
         </div>
-      )}
+
 
       {/* HİZMETLER KISMI */}
-      {activeTab === "services" && (
+  
         <div className="mt-5 grid grid-cols-3 gap-4">
           {apart?.services && Array.isArray(apart.services) && (
             <>
@@ -334,88 +334,24 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </div>
           )}
         </div>
-      )}
 
-      {/* HARİTA TAB İÇERİĞİ */}
-      {activeTab === "map" && (
-        <div className="mt-5">
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-3">
-              <h2 className="text-2xl font-bold">Konum Bilgisi</h2>
-              <div className="mt-5">
-                <LocationViewer apart={apart} height="450px" />
-              </div>
-              <div className="mt-3 text-sm text-gray-500">
-                <p>Üniversite seçerek yürüme rotasını görebilirsiniz.</p>
-                
-                {/* Google Haritalar'da Aç Butonu */}
-                {apart && apart.lat && apart.lon && (
-                  <div className="mt-3">
-                    <Button 
-                      color="primary" 
-                      startContent={<FaExternalLinkAlt />}
-                      onClick={openInGoogleMaps}
-                    >
-                      Google Haritalar&apos;da Aç
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="col-span-1">
-              <div className="text-gray-500 flex flex-col gap-5 text-xs">
-                <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
-                
-                {apart?.distances && apart.distances.length > 0 ? (
-                  apart.distances.map((distance) => (
-                    <div key={distance.id} className="flex flex-col gap-3 truncate border-b-2 border-gray-200 pb-2">
-                      <div className="flex flex-row items-center gap-2">
-                        <SlGraduation className="h-4 w-4 text-gray-500" />
-                        <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
-                          {distance.university.name}:
-                        </h3>
-                      </div>
-                      <div className="ml-6 flex flex-row justify-around items-center gap-3 ">
-                        {distance.yurume > 0 && (
-                          <div className="flex flex-row items-center gap-1">
-                            <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
-                          </div>
-                        )}
-                        {distance.tramvay > 0 && (
-                          <div className="flex flex-row items-center gap-1">
-                            <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
-                          </div>
-                        )}
-                        {distance.otobus > 0 && (
-                          <div className="flex flex-row items-center gap-1">
-                            <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
-                )}
-              </div>
-              <p className="text-gray-500 text-xs mt-2">powered by Google Maps</p>
-            </div>
-          </div>
-        </div>
-      )}
+
+
+  
+
 
       {/* YORUMLAR KISMI */}
-      {activeTab === "comments" && (
+
         <div className="z-40 mt-10 ">
           <h2 className="text-gray-500 font-bold my-5">Yorumlar</h2>
           <div className="flex flex-row items-center gap-2 mx-10">
             <SwiperSlideComments />
           </div>
         </div>
-      )}
+
 
       {/* İLETİŞİM KISMI */}
-      {activeTab === "contact" && (
+
         <div className="z-40 mt-10 mx-5 bg-colorFirst bg-opacity-10 rounded-xl p-5">
           <h2 className="text-gray-500 font-bold ">İletişim</h2>
           <p className="text-gray-500 text-sm">
@@ -466,7 +402,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </div>
           </div>
         </div>
-      )}
+
 
       <Highlights />
     </div>
