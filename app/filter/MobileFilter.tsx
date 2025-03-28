@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { Switch } from "@heroui/react";
-import MobileMap from "@/components/maps/MobileMap";
+import FilterMap from "@/components/maps/FilterMap";
 import FilterCard from "@/components/card/FilterCard";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useGetFilteredApartsQuery } from "@/store/api/apartsApi";
+import { useGetApartsQuery, ApiApart } from "@/store/api/apartsApi";
 import { 
   useGetCitiesQuery, 
   useGetUniversitiesQuery, 
@@ -15,6 +15,8 @@ import Loading from "@/components/ui/Loading";
 
 const MobileFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
+  const [selectedApart, setSelectedApart] = useState<ApiApart | null>(null);
+  const [showMap, setShowMap] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -22,13 +24,13 @@ const MobileFilter = () => {
   const params = Object.fromEntries(searchParams.entries());
   
   // API'den filtreleri çek
-  const { data: cities = [] } = useGetCitiesQuery();
+  const { data: cities = [] } = useGetCitiesQuery('');
   const { data: universities = [] } = useGetUniversitiesQuery();
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: filters = [] } = useGetFiltersQuery();
   
   // Filtrelenmiş apartları API'den getir
-  const { data: filteredAparts, isLoading, error } = useGetFilteredApartsQuery(params);
+  const { data: filteredAparts, isLoading, error } = useGetApartsQuery(params);
   
   // Sıralama işlemi için handler fonksiyonu
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -42,6 +44,16 @@ const MobileFilter = () => {
     
     // URL'yi güncelle
     router.push(`/filter?${currentParams.toString()}`, { scroll: false });
+  };
+
+  // Apartın seçilmesi için handler
+  const handleApartSelect = (apart: ApiApart) => {
+    setSelectedApart(apart);
+  };
+
+  // Haritayı göster/gizle
+  const toggleMap = () => {
+    setShowMap(!showMap);
   };
 
   // Filtre değerlerini öğelerin ID'sine göre bulmak için yardımcı fonksiyon
@@ -204,10 +216,28 @@ const MobileFilter = () => {
         </div>
       </div>
 
+      {/* HARİTA GÖSTER BUTON */}
+      <button
+        onClick={toggleMap}
+        className="w-full py-3 mt-4 bg-white border border-gray-300 rounded-lg text-center font-medium text-gray-700 flex items-center justify-center gap-2 shadow-sm"
+      >
+        {showMap ? "Haritayı Gizle" : "Haritayı Göster"}
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6-3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+      </button>
+
       {/* HARİTA */}
-      <div className="flex flex-col justify-center items-center mt-5">
-        <MobileMap />
-      </div>
+      {showMap && (
+        <div className="w-full h-[400px] mt-4 rounded-lg overflow-hidden">
+          <FilterMap 
+            aparts={filteredAparts || []} 
+            selectedApart={selectedApart}
+            onApartSelect={handleApartSelect}
+            height="100%"
+          />
+        </div>
+      )}
 
       {/* FİLTRELER */}
       <div className="flex flex-col justify-center items-center mt-5 gap-4 ">
