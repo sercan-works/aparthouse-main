@@ -255,7 +255,7 @@ export default function FilterButton() {
   };
 
   return (
-    <>
+    <div className="w-full">
       <Button className="w-full bg-gray-100 h-10" onPress={onOpen}>
         <Image src={FilterIcon} alt="Filter" width={18} height={16} />
         Filtre
@@ -390,7 +390,7 @@ export default function FilterButton() {
                   </ul>
                 )}
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="mb-16 md:mb-0">
                 <Button color="danger" variant="light" onPress={clearAllFilters}>
                   Tümünü Temizle
                 </Button>
@@ -406,6 +406,6 @@ export default function FilterButton() {
           )}
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
