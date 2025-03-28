@@ -1,8 +1,10 @@
 import React, { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer, Libraries } from '@react-google-maps/api';
-import { FaExternalLinkAlt } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaUniversity } from 'react-icons/fa';
 import { ApiApart } from '@/store/api/apartsApi';
 import { useRouter } from 'next/navigation';
+import { useGetUniversitiesQuery } from '@/store/api/filterApi';
+import Loading from '../ui/Loading';
 
 // API anahtarı
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -58,7 +60,9 @@ const FilterMap: React.FC<FilterMapProps> = ({
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [activeApart, setActiveApart] = useState<ApiApart | null>(selectedApart);
   const mapRef = useRef<google.maps.Map | null>(null);
-  
+  const { data: universities } = useGetUniversitiesQuery();
+
+
   // Geliştirme için konsola verileri kaydet
   useEffect(() => {
     console.log('FilterMap received aparts:', aparts);
@@ -273,7 +277,7 @@ const FilterMap: React.FC<FilterMapProps> = ({
   };
 
   if (!isLoaded) {
-    return <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ height }}>Harita yükleniyor...</div>;
+    return <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ height }}><Loading/></div>;
   }
 
   // Varsayılan merkez veya ilk apartın konumu
@@ -324,7 +328,7 @@ const FilterMap: React.FC<FilterMapProps> = ({
                 icon={{
                   url: isActive 
                     ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-                    : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                    : 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
                   scaledSize: new google.maps.Size(isActive ? 48 : 32, isActive ? 48 : 32),
                   labelOrigin: new google.maps.Point(isActive ? 24 : 16, -10)
                 }}
@@ -353,6 +357,28 @@ const FilterMap: React.FC<FilterMapProps> = ({
               }}
             />
           )}
+
+          {/* Tüm üniversitelerin konumları */}
+          {universities?.map((university) => {
+            // API'den gelen üniversite verisini University tipine dönüştür
+            const universityWithLocation = university as unknown as University;
+            console.log("Üniversite:", university.name, "Konum:", universityWithLocation.lat, universityWithLocation.lon);
+            return (
+              <Marker
+                key={university.id}
+                icon={{
+                  url: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                  scaledSize: new google.maps.Size(32, 32)
+                }}
+                label={{
+                  text: university.name.substring(0, 10),
+                  className: "text-xs font-bold"
+                }}
+                position={{ lat: universityWithLocation.lat, lng: universityWithLocation.lon }}
+              />
+            );
+            
+          })}
           
           {/* Yürüme rotası */}
           {directions && (
