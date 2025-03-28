@@ -1,13 +1,24 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo } from 'react';
-import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer, Libraries } from '@react-google-maps/api';
-import { FaExternalLinkAlt, FaUniversity } from 'react-icons/fa';
-import { ApiApart } from '@/store/api/apartsApi';
-import { useRouter } from 'next/navigation';
-import { useGetUniversitiesQuery } from '@/store/api/filterApi';
-import Loading from '../ui/Loading';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo
+} from "react";
+import {
+  GoogleMap,
+  Marker,
+  useJsApiLoader,
+  DirectionsRenderer,
+  Libraries
+} from "@react-google-maps/api";
+import { FaExternalLinkAlt, FaTimes } from "react-icons/fa";
+import { ApiApart } from "@/store/api/apartsApi";
+import { useGetUniversitiesQuery } from "@/store/api/filterApi";
+import Loading from "../ui/Loading";
 
 // API anahtarı
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 // Türkiye'nin merkezi (varsayılan konum olarak)
 const defaultCenter = {
@@ -17,21 +28,31 @@ const defaultCenter = {
 
 // Harita konteyner stili
 const containerStyle = {
-  width: '100%',
-  height: '100%',
-  borderRadius: '0.5rem'
+  width: "100%",
+  height: "100%",
+  borderRadius: "0.5rem"
 };
 
 // ApiApart içindeki university tipi için özel bir interface
 interface ApiUniversity {
   id: number;
   name: string;
+  lat?: number;
+  lon?: number;
 }
 
 // Harita üzerinde gösterilecek üniversite
 interface MapUniversity extends ApiUniversity {
   lat: number;
   lon: number;
+}
+
+// BaseItem interface for universities from the API
+interface BaseItem {
+  id: number;
+  name: string;
+  lat?: number;
+  lon?: number;
 }
 
 interface FilterMapProps {
@@ -42,45 +63,62 @@ interface FilterMapProps {
 }
 
 // Singleton pattern to ensure only one loader is created
-const libraries: Libraries = ['places'];
+const libraries: Libraries = ["places"];
 const LOADER_OPTIONS = {
-  id: 'google-map-script',
+  id: "google-map-script",
   googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   libraries
 };
 
-const FilterMap: React.FC<FilterMapProps> = ({ 
-  aparts = [], 
-  height = '100%',
+const FilterMap: React.FC<FilterMapProps> = ({
+  aparts = [],
+  height = "100%",
   selectedApart = null,
   onApartSelect
 }) => {
-  const router = useRouter();
-  const [selectedUniversity, setSelectedUniversity] = useState<MapUniversity | null>(null);
-  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const [activeApart, setActiveApart] = useState<ApiApart | null>(selectedApart);
+  const [selectedUniversity, setSelectedUniversity] =
+    useState<MapUniversity | null>(null);
+  const [directions, setDirections] =
+    useState<google.maps.DirectionsResult | null>(null);
+  const [activeApart, setActiveApart] = useState<ApiApart | null>(
+    selectedApart
+  );
+  const [showUniversitySelect, setShowUniversitySelect] =
+    useState<boolean>(false);
+  const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral | null>(
+    null
+  );
   const mapRef = useRef<google.maps.Map | null>(null);
   const { data: universities } = useGetUniversitiesQuery();
 
-
   // Geliştirme için konsola verileri kaydet
   useEffect(() => {
-    console.log('FilterMap received aparts:', aparts);
+    console.log("FilterMap received aparts:", aparts);
     if (aparts.length > 0) {
-      console.log('First apart location:', 
-        aparts[0].lat ? { lat: aparts[0].lat, lng: aparts[0].lon } : 'No location data');
+      console.log(
+        "First apart location:",
+        aparts[0].lat
+          ? { lat: aparts[0].lat, lng: aparts[0].lon }
+          : "No location data"
+      );
     }
   }, [aparts]);
 
   // Geçerli koordinatları olan apartları filtrele
   const validAparts = useMemo(() => {
-    return aparts.filter(apart => {
+    return aparts.filter((apart) => {
       // Koordinat değerlerinin geçerli olup olmadığını kontrol et
-      const isValidLat = apart.lat && typeof apart.lat === 'number' && 
-                         apart.lat > -90 && apart.lat < 90;
-      const isValidLon = apart.lon && typeof apart.lon === 'number' && 
-                         apart.lon > -180 && apart.lon < 180;
-      
+      const isValidLat =
+        apart.lat &&
+        typeof apart.lat === "number" &&
+        apart.lat > -90 &&
+        apart.lat < 90;
+      const isValidLon =
+        apart.lon &&
+        typeof apart.lon === "number" &&
+        apart.lon > -180 &&
+        apart.lon < 180;
+
       return isValidLat && isValidLon;
     });
   }, [aparts]);
@@ -100,15 +138,20 @@ const FilterMap: React.FC<FilterMapProps> = ({
       try {
         const bounds = new google.maps.LatLngBounds();
         let validLocationsCount = 0;
-        
-        validAparts.forEach(apart => {
+
+        validAparts.forEach((apart) => {
           if (apart.lat && apart.lon) {
             bounds.extend(new google.maps.LatLng(apart.lat, apart.lon));
             validLocationsCount++;
           }
         });
-        
+
         if (validLocationsCount > 0) {
+          // Haritanın ilk merkezi olarak bounds'un merkezini ayarla
+          if (!mapCenter) {
+            setMapCenter(bounds.getCenter().toJSON());
+          }
+
           // Eğer sadece bir konum varsa, daha yakın zoom yapalım
           if (validLocationsCount === 1) {
             mapRef.current.setCenter(bounds.getCenter());
@@ -120,25 +163,33 @@ const FilterMap: React.FC<FilterMapProps> = ({
             const sw = bounds.getSouthWest();
             const latDiff = Math.abs(ne.lat() - sw.lat()) * padRatio;
             const lngDiff = Math.abs(ne.lng() - sw.lng()) * padRatio;
-            
-            bounds.extend(new google.maps.LatLng(ne.lat() + latDiff, ne.lng() + lngDiff));
-            bounds.extend(new google.maps.LatLng(sw.lat() - latDiff, sw.lng() - lngDiff));
-            
+
+            bounds.extend(
+              new google.maps.LatLng(ne.lat() + latDiff, ne.lng() + lngDiff)
+            );
+            bounds.extend(
+              new google.maps.LatLng(sw.lat() - latDiff, sw.lng() - lngDiff)
+            );
+
             // Yeni bounds'u uygula
             mapRef.current.fitBounds(bounds);
-            
+
             // Zoom sınırlaması (daha düşük maksimum zoom = daha geniş görünüm)
-            google.maps.event.addListenerOnce(mapRef.current, 'bounds_changed', () => {
-              const currentZoom = mapRef.current?.getZoom();
-              // Maksimum zoom'u 11 olarak sınırla (daha geniş görünüm için)
-              if (currentZoom !== undefined && currentZoom > 14) {
-                mapRef.current?.setZoom(14);
+            google.maps.event.addListenerOnce(
+              mapRef.current,
+              "bounds_changed",
+              () => {
+                const currentZoom = mapRef.current?.getZoom();
+                // Maksimum zoom'u 11 olarak sınırla (daha geniş görünüm için)
+                if (currentZoom !== undefined && currentZoom > 14) {
+                  mapRef.current?.setZoom(14);
+                }
               }
-            });
+            );
           }
         }
       } catch (error) {
-        console.error('Error fitting bounds:', error);
+        console.error("Error fitting bounds:", error);
       }
     } else if (isLoaded && mapRef.current) {
       // Hiç apart yoksa Türkiye'yi göster
@@ -150,18 +201,28 @@ const FilterMap: React.FC<FilterMapProps> = ({
   // Apartın seçilmesi durumunda güncelle ve haritayı ortala
   useEffect(() => {
     setActiveApart(selectedApart);
-    
+
     // Seçilen apart değiştiğinde haritayı o aparta odakla
-    if (isLoaded && mapRef.current && selectedApart && selectedApart.lat && selectedApart.lon) {
-      const position = new google.maps.LatLng(selectedApart.lat, selectedApart.lon);
+    if (
+      isLoaded &&
+      mapRef.current &&
+      selectedApart &&
+      selectedApart.lat &&
+      selectedApart.lon
+    ) {
+      const position = new google.maps.LatLng(
+        selectedApart.lat,
+        selectedApart.lon
+      );
       mapRef.current.panTo(position);
       mapRef.current.setZoom(15);
+      setMapCenter({ lat: selectedApart.lat, lng: selectedApart.lon });
     }
   }, [selectedApart, isLoaded]);
 
   // Apart marker'ın animasyonunu kontrol etmek için state ve useEffect
   const [showAnimation, setShowAnimation] = useState(false);
-  
+
   useEffect(() => {
     if (activeApart) {
       setShowAnimation(true);
@@ -175,14 +236,23 @@ const FilterMap: React.FC<FilterMapProps> = ({
 
   // Üniversite ve apart seçildiğinde rota hesaplama
   useEffect(() => {
-    if (isLoaded && selectedUniversity && activeApart && activeApart.lat && activeApart.lon) {
+    if (
+      isLoaded &&
+      selectedUniversity &&
+      activeApart &&
+      activeApart.lat &&
+      activeApart.lon
+    ) {
       try {
         const directionsService = new google.maps.DirectionsService();
-        
+
         directionsService.route(
           {
             origin: { lat: activeApart.lat, lng: activeApart.lon },
-            destination: { lat: selectedUniversity.lat, lng: selectedUniversity.lon },
+            destination: {
+              lat: selectedUniversity.lat,
+              lng: selectedUniversity.lon
+            },
             travelMode: google.maps.TravelMode.WALKING
           },
           (result, status) => {
@@ -195,7 +265,7 @@ const FilterMap: React.FC<FilterMapProps> = ({
           }
         );
       } catch (error) {
-        console.error('Error calculating directions:', error);
+        console.error("Error calculating directions:", error);
         setDirections(null);
       }
     } else {
@@ -204,35 +274,38 @@ const FilterMap: React.FC<FilterMapProps> = ({
   }, [selectedUniversity, activeApart, isLoaded]);
 
   // Harita yüklendikten sonra çalışacak
-  const onLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-    
-    // Harita yüklendikten sonra da bounds ayarla
-    if (validAparts && validAparts.length > 0) {
-      const bounds = new google.maps.LatLngBounds();
-      let hasValidLocations = false;
-      
-      validAparts.forEach(apart => {
-        if (apart.lat && apart.lon) {
-          bounds.extend(new google.maps.LatLng(apart.lat, apart.lon));
-          hasValidLocations = true;
-        }
-      });
-      
-      if (hasValidLocations) {
-        setTimeout(() => {
-          map.fitBounds(bounds, 100); // 100px padding
-          
-          // Zoom sınırlaması (daha düşük maksimum zoom = daha geniş görünüm)
-          const currentZoom = map.getZoom();
-          if (currentZoom !== undefined && currentZoom > 11) {
-            map.setZoom(11);
+  const onLoad = useCallback(
+    (map: google.maps.Map) => {
+      mapRef.current = map;
+
+      // Harita yüklendikten sonra da bounds ayarla
+      if (validAparts && validAparts.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        let hasValidLocations = false;
+
+        validAparts.forEach((apart) => {
+          if (apart.lat && apart.lon) {
+            bounds.extend(new google.maps.LatLng(apart.lat, apart.lon));
+            hasValidLocations = true;
           }
-        }, 200); // Haritanın yüklenmesi için kısa bir gecikme
+        });
+
+        if (hasValidLocations) {
+          setTimeout(() => {
+            map.fitBounds(bounds, 100); // 100px padding
+
+            // Zoom sınırlaması (daha düşük maksimum zoom = daha geniş görünüm)
+            const currentZoom = map.getZoom();
+            if (currentZoom !== undefined && currentZoom > 11) {
+              map.setZoom(11);
+            }
+          }, 200); // Haritanın yüklenmesi için kısa bir gecikme
+        }
       }
-    }
-  }, [validAparts]);
-  
+    },
+    [validAparts]
+  );
+
   const onUnmount = useCallback(() => {
     mapRef.current = null;
   }, []);
@@ -240,17 +313,17 @@ const FilterMap: React.FC<FilterMapProps> = ({
   // Üniversite seçildiğinde
   const handleUniversityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const uniId = parseInt(e.target.value);
-    
-    if (uniId && activeApart && activeApart.distances) {
-      const apiUniversity = activeApart.distances.find(d => d.university.id === uniId)?.university || null;
-      
-      if (apiUniversity) {
-        // Gerçek konum bilgisi olmadığı için varsayılan konumu kullanıyoruz
-        // Normalde API'den gelen üniversite verisinde lat ve lon olması gerekir
+
+    if (uniId && universities) {
+      const selectedUni = universities.find(
+        (uni) => uni.id === uniId
+      ) as BaseItem;
+
+      if (selectedUni) {
         setSelectedUniversity({
-          ...apiUniversity,
-          lat: defaultCenter.lat, 
-          lon: defaultCenter.lng
+          ...selectedUni,
+          lat: selectedUni.lat || defaultCenter.lat,
+          lon: selectedUni.lon || defaultCenter.lng
         });
       } else {
         setSelectedUniversity(null);
@@ -265,31 +338,92 @@ const FilterMap: React.FC<FilterMapProps> = ({
     if (activeApart?.lat && activeApart?.lon) {
       // Mobil cihazlarda çalışması için
       const url = `https://www.google.com/maps/search/?api=1&query=${activeApart.lat},${activeApart.lon}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     }
   };
 
-  // Detay sayfasına yönlendiren fonksiyon
-  const goToApartDetail = (apart: ApiApart) => {
-    if (apart.id) {
-      router.push(`/${apart.slug}`);
+  // Apart tıklandığında çalışacak
+  const handleApartClick = (apart: ApiApart) => {
+    setActiveApart(apart);
+    if (onApartSelect) {
+      onApartSelect(apart);
     }
+
+    // Apartın konumunu harita merkezi olarak ayarla
+    if (apart.lat && apart.lon && mapRef.current) {
+      const position = new google.maps.LatLng(apart.lat, apart.lon);
+      mapRef.current.panTo(position);
+      mapRef.current.setZoom(15);
+      setMapCenter({ lat: apart.lat, lng: apart.lon });
+    }
+
+    setShowUniversitySelect(true);
   };
 
   if (!isLoaded) {
-    return <div className="flex items-center justify-center bg-gray-100 rounded-lg" style={{ height }}><Loading/></div>;
+    return (
+      <div
+        className="flex items-center justify-center bg-gray-100 rounded-lg"
+        style={{ height }}
+      >
+        <Loading />
+      </div>
+    );
   }
 
   // Varsayılan merkez veya ilk apartın konumu
-  const center = (validAparts && validAparts.length > 0 && validAparts[0].lat && validAparts[0].lon) 
-    ? { lat: validAparts[0].lat, lng: validAparts[0].lon } 
-    : defaultCenter;
+  const initialCenter =
+    validAparts &&
+    validAparts.length > 0 &&
+    validAparts[0].lat &&
+    validAparts[0].lon
+      ? { lat: validAparts[0].lat, lng: validAparts[0].lon }
+      : defaultCenter;
+
+  // Eğer mapCenter varsa onu kullan, yoksa initialCenter kullan
+  const center = mapCenter || initialCenter;
 
   return (
     <div className="flex flex-col gap-2 h-full">
+      {/* Üniversite seçim kutusu */}
+      {showUniversitySelect && activeApart && (
+        <div className="mx-4 p-3 bg-white rounded-md shadow-md mt-5 transition-all duration-900">
+          <div className="flex flex-col">
+            <label
+              htmlFor="university-select"
+              className="text-sm font-medium text-gray-700 flex justify-between mb-2"
+            >
+              {activeApart.name || "Bu konum"} için üniversite seçin:
+              {/* Close button */}
+              <button
+                onClick={() => {
+                  setShowUniversitySelect(false);
+                  setDirections(null);
+                  setSelectedUniversity(null);
+                }}
+                className="text-gray-500 bg-gray-100 p-1 rounded-md hover:text-gray-700"
+              >
+                <FaTimes />
+              </button>
+            </label>
 
-      
-      
+            <select
+              id="university-select"
+              className="form-select w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              onChange={handleUniversityChange}
+              value={selectedUniversity?.id || ""}
+            >
+              <option value="">Üniversite Seçin</option>
+              {universities?.map((university) => (
+                <option key={university.id} value={university.id}>
+                  {university.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
       <div className="relative flex-grow mt-2 p-2">
         <GoogleMap
           mapContainerStyle={mapStyle}
@@ -316,39 +450,56 @@ const FilterMap: React.FC<FilterMapProps> = ({
           }}
         >
           {/* Tüm apartların konumları */}
-          {validAparts && validAparts.map((apart, index) => {
-            if (!apart.lat || !apart.lon) return null;
-            
-            const isActive = activeApart && activeApart.id === apart.id;
-            
-            return (
-              <Marker 
-                key={apart.id || index}
-                position={{ lat: apart.lat, lng: apart.lon }} 
-                icon={{
-                  url: isActive 
-                    ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-                    : 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
-                  scaledSize: new google.maps.Size(isActive ? 48 : 32, isActive ? 48 : 32),
-                  labelOrigin: new google.maps.Point(isActive ? 24 : 16, -10)
-                }}
-                onClick={() => goToApartDetail(apart)}
-                label={{
-                  text: (apart.apart_name || apart.name || `${index + 1}`).toString(),
-                  className: `text-xs font-bold ${isActive ? 'text-green-700' : 'text-gray-700'}`
-                }}
-                animation={isActive && showAnimation ? google.maps.Animation.BOUNCE : undefined}
-                zIndex={isActive ? 1000 : 1}
-              />
-            );
-          })}
-          
+          {validAparts &&
+            validAparts.map((apart, index) => {
+              if (!apart.lat || !apart.lon) return null;
+
+              const isActive = activeApart && activeApart.id === apart.id;
+
+              return (
+                <Marker
+                  key={apart.id || index}
+                  position={{ lat: apart.lat, lng: apart.lon }}
+                  icon={{
+                    url: isActive
+                      ? ""
+                      : "http://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+                    scaledSize: new google.maps.Size(
+                      isActive ? 48 : 32,
+                      isActive ? 48 : 32
+                    ),
+                    labelOrigin: new google.maps.Point(isActive ? 24 : 16, -10)
+                  }}
+                  onClick={() => handleApartClick(apart)}
+                  label={{
+                    text: (
+                      apart.apart_name ||
+                      apart.name ||
+                      `${index + 1}`
+                    ).toString(),
+                    className: `text-xs font-bold ${
+                      isActive ? "text-green-700" : "text-gray-700"
+                    }`
+                  }}
+                  animation={
+                    isActive && showAnimation
+                      ? google.maps.Animation.DROP
+                      : undefined
+                  }
+                  zIndex={isActive ? 1000 : 1}
+                />
+              );
+            })}
+
           {/* Seçili üniversite konumu */}
           {selectedUniversity && (
-            <Marker 
-              position={{ lat: selectedUniversity.lat, lng: selectedUniversity.lon }}
+            <Marker
+              position={{
+                lat: selectedUniversity.lat,
+                lng: selectedUniversity.lon
+              }}
               icon={{
-                url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                 scaledSize: new google.maps.Size(32, 32)
               }}
               label={{
@@ -360,26 +511,27 @@ const FilterMap: React.FC<FilterMapProps> = ({
 
           {/* Tüm üniversitelerin konumları */}
           {universities?.map((university) => {
-            // API'den gelen üniversite verisini University tipine dönüştür
-            const universityWithLocation = university as unknown as University;
-            console.log("Üniversite:", university.name, "Konum:", universityWithLocation.lat, universityWithLocation.lon);
+            // API'den gelen üniversite verisini dönüştür
+            const uni = university as BaseItem;
+            const uniLat = uni.lat || defaultCenter.lat;
+            const uniLon = uni.lon || defaultCenter.lng;
+
             return (
               <Marker
                 key={university.id}
                 icon={{
-                  url: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                  url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
                   scaledSize: new google.maps.Size(32, 32)
                 }}
                 label={{
                   text: university.name.substring(0, 10),
                   className: "text-xs font-bold"
                 }}
-                position={{ lat: universityWithLocation.lat, lng: universityWithLocation.lon }}
+                position={{ lat: uniLat, lng: uniLon }}
               />
             );
-            
           })}
-          
+
           {/* Yürüme rotası */}
           {directions && (
             <DirectionsRenderer
@@ -387,27 +539,40 @@ const FilterMap: React.FC<FilterMapProps> = ({
               options={{
                 suppressMarkers: true,
                 polylineOptions: {
-                  strokeColor: '#4a90e2',
+                  strokeColor: "#4a90e2",
                   strokeWeight: 5
                 }
               }}
             />
           )}
         </GoogleMap>
-        
+
         {validAparts.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6-3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 mb-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6-3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+              />
             </svg>
             <p className="text-lg font-medium">Filtrelenmiş apart bulunamadı</p>
-            <p className="text-sm mt-1">Lütfen arama kriterlerinizi değiştirin</p>
+            <p className="text-sm mt-1">
+              Lütfen arama kriterlerinizi değiştirin
+            </p>
           </div>
         )}
-        
+
         {/* Google Haritalar'da Aç Butonu */}
         {activeApart && activeApart.lat && activeApart.lon && (
-          <button 
+          <button
             onClick={openInGoogleMaps}
             className="absolute top-2 right-2 bg-white p-2 rounded-md shadow-md hover:bg-gray-100 transition-colors flex items-center gap-1"
             title="Google Haritalar'da Aç"
@@ -417,15 +582,21 @@ const FilterMap: React.FC<FilterMapProps> = ({
           </button>
         )}
       </div>
-      
+
       {selectedUniversity && directions?.routes[0]?.legs[0] && (
-        <div className="mx-4 mb-4 text-xs bg-blue-50 p-2 rounded-md">
-          <p className="font-bold">Yürüme Mesafesi: {directions.routes[0].legs[0].distance?.text || ''}</p>
-          <p>Tahmini Süre: {directions.routes[0].legs[0].duration?.text || ''}</p>
+        <div className="mx-4 mb-4 text-sm bg-blue-50 p-3 rounded-md shadow-sm">
+          <p className="font-bold flex items-center">
+            <span className="mr-2">🚶</span>
+            Yürüme Mesafesi: {directions.routes[0].legs[0].distance?.text || ""}
+          </p>
+          <p className="flex items-center">
+            <span className="mr-2">⏱️</span>
+            Tahmini Süre: {directions.routes[0].legs[0].duration?.text || ""}
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-export default FilterMap; 
+export default FilterMap;
