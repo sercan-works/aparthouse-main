@@ -206,7 +206,7 @@ export default function Navigation() {
                 </div>
                 <Link 
                   href="/compare" 
-                  className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                  className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
                   <MdCompareArrows className="w-4 h-4" />
                   Karşılaştırma
@@ -235,10 +235,11 @@ export default function Navigation() {
                 </Link>
                 <Link 
                   href="/compare" 
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
                   <MdCompareArrows className="w-4 h-4" />
                   Karşılaştırma
+                  <Chip color="primary" size="sm">{compareAparts.length} öğe</Chip>
                 </Link>
               </>
             )}
