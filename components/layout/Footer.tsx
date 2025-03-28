@@ -5,7 +5,7 @@ import FacebookIcon from "@/public/assets/icons/FacebookIcon.svg";
 import TiktokIcon from "@/public/assets/icons/TiktokIcon.svg";
 import InstagramIcon from "@/public/assets/icons/InstagramIcon.svg";
 import LinkedInIcon from "@/public/assets/icons/LinkedinIcon.svg";
-
+import Link from "next/link"; 
 const Footer = () => {
   return (
     <div className="hidden md:block bg-gray-50 py-8 font-thin text-gray-600">
@@ -18,29 +18,29 @@ const Footer = () => {
           <div className="flex mx-auto flex-col gap-4">
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="/about" className="text-gray-600 hover:text-gray-900">
                   Hakkımızda
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="tel:+905326267059" className="text-gray-600 hover:text-gray-900">
                   +90 532 626 70 59
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="mailto:info@aparthouse.com.tr" className="text-gray-600 hover:text-gray-900">
                   info@aparthouse.com.tr
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   Bize Mesaj Gönderin
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   İş Ortaklığı
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -50,24 +50,24 @@ const Footer = () => {
             <h3 className="font-bold mb-4">Konaklamalar</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   Apart
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   Yurt
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   Pansiyon
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
                   Öğrenci Evi
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

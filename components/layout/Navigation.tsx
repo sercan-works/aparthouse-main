@@ -120,7 +120,7 @@ export default function Navigation() {
 
   return (
     <nav className="flex items-center gap-5">
-      <Link href="/" className="text-gray-700 hover:text-gray-900">
+      <Link href="/help" className="text-gray-700 hover:text-gray-900">
         Yardım
       </Link>
       <Link href="/favorites" className="text-gray-700 hover:text-gray-900">
