@@ -131,7 +131,7 @@ const SearchBar = ({placeholder}: {placeholder: string}) => {
                   >
                     <td className="px-4 py-2 text-sm text-gray-900">{result.apart_name}</td>
                     <td className="px-4 py-2 text-sm text-gray-900">
-                      {result.town?.name || '-'}
+                      {result?.city_name || '-'}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-900">{result.phone || '-'}</td>
                   </tr>

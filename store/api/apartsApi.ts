@@ -56,6 +56,7 @@ export interface ApiApart {
   name: string;
   price: number;
   price_type: string;
+  city_name: string;
   info: string;
   address: string;
   lat: number;
