@@ -204,6 +204,10 @@ export default function Navigation() {
                     {userEmail}
                   </p>
                 </div>
+                <Link href="/profile" className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2">
+                  <Image src={UserIcon} alt="User" width={16} height={16} />
+                  Profilim
+                </Link>
                 <Link 
                   href="/compare" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
