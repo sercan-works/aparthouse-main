@@ -183,7 +183,7 @@ const LocationViewer: React.FC<LocationViewerProps> = ({
             onChange={handleUniversityChange}
             defaultValue=""
           >
-            <option value=""><span></span>Üniversite seçiniz</option>
+            <option value="">Üniversite seçiniz</option>
             {apart.distances.map(distance => (
               <option key={distance.university.id} value={distance.university.id}>
                 {distance.university.name} ({distance.yurume} dk yürüme)

@@ -156,7 +156,7 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3">
+    <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3 mb-20 md:mb-0">
       {/* ÜST KISIM */}
       <div className="flex flex-col p-10 justify-start lg:justify-center items-start lg:items-center gap-3 lg:gap-10  lg:col-span-1">
         <Link href="/">
@@ -247,27 +247,27 @@ const Login = () => {
             />
 
             <Button 
-              className="bg-colorFirst text-white font-bold mt-5" 
+              className="bg-colorFirst text-white font-bold " 
               onPress={handleEmailLogin}
               isLoading={isLoginLoading || isLoading}
             >
               Giriş Yap
             </Button>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-2">
               Hesabınız yok mu?{" "}
               <Link href="/register" className="text-colorFirst font-bold">
                 Kayıt ol
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-2">
               - veya -
             </p>
 
             
             <Button 
-              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst"
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-2 w-full md:w-1/2 border border-colorFirst"
               onPress={handleGoogleLogin}
               isLoading={isLoading}
             >

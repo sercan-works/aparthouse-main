@@ -21,6 +21,7 @@ import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 // ApiApart tipini doğrudan kullanıyoruz
 const Card = ({ apart }: { apart: ApiApart }) => {
@@ -32,7 +33,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   const { compareApartIds } = useSelector((state: RootState) => state.compare);
   const [localIsFavorite, setLocalIsFavorite] = useState(false);
   const [localIsCompare, setLocalIsCompare] = useState(false);
-
+  const router = useRouter();
   // Redux state'inden favori durumunu güncelle
   useEffect(() => {
     if (apart && apart.id) {
@@ -274,7 +275,11 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                     // Doğrudan link sayfasına gitmesine izin ver
                   }}
                 >
-                  <Button className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0">
+                  <Button 
+                  onPress={() => {
+                    router.push(`/${apartSlug}`);
+                  }}
+                  className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0">
                     <p className="font-bold ">Daha Fazlası &#62;</p>
                   </Button>
                 </div>

@@ -23,6 +23,7 @@ import { BsHeartFill } from "react-icons/bs";
 import Highlights from "@/components/Highlights";
 import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
+import Loading from "@/components/ui/Loading";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -113,7 +114,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     }
   };
 
-  if (isLoading) return <div className="container mt-10">Yükleniyor...</div>;
+  if (isLoading) return <div className="container h-screen flex justify-center items-center"><Loading/></div>;
   if (error) return <div className="container mt-10">Hata: {JSON.stringify(error)}</div>;
   if (!apart) return <div className="container mt-10">Apart bulunamadı</div>;
 
@@ -244,7 +245,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               </div>
               <div className="mt-5">
                 <h2 className="text-2xl font-bold">Harita</h2>
-                <LocationViewer apart={apart}/>
+                <LocationViewer apart={apart} />
               </div>
 
               {/* MESAFELER */}
