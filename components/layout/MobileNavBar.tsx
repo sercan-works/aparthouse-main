@@ -12,7 +12,7 @@ import HomeIcon from '@/public/assets/icons/HomeIcon.svg'
 import UserIcon from '@/public/assets/icons/UserIcon.svg'
 import { MdCompareArrows } from "react-icons/md";
 import { RootState } from "@/store";
-import { BsHeart, BsHeartFill } from 'react-icons/bs';
+import { BsHeart } from 'react-icons/bs';
 
 // Kullanıcı tipi için arayüz
 interface User {

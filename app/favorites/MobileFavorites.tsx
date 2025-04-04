@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import BannerImage from "@/public/assets/images/banner_image_2.jpeg";
-import { FaTrash } from "react-icons/fa6";
 import { Select, SelectItem } from "@heroui/react";
 import FavoritesAparts from "@/components/FavoritesAparts";
 

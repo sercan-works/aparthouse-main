@@ -92,9 +92,9 @@ const MobileCitySelection = () => {
     }
   };
 
-  const handleClose = () => {
-    setShowModal(false);
-  };
+  // const handleClose = () => {
+  //   setShowModal(false);
+  // };
 
   const getSelectedCityKey = () => {
     if (!selectedCity) return "";
