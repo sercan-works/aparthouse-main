@@ -11,7 +11,6 @@ const nextConfig = {
       'google.com',    // Alternatif Google domain
       '127.0.0.1',     // Yerel API görüntüleri
       'localhost',     // Yerel API görüntüleri
-      'service.aparthouse.com.tr',
       'aparthouse.com.tr',    // Ana site domain
     ],
   },
