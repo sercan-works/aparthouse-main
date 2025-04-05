@@ -12,6 +12,7 @@ const nextConfig = {
       '127.0.0.1',     // Yerel API görüntüleri
       'localhost',     // Yerel API görüntüleri
       'service.aparthouse.com.tr',
+      'aparthouse.com.tr',    // Ana site domain
     ],
   },
   // Eski URL yapısından yeni URL yapısına yönlendirme
