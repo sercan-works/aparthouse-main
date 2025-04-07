@@ -272,7 +272,7 @@ const Login = () => {
               isLoading={isLoading}
             >
               {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
-              Google ile Giriş Yap
+              Google ile giriş yap
             </Button>
 
             {/* <RegisterSuccess /> */}
