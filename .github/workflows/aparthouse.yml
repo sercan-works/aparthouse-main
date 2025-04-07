@@ -1,3 +1,4 @@
+# .github/workflows/frontend.yml
 name: Deploy Frontend
 
 on:
@@ -17,19 +18,32 @@ jobs:
       - id: check
         run: |
           git diff --name-only HEAD^ HEAD > changes.txt
+          echo "Changed files:"
+          cat changes.txt
+          
           echo "Checking frontend changes..."
           if grep -q "^frontend/" changes.txt; then
+            echo "Frontend changes detected!"
             echo "frontend_changed=true" >> $GITHUB_OUTPUT
           else
+            echo "No frontend changes"
             echo "frontend_changed=false" >> $GITHUB_OUTPUT
           fi
+          
+          # Debug çıktıları
+          echo "GITHUB_OUTPUT contents:"
+          cat $GITHUB_OUTPUT
 
   deploy-frontend:
     needs: check-changes
-    if: needs.check-changes.outputs.frontend_changed == 'true'
+    if: ${{ needs.check-changes.outputs.frontend_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy frontend
+    - name: Debug Output
+      run: |
+        echo "Frontend changed value: ${{ needs.check-changes.outputs.frontend_changed }}"
+    
+    - name: Deploy Frontend
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -45,4 +59,4 @@ jobs:
           docker compose up -d --build --no-deps frontend
           
           echo "Checking service status..."
-          docker compose ps
+          docker compose ps frontend
