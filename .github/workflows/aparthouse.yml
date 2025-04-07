@@ -16,19 +16,16 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /home/aparthouse-umbrella
+          cd /home/aparthouse-umbrella/frontend
           git fetch --all
           git checkout master
           git pull origin master
           
-          # Docker compose versiyonunu kontrol et
           docker compose version
           
-          # Compose dosyasının konumunu doğrula
           pwd
           ls -la docker-compose.yml
           
-          # Servisleri durdur ve yeniden başlat
           docker compose down
           docker compose up --build -d
           
