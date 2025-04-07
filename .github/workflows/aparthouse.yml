@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'frontend/**'
 
 jobs:
   deploy:
@@ -31,5 +29,4 @@ jobs:
           docker compose down
           docker compose up --build -d
           
-          # Kontrol
           docker compose ps
