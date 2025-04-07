@@ -1,15 +1,17 @@
-name: Deploy to Production
+name: Deploy Frontend
 
 on:
   push:
     branches:
       - master
+    paths:
+      - 'frontend/**'  # Sadece frontend klasöründeki değişikliklerde tetiklenecek
 
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy to server
+    - name: Deploy Frontend
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -21,16 +23,9 @@ jobs:
           git checkout master
           git pull origin master
           
-          # Docker compose versiyonunu kontrol et
-          docker compose version
+          echo "Rebuilding frontend service..."
+          docker compose up -d --build --no-deps frontend
           
-          # Compose dosyasının konumunu doğrula
-          pwd
-          ls -la docker-compose.yml
-          
-          # Servisleri durdur ve yeniden başlat
-          docker compose down
-          docker compose up --build -d
-          
-          # Kontrol
-          docker compose ps
+          # Servisin durumunu kontrol et
+          echo "Checking service status..."
+          docker compose ps frontend
