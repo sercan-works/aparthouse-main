@@ -19,7 +19,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
-          cd /home/aparthouse
+          cd /home/aparthouse-umbrella/frontend
           docker-compose down
           git pull
-          docker-compose up -d
+          docker-compose up -d --build
