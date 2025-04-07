@@ -7,56 +7,33 @@ on:
       - master
 
 jobs:
-  check-changes:
+  deploy:
     runs-on: ubuntu-latest
-    outputs:
-      frontend_changed: ${{ steps.check.outputs.frontend_changed }}
     steps:
       - uses: actions/checkout@v3
+      
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          fetch-depth: 2
-      - id: check
-        run: |
-          git diff --name-only HEAD^ HEAD > changes.txt
-          echo "Changed files:"
-          cat changes.txt
-          
-          echo "Checking frontend changes..."
-          if grep -q "^frontend/" changes.txt; then
-            echo "Frontend changes detected!"
-            echo "frontend_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "No frontend changes"
-            echo "frontend_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Debug çıktıları
-          echo "GITHUB_OUTPUT contents:"
-          cat $GITHUB_OUTPUT
-
-  deploy-frontend:
-    needs: check-changes
-    if: ${{ needs.check-changes.outputs.frontend_changed == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Debug Output
-      run: |
-        echo "Frontend changed value: ${{ needs.check-changes.outputs.frontend_changed }}"
-    
-    - name: Deploy Frontend
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          cd /home/aparthouse-umbrella/frontend
-          git fetch --all
-          git checkout master
-          git pull origin master
-          
-          echo "Rebuilding frontend service..."
-          docker compose up -d --build --no-deps frontend
-          
-          echo "Checking service status..."
-          docker compose ps frontend
+          filters: |
+            frontend:
+              - 'frontend/**'
+      
+      - name: Deploy Frontend
+        if: steps.changes.outputs.frontend == 'true'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /home/aparthouse-umbrella
+            git fetch --all
+            git checkout master
+            git pull origin master
+            
+            echo "Rebuilding frontend service..."
+            docker compose up -d --build --no-deps frontend
+            
+            echo "Checking service status..."
+            docker compose ps frontend
