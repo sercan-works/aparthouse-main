@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Deploy Frontend
 
 on:
   push:
@@ -6,10 +6,30 @@ on:
       - master
 
 jobs:
-  deploy:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_changed: ${{ steps.check.outputs.frontend_changed }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - id: check
+        run: |
+          git diff --name-only HEAD^ HEAD > changes.txt
+          echo "Checking frontend changes..."
+          if grep -q "^frontend/" changes.txt; then
+            echo "frontend_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  deploy-frontend:
+    needs: check-changes
+    if: needs.check-changes.outputs.frontend_changed == 'true'
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy to server
+    - name: Deploy frontend
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -21,12 +41,8 @@ jobs:
           git checkout master
           git pull origin master
           
-          docker compose version
+          echo "Rebuilding frontend service..."
+          docker compose up -d --build --no-deps frontend
           
-          pwd
-          ls -la docker-compose.yml
-          
-          docker compose down
-          docker compose up --build -d
-          
+          echo "Checking service status..."
           docker compose ps
