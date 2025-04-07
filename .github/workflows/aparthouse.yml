@@ -10,30 +10,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-      
       - name: Deploy Frontend
-        if: steps.changes.outputs.frontend == 'true'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /home/aparthouse-umbrella
+            cd /home/aparthouse-umbrella/frontend
             git fetch --all
             git checkout master
             git pull origin master
             
-            echo "Rebuilding frontend service..."
-            docker compose up -d --build --no-deps frontend
+            docker compose down aparthouse-umbrella-frontend
             
-            echo "Checking service status..."
-            docker compose ps frontend
+            docker compose up -d --build aparthouse-umbrella-frontend
+            
+            docker compose ps
