@@ -22,8 +22,8 @@ jobs:
             git checkout master
             git pull origin master
             
-            docker compose down aparthouse-umbrella-frontend
+            docker compose down aparthouse-umbrella-frontend-1
             
-            docker compose up -d --build aparthouse-umbrella-frontend
+            docker compose up -d --build aparthouse-umbrella-frontend-1
             
             docker compose ps
