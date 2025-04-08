@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import DesktopDetail from './DesktopDetail';
 import MobileDetail from './MobileDetail';
-import { ApiApart } from '@/store/apiSlice';
+import { ApiApart } from '@/store/api/apartsApi';
 
 // API'den veri çeken fonksiyon - generateMetadata ve sayfada kullanılacak
 async function getApartData(slug: string): Promise<ApiApart | null> {
