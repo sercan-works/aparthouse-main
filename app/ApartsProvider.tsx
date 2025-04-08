@@ -18,7 +18,7 @@ const ApartsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   useEffect(() => {
     if (data && selectedCategory) {
-      console.log('Kategoriye göre filtrelenmiş apartlar:', data);
+      // console.log('Kategoriye göre filtrelenmiş apartlar:', data);
       sessionStorage.setItem('selectedCategory', selectedCategory.toString());
     }
   }, [data, selectedCategory]);

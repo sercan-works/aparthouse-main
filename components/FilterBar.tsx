@@ -28,7 +28,7 @@ const FilterBar = () => {
   const selectedCity = useSelector((state: RootState) => state.filter.selectedCity);
   const selectedUniversity = useSelector((state: RootState) => state.filter.selectedUniversity);
   const selectedCategory = useSelector((state: RootState) => state.filter.selectedCategory);
-  const selectedGender = useSelector((state: RootState) => state.filter.selectedGender);
+  // const selectedGender = useSelector((state: RootState) => state.filter.selectedGender);
 
   // Kullanılabilir üniversitelerin listesi için state
   const [availableUniversities, setAvailableUniversities] = useState<BaseItem[]>([]);
@@ -137,12 +137,12 @@ const FilterBar = () => {
     // URL parametresi eklemek yerine sadece FilterSlice'a kaydediyoruz
     // Burada ek bir işlem yapmaya gerek yok, çünkü zaten seçimler Redux store'a kaydedilmiş durumda
     
-    console.log("Filtreleme yapıldı:", {
-      city: selectedCity,
-      university: selectedUniversity, 
-      gender: selectedGender,
-      category: selectedCategory
-    });
+    // console.log("Filtreleme yapıldı:", {
+    //   city: selectedCity,
+    //   university: selectedUniversity, 
+    //   gender: selectedGender,
+    //   category: selectedCategory
+    // });
   };
 
   // Seçili şehir için key değerini bul

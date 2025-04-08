@@ -93,14 +93,14 @@ const FilterMap: React.FC<FilterMapProps> = ({
 
   // Geliştirme için konsola verileri kaydet
   useEffect(() => {
-    console.log("FilterMap received aparts:", aparts);
+    // console.log("FilterMap received aparts:", aparts);
     if (aparts.length > 0) {
-      console.log(
-        "First apart location:",
-        aparts[0].lat
-          ? { lat: aparts[0].lat, lng: aparts[0].lon }
-          : "No location data"
-      );
+      // console.log(
+      //   "First apart location:",
+      //   aparts[0].lat
+      //     ? { lat: aparts[0].lat, lng: aparts[0].lon }
+      //     : "No location data"
+      // );
     }
   }, [aparts]);
 

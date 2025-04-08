@@ -119,34 +119,34 @@ export default function FilterButton() {
   // Şehir değiştiğinde üniversite listesini güncelle
   useEffect(() => {
     if (!selectedCityId || !filters) {
-      console.log("Şehir seçilmedi veya filtreler yüklenmedi");
+      // console.log("Şehir seçilmedi veya filtreler yüklenmedi");
       setFilteredUniversities([]);
       return;
     }
     
     const universityFilter = filters.filters.find(f => f.filter_key === "university");
     if (!universityFilter || !universityFilter.options) {
-      console.log("Üniversite filtresi veya seçenekler bulunamadı");
+      // console.log("Üniversite filtresi veya seçenekler bulunamadı");
       setFilteredUniversities([]);
       return;
     }
     
-    console.log("Seçili şehir ID:", selectedCityId, "Tipi:", typeof selectedCityId);
-    console.log("Tüm üniversiteler:", JSON.stringify(universityFilter.options, null, 2));
+    // console.log("Seçili şehir ID:", selectedCityId, "Tipi:", typeof selectedCityId);
+    // console.log("Tüm üniversiteler:", JSON.stringify(universityFilter.options, null, 2));
     
     // Şehir ID'si ile üniversitenin city özelliğini karşılaştır
     const filtered = universityFilter.options.filter(uni => {
-      console.log(`Üniversite: ${uni.label}, City ID: ${uni.city} (${typeof uni.city}), Seçili ID: ${selectedCityId} (${typeof selectedCityId})`);
+      // console.log(`Üniversite: ${uni.label}, City ID: ${uni.city} (${typeof uni.city}), Seçili ID: ${selectedCityId} (${typeof selectedCityId})`);
       // Number tipinde karşılaştır
       return Number(uni.city) === selectedCityId;
     });
     
-    console.log("Filtrelenmiş üniversiteler:", filtered.length ? JSON.stringify(filtered, null, 2) : "Boş");
+    // console.log("Filtrelenmiş üniversiteler:", filtered.length ? JSON.stringify(filtered, null, 2) : "Boş");
     setFilteredUniversities(filtered);
   }, [selectedCityId, filters]);
 
   const handleFilterSelect = (filterKey: string, value: string | number) => {
-    console.log(`${filterKey} seçimi yapıldı, değer:`, value, "tipi:", typeof value);
+    // console.log(`${filterKey} seçimi yapıldı, değer:`, value, "tipi:", typeof value);
     
     setSelectedFilters(prev => {
       const currentValues = prev[filterKey] || [];
@@ -221,8 +221,8 @@ export default function FilterButton() {
     // URL'i güncelle (sayfa yenilemeden)
     const url = queryParams.toString() ? `/filter?${queryParams.toString()}` : '/filter';
     
-    console.log('Arama yapılıyor:', params);
-    console.log('Yönlendirilen URL:', url);
+    // console.log('Arama yapılıyor:', params);
+    // console.log('Yönlendirilen URL:', url);
     
     // Modal'ı kapat
     onClose();

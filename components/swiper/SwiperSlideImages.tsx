@@ -16,7 +16,7 @@ type ImageItem = {
 } | string;
 
 const SwiperSlideImages = ({ images = [] }: { images: ImageItem[] }) => {
-  console.log('Images received in SwiperSlideImages:', images);
+  // console.log('Images received in SwiperSlideImages:', images);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 

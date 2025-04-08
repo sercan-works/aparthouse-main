@@ -63,7 +63,7 @@ const LocationViewer: React.FC<LocationViewerProps> = ({
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
-  console.log("detay directions:",directions);
+  // console.log("detay directions:",directions);
   // Google Maps API yükleme durumu
   const { isLoaded } = useJsApiLoader(LOADER_OPTIONS);
 

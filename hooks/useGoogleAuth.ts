@@ -33,7 +33,7 @@ export function useGoogleAuth() {
           //   description: "Google hesabınızla başarıyla giriş yaptınız",
           //   color: "success",
           // });
-          console.log("Google auth success");
+          // console.log("Google auth success");
         })
         .catch(err => {
           addToast({

@@ -205,7 +205,7 @@ const baseQueryWithErrorHandling: BaseQueryFn<
             localStorage.setItem('access_token', access);
             
             // Token yenilendi bilgisi göster (isteğe bağlı)
-            console.log('Token refreshed successfully');
+            // console.log('Token refreshed successfully');
             
             // Orijinal isteği yeni token ile tekrar dene
             result = await baseQuery(args, api, extraOptions);

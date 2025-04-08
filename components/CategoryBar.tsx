@@ -26,11 +26,11 @@ const CategoryBar = () => {
     
     // URL parametresi olarak kategori eklemiyoruz, Redux state üzerinden veri çekilecek
     // ApartsProvider bileşeni bu değişikliği izleyerek apartsApi ile verileri çekecek
-    console.log(`Kategori ${selectedCategory === categoryId ? 'kaldırıldı' : 'seçildi'}: ${categoryId}`);
+    // console.log(`Kategori ${selectedCategory === categoryId ? 'kaldırıldı' : 'seçildi'}: ${categoryId}`);
   };
 
   // Kategori seçimini temizle
-  const handleClearCategory = (e: React.MouseEvent<HTMLDivElement>, categoryId: number) => {
+  const handleClearCategory = (e: React.MouseEvent<HTMLDivElement>, categoryId: number | null) => {
     e.stopPropagation(); // Üst elemente tıklama olayının yayılmasını engelle
     dispatch(setSelectedCategory(null));
     console.log(`Kategori temizlendi: ${categoryId}`);

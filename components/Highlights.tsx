@@ -18,7 +18,7 @@ const Highlights = () => {
   const { data: highlightAparts } = useGetHiglightApartsQuery({
     city: selectedCity || undefined,
   });
-  console.log(highlightAparts);
+  // console.log(highlightAparts);
 
   return (
     <div className="hidden md:flex flex-col md:flex-row justify-center items-center py-8 max-w-screen-xl mx-auto">
