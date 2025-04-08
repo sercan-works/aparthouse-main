@@ -1,6 +1,6 @@
 {
-  "name": "aparthouse",
-  "version": "0.1.0",
+  "name": "aparthouse-frontend",
+  "version": "2.1.5",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -31,7 +31,8 @@
     "react-responsive": "^10.0.0",
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.6",
-    "swiper": "^11.2.4"
+    "swiper": "^11.2.4",
+    "@react-google-maps/api": "^2.15.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

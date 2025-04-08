@@ -1,12 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/public/assets/logo.png";
+import Loading from "@/components/ui/Loading";
 
-const AuthError = () => {
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <AuthErrorContent />
+    </Suspense>
+  );
+}
+
+const AuthErrorContent = () => {
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [errorType, setErrorType] = useState<string>("");
@@ -99,6 +108,4 @@ const AuthError = () => {
       </div>
     </div>
   );
-};
-
-export default AuthError; 
+}; 

@@ -19,10 +19,10 @@ export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-  const [favorites, setFavorites] = useState<any[]>([]);
-  const [compareAparts, setCompareAparts] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [compareAparts, setCompareAparts] = useState<number[]>([]);
   // Redux store kullanıcı durumunu al
-  const authState = useSelector((state: any) => state.auth);
+  const authState = useSelector((state: RootState) => state.auth);
   const reduxUser = authState?.user;
   const reduxIsAuthenticated = authState?.isAuthenticated;
   
@@ -102,7 +102,7 @@ export default function Navigation() {
   const handleLogout = async () => {
     try {
       // 1. Backend'den logout isteği yap
-      await logout().unwrap();
+      await logout({}).unwrap();
       
       // 2. Redux store'u temizle
       dispatch(clearCredentials());

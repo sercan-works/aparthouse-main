@@ -1,8 +1,10 @@
-import React from "react";
+"use client";
+import React, { Suspense } from "react";
 import MobileFilter from "./MobileFilter";
 import DesktopFilter from "./DesktopFilter";
+import Loading from "@/components/ui/Loading";
 
-const About = () => {
+const FilterContent = () => {
   return (
     <>
       <div className="block md:hidden">
@@ -15,4 +17,12 @@ const About = () => {
   );
 };
 
-export default About;
+const FilterPage = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <FilterContent />
+    </Suspense>
+  );
+};
+
+export default FilterPage;
