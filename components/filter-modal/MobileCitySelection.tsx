@@ -20,19 +20,19 @@ const MobileCitySelection = () => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  // Modal açıkken scroll'u engelle
-  useEffect(() => {
-    if (showModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+  // Modal'ın scroll davranışı - scrollbar'ı engellemeyi kaldırıyoruz
+  // useEffect(() => {
+  //   if (showModal) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "unset";
+  //   }
 
-    // Cleanup function
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [showModal]);
+  //   // Cleanup function
+  //   return () => {
+  //     document.body.style.overflow = "unset";
+  //   };
+  // }, [showModal]);
 
   // Sayfa yüklendiğinde localStorage'dan şehir bilgisini al ve Redux'a yaz
   useEffect(() => {
@@ -90,10 +90,6 @@ const MobileCitySelection = () => {
         console.error("LocalStorage silme hatası:", error);
       }
     }
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
   };
 
   const getSelectedCityKey = () => {

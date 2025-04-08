@@ -109,12 +109,12 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   }
 
   // Güvenli erişim için özellikleri kontrol et
-  const apartId = apart?.id;
+  // const apartId = apart?.id;
   const apartSlug = apart?.slug;
 
-  console.log("Apart ID:", apartId);
-  console.log("Apart Slug:", apartSlug);
-  console.log("Apart Images:", apart.images);
+  // console.log("Apart ID:", apartId);
+  // console.log("Apart Slug:", apartSlug);
+  // console.log("Apart Images:", apart.images);
 
   return (
     <Link href={`/${apartSlug}`} className="block">

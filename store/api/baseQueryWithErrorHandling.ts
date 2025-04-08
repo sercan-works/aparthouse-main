@@ -1,7 +1,5 @@
 import { fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
-import { setAccessToken, clearCredentials } from '@/store/features/AuthSlice';
-import { getAccessToken, getRefreshToken } from '@/store/api/authApi';
 import { addToast } from '@heroui/react'; // veya kullandığınız toast kütüphanesi
 
 // DRF hata yanıt tipi
@@ -13,12 +11,20 @@ interface DRFErrorResponse {
 // Mutex kullanarak aynı anda birden fazla refresh token isteği yapılmasını engelliyoruz
 const mutex = new Mutex();
 
+// Basit yardımcı fonksiyonlar - Import etmek yerine burada tanımlıyoruz
+const clearLocalCredentials = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  }
+};
+
 // Temel sorgu fonksiyonu
 const baseQuery = fetchBaseQuery({ 
   baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/', 
   prepareHeaders: (headers) => {
-    // Backend'e gönderilecek her istekte access token'ı ekleyin
-    const token = getAccessToken();
+    // Doğrudan localStorage'dan token alıyoruz, harici fonksiyon kullanmak yerine
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
@@ -165,11 +171,12 @@ const baseQueryWithErrorHandling: BaseQueryFn<
         const release = await mutex.acquire();
         
         try {
-          const refreshToken = getRefreshToken();
+          // localStorage'dan refresh token'ı al
+          const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
           
           if (!refreshToken) {
             // Refresh token yoksa, kullanıcıyı çıkış yaptır
-            api.dispatch(clearCredentials());
+            clearLocalCredentials();
             
             // Çıkış yapıldığına dair bildirim göster
             addToast({
@@ -193,9 +200,8 @@ const baseQueryWithErrorHandling: BaseQueryFn<
           );
           
           if (refreshResult.data) {
-            // Yeni token'ı store'a kaydet
+            // Yeni token'ı localStorage'a kaydet
             const { access } = refreshResult.data as { access: string };
-            api.dispatch(setAccessToken(access));
             localStorage.setItem('access_token', access);
             
             // Token yenilendi bilgisi göster (isteğe bağlı)
@@ -205,7 +211,7 @@ const baseQueryWithErrorHandling: BaseQueryFn<
             result = await baseQuery(args, api, extraOptions);
           } else {
             // Token yenileme başarısız olduysa, kullanıcıyı çıkış yaptır
-            api.dispatch(clearCredentials());
+            clearLocalCredentials();
             
             // Çıkış yapıldığına dair bildirim göster
             addToast({
@@ -236,9 +242,9 @@ const baseQueryWithErrorHandling: BaseQueryFn<
     }
     
     // 404 hataları için özel işlemler (opsiyonel)
-    // if (result.error.status === 404) {
-    //   // İsteğe bağlı olarak 404 sayfasına yönlendirme yapılabilir
-    // }
+    if (result.error && result.error.status === 404) {
+      // İsteğe bağlı olarak 404 sayfasına yönlendirme yapılabilir
+    }
   }
   
   return result;
