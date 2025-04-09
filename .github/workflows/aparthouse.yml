@@ -31,4 +31,5 @@ jobs:
             echo "Checking service status..."
             docker compose ps
 
-            docker system prune -a
+            echo "Ne var ne yok temizlendi gardaş"
+            docker system prune -af

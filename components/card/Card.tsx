@@ -123,7 +123,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           modules={[Navigation]}
           navigation
           loop={true}
-          className="h-full w-full custom-swiper scale-150"
+          className="h-full w-full custom-swiper"
           slidesPerView={1}
           spaceBetween={1}
 >
@@ -137,8 +137,8 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                 src={img || apart_image}
                 alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
                 className=" w-full h-full"
-                width={500}
-                height={500}
+                layout="fill"
+                objectFit="cover" 
                 priority
               />
             </SwiperSlide>
