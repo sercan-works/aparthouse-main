@@ -40,7 +40,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
     { 
       name: "WhatsApp", 
       icon: <FaWhatsapp className="w-6 h-6 text-green-500" />, 
-      url: `https://wa.me/?text=${encodeURIComponent(title + " " + url)}`,
+      url: `https://wa.me/?text=${encodeURIComponent(`Merhaba, aparthouse.com.tr'de bulduğum bu konaklamayı incelemeni öneririm: ${title} ${url}`)}`,
       color: "bg-green-100"
     },
     { 

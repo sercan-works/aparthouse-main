@@ -25,6 +25,7 @@ import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
 import Loading from "@/components/ui/Loading";
 import { ApiApart } from "@/store/api/apartsApi";
+import { getWhatsAppLink } from "../utils/contacts";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -407,16 +408,14 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           <div className="col-span-1">
             <div className="grid grid-cols-1 justify-between gap-2 text-xs mb-5">
               <Link
-                href={`https://wa.me/${apart?.firma.phone}`}
+                className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden"
                 target="_blank"
-                className="grid grid-cols-1"
+                href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)}
               >
-                <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                  <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-                  <p className="text-gray-500 text-md font-bold">
-                    {formatPhoneNumber(apart?.firma.phone)}
-                  </p>
-                </div>
+                <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+                <p className="text-gray-500 text-md font-bold">
+                  {formatPhoneNumber(apart?.firma.phone)}
+                </p>
               </Link>
             </div>
             <div 
@@ -518,13 +517,13 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           </Link>
 
           <Link
-            href={`https://wa.me/${apart?.firma.phone}`}
+            href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)}
             target="_blank"
-            className="grid grid-cols-1"
+            className="bg-colorFirst w-1/2 rounded-lg"
           >
-            <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-              <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-              <p className="text-gray-500 text-md font-bold">Whatsapp</p>
+            <div className="flex items-center justify-center gap-2 p-2">
+              <FaWhatsapp className="text-white" />
+              <span className="text-white font-bold">Whatsapp</span>
             </div>
           </Link>
           {/* PINK PHONE */}

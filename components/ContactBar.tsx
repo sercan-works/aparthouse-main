@@ -2,19 +2,24 @@ import React from 'react'
 import { FaWhatsapp } from "react-icons/fa6";
 import { MdOutlineLocalPhone } from "react-icons/md";
 import { Button } from '@heroui/react'
-    const ContactBar = ({ phone, price }: { phone: string, price: number }) => {
-      // Para birimini Türkçe formatına göre düzenle: 1000 -> 1.000
-const formatCurrency = (amount: number) => {
-  return amount?.toLocaleString('tr-TR');
-}
+import { getWhatsAppLink, getPhoneLink } from '@/app/utils/contacts';
+
+const ContactBar = ({ phone, price, apartName, apartSlug }: { phone: string, price: number, apartName?: string, apartSlug?: string }) => {
+  // Para birimini Türkçe formatına göre düzenle: 1000 -> 1.000
+  const formatCurrency = (amount: number) => {
+    return amount?.toLocaleString('tr-TR');
+  }
+  
+  const apartUrl = apartSlug ? `https://www.aparthouse.com.tr/${apartSlug}` : undefined;
+  
   return (
     <div className=''>
       <div className='flex flex-row gap-2 mx-4'>
-          <Button variant="flat" onPress={() => window.open(`https://wa.me/${phone}`, '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
+          <Button variant="flat" onPress={() => window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
             <FaWhatsapp className='w-6 h-6 text-white'/>
             <p>Whatsapp</p>
         </Button>
-          <Button variant="flat"  onPress={() => window.open(`tel:+${phone}`, '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
+          <Button variant="flat" onPress={() => window.open(getPhoneLink(phone), '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
             <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
             <p>Ara</p>
         </Button>

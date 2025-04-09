@@ -28,6 +28,7 @@ import { BsHeartFill } from "react-icons/bs";
 import Loading from "@/components/ui/Loading";
 import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
+import { getWhatsAppLink } from "../utils/contacts";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -350,7 +351,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               </div>
             </Link>
 
-            <Link href={`https://wa.me/${apart?.firma.phone}`} target="_blank">
+            <Link href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)} target="_blank">
               <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
                 <FaWhatsapp className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
@@ -369,7 +370,12 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       {/* CONTACT BAR */}
       <div className="fixed bottom-[68px] left-0 right-0 bg-white py-2 z-50">
         {/* Props göndermeyi şimdilik atlayalım */}
-        <ContactBar phone={apart?.firma.phone} price={apart?.price} />
+        <ContactBar 
+          phone={apart?.firma.phone} 
+          price={apart?.price} 
+          apartName={apart?.apart_name} 
+          apartSlug={apart?.slug}
+        />
       </div>
     </div>
   );
