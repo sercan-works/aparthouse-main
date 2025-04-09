@@ -119,31 +119,31 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   return (
     <Link href={`/${apartSlug}`} className="block">
       <div className="relative rounded-xl overflow-hidden w-[23rem] h-[22.5rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          loop={true}
-          className="h-full w-full custom-swiper"
-          slidesPerView={1}
-          spaceBetween={1}
->
-
-           {apart?.image_thumbnail?.map((img: string, index: number) => (
-            <SwiperSlide 
-            key={index}
-                className="h-full w-full"          
-            >
-              <Image
-                src={img || apart_image}
-                alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
-                className=" w-full h-full"
-                layout="fill"
-                objectFit="cover" 
-                priority
-              />
-            </SwiperSlide>
-          ))} 
-        </Swiper>
+      <div className="aspect-square w-full relative">
+     <Swiper
+       modules={[Navigation]}
+       navigation
+       loop={true}
+       className="h-full w-full custom-swiper"
+       slidesPerView={1}
+       spaceBetween={1}
+     >
+       {apart?.image_thumbnail?.map((img: string, index: number) => (
+         <SwiperSlide 
+           key={index}
+           className="aspect-square w-full relative" // Önemli: aspect-square ve relative
+         >
+           <Image
+             src={img || apart_image}
+             alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
+             fill // layout="fill" yerine sadece fill kullanın (Next.js 13+)
+             style={{objectFit: "cover"}} // objectFit yerine style içinde
+             priority
+           />
+         </SwiperSlide>
+       ))} 
+     </Swiper>
+   </div>
 
         {/* Icon buttons */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
