@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 // import Swiper and modules styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -120,9 +120,8 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     <Link href={`/${apartSlug}`} className="block">
       <div className="relative rounded-xl overflow-hidden w-[23rem] h-[22.5rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
         <Swiper
-          modules={[Navigation, Pagination]}
+          modules={[Navigation]}
           navigation
-          pagination={{ clickable: true }}
           loop={true}
           className="h-full w-full custom-swiper scale-150"
           slidesPerView={1}
@@ -132,12 +131,12 @@ const Card = ({ apart }: { apart: ApiApart }) => {
            {apart?.image_thumbnail?.map((img: string, index: number) => (
             <SwiperSlide 
             key={index}
-                          
+                className="h-full w-full"          
             >
               <Image
                 src={img || apart_image}
                 alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
-                className="object-cover w-full h-full"
+                className=" w-full h-full"
                 width={500}
                 height={500}
                 priority

@@ -22,11 +22,13 @@ jobs:
             git checkout master
             git pull origin master
             
-            echo "Stopping frontend service..."
-            docker compose down frontend
+            # echo "Stopping frontend service..."
+            # docker compose down frontend
             
             echo "Rebuilding frontend service..."
             docker compose up -d --build frontend
             
             echo "Checking service status..."
             docker compose ps
+
+            docker system prune -a
