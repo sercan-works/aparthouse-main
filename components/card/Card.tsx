@@ -124,10 +124,16 @@ const Card = ({ apart }: { apart: ApiApart }) => {
           navigation
           pagination={{ clickable: true }}
           loop={true}
-          className="h-full w-full custom-swiper"
-        >
-          {apart?.image_thumbnail?.map((img: string, index: number) => (
-            <SwiperSlide key={index}>
+          className="h-full w-full custom-swiper scale-150"
+          slidesPerView={1}
+          spaceBetween={1}
+>
+
+           {apart?.image_thumbnail?.map((img: string, index: number) => (
+            <SwiperSlide 
+            key={index}
+                          
+            >
               <Image
                 src={img || apart_image}
                 alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
@@ -137,7 +143,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                 priority
               />
             </SwiperSlide>
-          ))}
+          ))} 
         </Swiper>
 
         {/* Icon buttons */}
