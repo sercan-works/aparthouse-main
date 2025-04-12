@@ -126,7 +126,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       <SwiperSlideImages images={apart?.images || []} />
 
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between px-4">
           <h1 className="text-2xl font-medium">{apart?.name || apart?.title}</h1>
           <div className="flex flex-row gap-3">
             <button onClick={handleShareClick}>
@@ -176,7 +176,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
 
         {/* TAB İÇERİKLERİ */}
         {activeTab === "general" && (
-          <div className="mt-5 overflow-hidden flex flex-col gap-2">
+          <div className="mt-5 overflow-hidden flex flex-col gap-2 px-4">
             {/* AÇIKLAMA */}
             <div>
               <p className="text-gray-500">
