@@ -5,7 +5,7 @@ import React from 'react'
 const CategoryPlaceHolder = () => {
   return (
     <div >
-      <Card className="w-24 h-24  space-y-5 p-4" radius="lg">
+      <Card className="w-20 h-20  space-y-5 p-4" radius="lg">
       <Skeleton className="rounded-lg">
         <div className="h-20 rounded-lg bg-default-300" />
       </Skeleton>
@@ -21,6 +21,7 @@ const CategoryPlaceHolder = () => {
         </Skeleton>
       </div>
     </Card>
+
     </div>
   )
 }

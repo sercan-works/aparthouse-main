@@ -118,7 +118,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
 
   return (
     <Link href={`/${apartSlug}`} className="block">
-      <div className="relative rounded-xl overflow-hidden w-[23rem] h-[22.5rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
+      <div className="relative rounded-xl overflow-hidden w-[21rem] h-[21rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
       <div className="aspect-square w-full relative">
      <Swiper
        modules={[Navigation]}
@@ -151,7 +151,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
             {localIsFavorite ? (
               <BsHeartFill className={`w-8 h-8 md:w-6 md:h-6 text-rose-400`} />
             ) : (
-              <BsHeart className={`w-8 h-8 md:w-6 md:h-6 text-white`} />
+              <BsHeart className={`w-7 h-7 md:w-6 md:h-6 text-white`} />
             )}
           </button>
           <button className="rounded-full" onClick={handleToggleCompare}>

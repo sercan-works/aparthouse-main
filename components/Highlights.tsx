@@ -30,7 +30,7 @@ const Highlights = () => {
           <Swiper
             modules={[Autoplay, Navigation]}
             spaceBetween={20}
-            slidesPerView={3}
+            slidesPerView={4}
             navigation={true}
             loop={true}
             autoplay={{
