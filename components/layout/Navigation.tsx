@@ -209,6 +209,12 @@ export default function Navigation() {
                   Profilim
                 </Link>
                 <Link 
+                  href="https://business.aparthouse.com.tr" 
+                  className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
+                >
+                  Aparthouse Business
+                </Link>
+                <Link 
                   href="/compare" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
@@ -236,6 +242,12 @@ export default function Navigation() {
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Kayıt Ol
+                </Link>
+                <Link 
+                  href="https://business.aparthouse.com.tr" 
+                  className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
+                >
+                  Aparthouse Business
                 </Link>
                 <Link 
                   href="/compare" 
