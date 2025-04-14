@@ -14,11 +14,11 @@ const DesktopImageGallery = ({ images = [] }: { images?: ImageType[] | string[] 
     if (!images || images.length === 0) {
       // Varsayılan resim dizisi
       return [
-        { src: apart1, alt: 'apart-default-1' },
-        { src: apart1, alt: 'apart-default-2' },
-        { src: apart1, alt: 'apart-default-3' },
-        { src: apart1, alt: 'apart-default-4' },
-        { src: apart1, alt: 'apart-default-5' }
+        { src: apart1, alt: 'aparthouse.com.tr' },
+        { src: apart1, alt: 'aparthouse.com.tr' },
+        { src: apart1, alt: 'aparthouse.com.tr' },
+        { src: apart1, alt: 'aparthouse.com.tr' },
+        { src: apart1, alt: 'aparthouse.com.tr' }
       ];
     }
 
@@ -56,7 +56,7 @@ const DesktopImageGallery = ({ images = [] }: { images?: ImageType[] | string[] 
   // Eksik resimleri tamamlamak için varsayılan resim dizisi
   const displayImages = normalizedImages.length >= 5 
     ? normalizedImages 
-    : [...normalizedImages, ...Array(5 - normalizedImages.length).fill({ src: apart1, alt: 'default-apart' })];
+    : [...normalizedImages, ...Array(5 - normalizedImages.length).fill({ src: apart1, alt: 'aparthouse.com.tr' })];
 
   return (
     <div className='grid grid-cols-2 gap-4'>
