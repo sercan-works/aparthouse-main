@@ -351,7 +351,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               </div>
             </Link>
 
-            <Link href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)} target="_blank">
+            <Link href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)} target="_blank">
               <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
                 <FaWhatsapp className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">

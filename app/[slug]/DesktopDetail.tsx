@@ -410,7 +410,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               <Link
                 className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden"
                 target="_blank"
-                href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)}
+                href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
               >
                 <FaWhatsapp className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
@@ -517,7 +517,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           </Link>
 
           <Link
-            href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, `https://www.aparthouse.com.tr/${apart?.slug}`)}
+            href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
             target="_blank"
             className="bg-colorFirst w-1/2 rounded-lg"
           >
