@@ -11,6 +11,7 @@ import Image from "next/image";
 // Update type definition to match actual data structure
 type ImageItem = {
   image: string;
+  image_thumbnail_watermarked_url?: string;
   id?: number;
   cover?: boolean;
 } | string;
@@ -45,7 +46,7 @@ const SwiperSlideImages = ({ images = [] }: { images: ImageItem[] }) => {
       {normalizedImages.map((image, index) => (
         <SwiperSlide key={index}>
           <Image
-            src={image.image}
+            src={image.image_thumbnail_watermarked_url || image.image}
             width={800}
             height={600}
             alt="apart"
