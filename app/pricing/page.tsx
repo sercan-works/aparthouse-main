@@ -44,7 +44,7 @@ const pricingPlans: PricingPlan[] = [
     price: 15000,
     accommodationRights: 1,
     isBusinessPlan: true,
-    features: ["7/24 Destek", "Temel Analitikler", "Maksimum 1 Konaklama"]
+    features: ["7/24 Destek", "Temel İstatistikler", "Maksimum 1 Konaklama"]
   }
 ];
 
@@ -153,7 +153,7 @@ const Pricing = () => {
             Aparthouse Business
           </h1>
           <p className="mt-4 text-xl text-gray-600">
-            Birkaç adımda Business üyeliğinizi tamamlayın
+            Birkaç adımda <span className="font-bold">konaklamanızı</span> yayınlamaya başlayın
           </p>
         </div>
 

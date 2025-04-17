@@ -233,6 +233,22 @@ const Register = () => {
             </div>
           </div>
           <div className="flex flex-col p-10 gap-3">
+
+            
+     
+
+            
+            <Button 
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-0 w-full md:w-1/2 border border-colorFirst"
+              onPress={handleGoogleSignIn}
+              isLoading={isGoogleLoading}
+            >
+              {!isGoogleLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
+              Google ile Giriş Yap
+            </Button>
+            <p className="text-gray-500 text-center mt-0">
+              - veya -
+            </p>
             <h2 className="text-2xl">Kayıt Ol</h2>
             <p className="text-gray-500">
               Lütfen aşağıdaki bilgileri doldurunuz.
@@ -305,26 +321,13 @@ const Register = () => {
               Hesap Oluştur
             </Button>
 
-            <p className="text-gray-500 text-center mt-0">
+            <p className="text-gray-500 text-center mt-0 mb-20">
               Zaten bir hesabınız var mı?{" "}
               <Link href="/login" className="text-colorFirst font-bold">
                 Giriş Yap
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-0">
-              - veya -
-            </p>
-
-            
-            <Button 
-              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-0 w-full md:w-1/2 border border-colorFirst"
-              onPress={handleGoogleSignIn}
-              isLoading={isGoogleLoading}
-            >
-              {!isGoogleLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
-              Google ile Giriş Yap
-            </Button>
 
             {/* <RegisterSuccess /> */}
 

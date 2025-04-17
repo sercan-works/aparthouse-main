@@ -205,10 +205,19 @@ const Login = () => {
           </div>
           <div className="flex flex-col p-10 gap-3 lg:mt-20">
             <h2 className="text-2xl">Giriş Yap</h2>
-            <p className="text-gray-500">
-              Lütfen aşağıdaki bilgileri doldurunuz.
+        
+            
+            <Button 
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-2 w-full md:w-1/2 border border-colorFirst"
+              onPress={handleGoogleLogin}
+              isLoading={isLoading}
+            >
+              {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
+              Google ile Giriş Yap
+            </Button>
+            <p className="text-gray-500 text-center mt-2">
+              - veya -
             </p>
-
             <Input 
               label="Email" 
               type="email" 
@@ -261,19 +270,7 @@ const Login = () => {
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-2">
-              - veya -
-            </p>
 
-            
-            <Button 
-              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-2 w-full md:w-1/2 border border-colorFirst"
-              onPress={handleGoogleLogin}
-              isLoading={isLoading}
-            >
-              {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
-              Google ile Giriş Yap
-            </Button>
 
             {/* <RegisterSuccess /> */}
 
