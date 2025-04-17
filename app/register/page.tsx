@@ -8,11 +8,8 @@ import Building from "@/public/assets/images/building.png";
 import GoogleLogo from "@/public/assets/images/google.png";
 import Girl from "@/public/assets/images/register_girl.png";
 import { Button, Input, Link, addToast } from "@heroui/react";
-import { useRegisterMutation, useLoginMutation } from "@/store/api/authApi";
+import { useRegisterMutation } from "@/store/api/authApi";
 import { signIn } from "next-auth/react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store";
-import { setCredentials } from "@/store/features/AuthSlice";
 import ReCAPTCHA from "react-google-recaptcha";
 
 // DRF hata yanıtı için tip tanımlama
@@ -23,21 +20,18 @@ interface DRFErrorResponse {
 
 const Register = () => {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   // Form state
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
 
-  // Register ve login mutation hook'larını kullan
+  // Register mutation hook'unu kullan
   const [register, { isLoading }] = useRegisterMutation();
-  const [login] = useLoginMutation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleVisibility2 = () => setIsVisible2(!isVisible2);
@@ -49,15 +43,6 @@ const Register = () => {
 
   // Form doğrulama fonksiyonu
   const validateForm = () => {
-    if (!username.trim()) {
-      addToast({
-        title: "Hata",
-        description: "Kullanıcı adı gereklidir",
-        color: "danger",
-      });
-      return false;
-    }
-
     if (!email.trim()) {
       addToast({
         title: "Hata",
@@ -123,9 +108,9 @@ const Register = () => {
     if (!validateForm()) return;
 
     try {
-      // DRF'ye kayıt isteği gönder
+      // DRF'ye kayıt isteği gönder - email'i username olarak kullan
       await register({ 
-        username, 
+        username: email, 
         email, 
         password1, 
         password2,
@@ -135,49 +120,13 @@ const Register = () => {
       // Başarılı kayıt
       addToast({
         title: "Kayıt Başarılı",
-        description: "Hesabınız başarıyla oluşturuldu. Giriş yapılıyor...",
+        description: "Hesabınız başarıyla oluşturuldu. Lütfen e-posta adresinize gönderilen doğrulama linkine tıklayarak hesabınızı aktifleştiriniz.",
         color: "success",
       });
 
-      try {
-        // Otomatik olarak giriş yap
-        const loginResult = await login({
-          email: email,
-          password: password1
-        }).unwrap();
-
-        // Kullanıcı adını güzelleştir
-        let displayName = loginResult.user.username;
-        if (displayName.includes('@')) {
-          displayName = displayName.split('@')[0];
-        }
-        
-        // Display name'i büyük harfle başlatalım
-        if (displayName && displayName.length > 0) {
-          displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-        }
-        
-        // Kullanıcı objesini güzelleştirelim
-        const enhancedUser = {
-          ...loginResult.user,
-          displayName: displayName || loginResult.user.username
-        };
-        
-        // Redux store'a kullanıcı bilgilerini ve token'ları kaydet
-        dispatch(setCredentials({
-          user: enhancedUser,
-          access: loginResult.access,
-          refresh: loginResult.refresh
-        }));
-
-        // Ana sayfaya yönlendir
-        router.push('/');
-      } catch (loginError) {
-        console.error("Otomatik giriş hatası:", loginError);
-        
-        // Otomatik giriş başarısız olursa login sayfasına yönlendir
-        router.push('/login');
-      }
+      // Login sayfasına yönlendir
+      router.push('/login');
+      
     } catch (error) {
       console.error("Kayıt hatası:", error);
       
@@ -288,14 +237,6 @@ const Register = () => {
             <p className="text-gray-500">
               Lütfen aşağıdaki bilgileri doldurunuz.
             </p>
-
-            <Input 
-              label="Kullanıcı Adı"
-              type="text"
-              variant="underlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
             
             <Input 
               label="Email" 
