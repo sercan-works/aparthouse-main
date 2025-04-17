@@ -240,6 +240,38 @@ const MobileNavBar = () => {
                   >
                    Aparthouse Business
                   </Link>
+                  {/* sub menü kontrat linkleri */}
+                  <div className="border-t border-gray-100 pt-1 mt-1">
+                    <p className="px-4 py-1 text-xs text-gray-500 font-medium">Yasal</p>
+                    <Link 
+                      href="/gizlilik-politikasi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Gizlilik Politikası
+                    </Link>
+                    <Link 
+                      href="/kullanici-sozlesmesi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Kullanıcı Sözleşmesi
+                    </Link>
+                    <Link 
+                      href="/mesafeli-satis-sozlesmesi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Mesafeli Satış Sözleşmesi
+                    </Link>
+                    <Link 
+                      href="/iptal-ve-iade-kosullari" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      İptal ve İade Koşulları
+                    </Link>
+                  </div>
                 </>
               )}
             </div>
