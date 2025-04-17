@@ -262,6 +262,9 @@ const Footer = () => {
               />
             </h3>
             <p className="text-gray-600">Bizi Sosyal Medyada Takip Edin</p>
+            <div className="text-xs md:text-base text-left font-bold cursor-pointer mt-4 text-colorFirst hover:text-colorFirst/80">
+             <Link href="/pricing">Fiyatlandırma</Link>
+            </div>
             <div className="relative w-full h-10 mt-10">
               <Image src={paymentImage} alt="payment" layout="fill" objectFit="contain" />
             </div>
