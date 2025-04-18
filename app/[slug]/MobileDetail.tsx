@@ -375,6 +375,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           price={apart?.price} 
           apartName={apart?.apart_name} 
           apartSlug={apart?.slug}
+          apartId={apart?.id}
         />
       </div>
     </div>

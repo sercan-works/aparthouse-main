@@ -3,23 +3,40 @@ import { FaWhatsapp } from "react-icons/fa6";
 import { MdOutlineLocalPhone } from "react-icons/md";
 import { Button } from '@heroui/react'
 import { getWhatsAppLink, getPhoneLink } from '@/app/utils/contacts';
+import axios from 'axios';
 
-const ContactBar = ({ phone, price, apartName, apartSlug }: { phone: string, price: number, apartName?: string, apartSlug?: string }) => {
+const ContactBar = ({ phone, price, apartName, apartSlug ,apartId}: { phone: string, price: number, apartName?: string, apartSlug?: string,apartId?: number }) => {
   // Para birimini Türkçe formatına göre düzenle: 1000 -> 1.000
   const formatCurrency = (amount: number) => {
     return amount?.toLocaleString('tr-TR');
   }
   
   const apartUrl = apartSlug ? `https://www.aparthouse.com.tr/${apartSlug}` : undefined;
-  
+  const handleWhatsappClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
+        apart: apartId,
+    });
+  };
+  const handleCallClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
+        apart: apartId,
+    });
+  };
+
   return (
     <div className=''>
-      <div className='flex flex-row gap-2 mx-4'>
-          <Button variant="flat" onPress={() => window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
+      <div className='flex flex-row gap-2 mx-4' >
+            <Button variant="flat" onPress={() => {
+              handleWhatsappClick();
+              window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank');
+            }} className='bg-primary text-white h-12 w-1/3 p-0'>
             <FaWhatsapp className='w-6 h-6 text-white'/>
             <p>Whatsapp</p>
         </Button>
-          <Button variant="flat" onPress={() => window.open(getPhoneLink(phone), '_blank')} className='bg-primary text-white h-12 w-1/3 p-0'>
+          <Button variant="flat" onPress={() => {
+            handleCallClick();
+            window.open(getPhoneLink(phone), '_blank');
+          }} className='bg-primary text-white h-12 w-1/3 p-0'>
             <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
             <p>Ara</p>
         </Button>

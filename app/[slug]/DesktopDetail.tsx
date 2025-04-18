@@ -26,6 +26,7 @@ import LocationViewer from "@/components/maps/LocationViewer";
 import Loading from "@/components/ui/Loading";
 import { ApiApart } from "@/store/api/apartsApi";
 import { getWhatsAppLink } from "../utils/contacts";
+import axios from "axios";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -174,6 +175,19 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     }
   };
 
+  //Whatsaspp Click Arttır
+  const handleWhatsappClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
+        apart: apart?.id,
+    });
+  };
+
+  const handlePhoneClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
+        apart: apart?.id,
+    });
+  };
+
   // Google Haritalar'ı aç
   const openInGoogleMaps = () => {
     const apartData = apart as unknown as ApiApart;
@@ -266,7 +280,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               href={`tel:+${apart?.firma.phone}`}
               className="grid grid-cols-1"
             >
-              <Button className="bg-colorFirst text-white h-12 font-bold">
+              <Button className="bg-colorFirst text-white h-12 font-bold" onPress={handlePhoneClick}>
                 Ara
               </Button>
             </Link>
@@ -411,6 +425,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden"
                 target="_blank"
                 href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
+                onPress={handleWhatsappClick}
               >
                 <FaWhatsapp className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
@@ -508,7 +523,9 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             href={`tel:+${apart?.firma.phone}`}
             className="grid grid-cols-1"
           >
-            <div className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+            <div  className=" flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden"
+            onClick={handlePhoneClick}
+            >
               <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
               <p className="text-gray-500 text-md font-bold">
                 {formatPhoneNumber(apart?.firma.phone)}
@@ -519,11 +536,16 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           <Link
             href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
             target="_blank"
-            className="bg-colorFirst w-1/2 rounded-lg"
+            className="grid grid-cols-1"
+            
           >
-            <div className="flex items-center justify-center gap-2 p-2">
-              <FaWhatsapp className="text-white" />
-              <span className="text-white font-bold">Whatsapp</span>
+            <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden "
+            onClick={handleWhatsappClick}
+            >
+              <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+              <p className="text-gray-500 text-md font-bold">
+                Whatsapp
+              </p>
             </div>
           </Link>
           {/* PINK PHONE */}
