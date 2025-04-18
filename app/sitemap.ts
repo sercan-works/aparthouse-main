@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import { mockAparts } from '@/data/apart';
 import { unstable_noStore } from 'next/cache';
 
 // Gerçek dinamik veri için API isteği yapabilirsiniz
@@ -8,13 +7,11 @@ import { unstable_noStore } from 'next/cache';
 async function getApartments() {
   unstable_noStore(); // Önbelleğe almayı engeller, her istekte yeni veri çeker
   
-  // Gerçek API kullanımı için bu kısmı aktif edebilirsiniz
-  // const response = await fetch('https://api.example.com/apartments');
-  // const apartments = await response.json();
-  // return apartments;
+    // Gerçek API kullanımı için bu kısmı aktif edebilirsiniz
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aparts/`);
+  const apartments = await response.json();
+  return apartments;
   
-  // Şimdilik mock veriyi kullanıyoruz
-  return mockAparts;
 }
 
 // Sabit sayfalar ve dinamik içerik sayfaları
@@ -56,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dinamik içerik sayfaları (apartments) - artık dinamik olarak getiriyoruz
   const apartments = await getApartments();
   
-  const apartmentPages = apartments.map((apartment) => ({
+  const apartmentPages = apartments.map((apartment: { slug: string }) => ({
     url: `https://aparthouse.com.tr/${apartment.slug}`,
     lastModified: new Date(), // Gerçek uygulamada burada son güncelleme tarihini kullanabilirsiniz
     changeFrequency: 'weekly' as const,
