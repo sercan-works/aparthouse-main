@@ -41,7 +41,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="https://business.aparthouse.com.tr/" className="text-gray-600 hover:text-gray-900">
+                <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   İletişim
                 </Link>
               </li>
@@ -166,7 +166,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="https://business.aparthouse.com.tr/" className="text-gray-600 hover:text-gray-900">
+                <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   İletişim
                 </Link>
               </li>
