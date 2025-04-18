@@ -7,8 +7,22 @@ import InstagramIcon from "@/public/assets/icons/InstagramIcon.svg";
 import LinkedInIcon from "@/public/assets/icons/LinkedinIcon.svg";
 import paymentImage from "@/public/assets/images/payment_logos.png";
 import Link from "next/link"; 
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { clearViewed } from "@/store/features/ViewedSlice";
+import { FaHistory } from "react-icons/fa";
 
 const Footer = () => {
+  const dispatch = useDispatch();
+  const { viewedApartIds } = useSelector((state: RootState) => state.viewed);
+  
+  const handleClearViewed = () => {
+    if (confirm('Tüm inceleme geçmişiniz silinecek. Onaylıyor musunuz?')) {
+      dispatch(clearViewed());
+      alert('İnceleme geçmişiniz başarıyla temizlendi');
+    }
+  };
+  
   return (
     <div className="bg-gray-50 py-4 md:py-8 font-thin text-gray-600 mb-20">
       <div className="container mx-auto px-4">
@@ -44,6 +58,16 @@ const Footer = () => {
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   İletişim
                 </Link>
+              </li>
+              <li>
+                <button 
+                  onClick={handleClearViewed}
+                  className="text-colorFirst hover:text-colorFirst/80 flex items-center gap-1"
+                  disabled={viewedApartIds.length === 0}
+                >
+                  <FaHistory className="w-3 h-3" /> 
+                  İnceleme Geçmişini Temizle {viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                </button>
               </li>
             </ul>
           </div>
@@ -169,6 +193,16 @@ const Footer = () => {
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   İletişim
                 </Link>
+              </li>
+              <li>
+                <button 
+                  onClick={handleClearViewed}
+                  className="text-colorFirst hover:text-colorFirst/80 flex items-center gap-1"
+                  disabled={viewedApartIds.length === 0}
+                >
+                  <FaHistory className="w-3 h-3" /> 
+                  İnceleme Geçmişini Temizle {viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                </button>
               </li>
             </ul>
           </div>

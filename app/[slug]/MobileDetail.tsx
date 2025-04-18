@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
+import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeartFill } from "react-icons/bs";
 import Loading from "@/components/ui/Loading";
 import ShareModal from "@/components/modals/ShareModal";
@@ -66,6 +67,13 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       setIsCompare(compareApartIds.includes(Number(apart.id)));
     }
   }, [apart, favoriteApartIds, compareApartIds]);
+
+  // Mark apart as viewed when loaded
+  useEffect(() => {
+    if (apart && apart.id) {
+      dispatch(addViewed(Number(apart.id)));
+    }
+  }, [apart, dispatch]);
 
   // Handle favorite toggle
   const handleToggleFavorite = () => {

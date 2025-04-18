@@ -6,6 +6,7 @@ import AuthSlice from './features/AuthSlice';
 import FilterSlice from './features/FilterSlice';
 import FavoriteSlice from './features/FavoriteSlice';
 import CompareSlice from './features/CompareSlice';
+import ViewedSlice from './features/ViewedSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     filter: FilterSlice,
     favorite: FavoriteSlice,
     compare: CompareSlice,
+    viewed: ViewedSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

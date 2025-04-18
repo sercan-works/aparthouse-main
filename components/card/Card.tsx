@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
+import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
@@ -31,9 +32,12 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     (state: RootState) => state.favorite
   );
   const { compareApartIds } = useSelector((state: RootState) => state.compare);
+  const { viewedApartIds } = useSelector((state: RootState) => state.viewed);
   const [localIsFavorite, setLocalIsFavorite] = useState(false);
   const [localIsCompare, setLocalIsCompare] = useState(false);
+  const [localIsViewed, setLocalIsViewed] = useState(false);
   const router = useRouter();
+  
   // Redux state'inden favori durumunu güncelle
   useEffect(() => {
     if (apart && apart.id) {
@@ -47,6 +51,13 @@ const Card = ({ apart }: { apart: ApiApart }) => {
       setLocalIsCompare(compareApartIds.includes(apart.id));
     }
   }, [apart, compareApartIds]);
+  
+  // Redux state'inden görüntüleme durumunu güncelle
+  useEffect(() => {
+    if (apart && apart.id) {
+      setLocalIsViewed(viewedApartIds.includes(apart.id));
+    }
+  }, [apart, viewedApartIds]);
 
   // Favorilere ekleme/çıkarma işlemi
   const handleToggleFavorite = async (e: React.MouseEvent) => {
@@ -90,6 +101,13 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     dispatch(toggleCompare(apart.id));
   };
 
+  // Apartı görüntülenmiş olarak işaretle
+  const handleApartViewed = () => {
+    if (apart && apart.id) {
+      dispatch(addViewed(apart.id));
+    }
+  };
+
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
   const truncateText = (text: string, maxLength: number) => {
     if (!text) return ""; // null/undefined kontrolü
@@ -117,7 +135,11 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   // console.log("Apart Images:", apart.images);
 
   return (
-    <Link href={`/${apartSlug}`} className="block">
+    <Link 
+      href={`/${apartSlug}`} 
+      className="block" 
+      onClick={handleApartViewed}
+    >
       <div className="relative rounded-xl overflow-hidden w-[21rem] h-[21rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
       <div className="aspect-square w-full relative">
      <Swiper
@@ -143,6 +165,11 @@ const Card = ({ apart }: { apart: ApiApart }) => {
          </SwiperSlide>
        ))} 
      </Swiper>
+     {localIsViewed && (
+       <div className="absolute top-3 left-3 bg-white bg-opacity-80 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-sm shadow-md">
+         Bunu incelediniz
+       </div>
+     )}
    </div>
 
         {/* Icon buttons */}
