@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Accordion, AccordionItem, Card, Button } from "@heroui/react";
+import { Accordion, AccordionItem, Card, Button, Link } from "@heroui/react";
 import { MdQuestionAnswer, MdInfo, MdHome, MdEmail } from "react-icons/md";
 import { useRouter } from 'next/navigation';    
 const Help = () => {
@@ -68,10 +68,9 @@ Doğru apartı seçmek, güvenli ve ilham verici bir temel sağlar. Büyümenize
         </div>
 
         <Accordion variant="bordered" className="space-y-4">
-          <AccordionItem key="1" title="ApartHouse'da nasıl üye olabilirim?">
+          <AccordionItem key="1" title="Konaklamamı nasıl yayınlarım?">
             <p>
-              ApartHouse&apos;a üye olmak oldukça kolay! Sağ üst köşedeki &ldquo;Kayıt Ol&rdquo; butonuna tıklayarak e-posta adresinizle 
-              ya da Google hesabınızla hemen üye olabilirsiniz. Üyelik tamamen ücretsizdir ve sadece bir kaç dakikanızı alır.
+            <Link href="https://business.aparthouse.com.tr" className="text-blue-500 hover:text-blue-600">ApartHouse Business&apos;a giriş yapın</Link> biligilerinizi doldurun, <Link href="/pricing" className="text-blue-500 hover:text-blue-600">fiyatlandırma planlarımızdan</Link> birini seçin ve konaklamanızı yayınlayın.
             </p>
           </AccordionItem>
 

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const HeaderBanner = () => {
   const pathname = usePathname();
 
-  const noBannerPaths = ["/about", "/contact", "/favorites", "/filter", "/detail", "/compare"];
+  const noBannerPaths = ["/about", "/contact", "/favorites", "/filter", "/detail", "/compare","/pricing"];
 
   const shouldShowBanner = !noBannerPaths.includes(pathname);
   return (
