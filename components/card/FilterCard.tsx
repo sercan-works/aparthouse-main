@@ -14,14 +14,14 @@ interface ExtendedApart extends ApiApart {
   slug?: string;
   apart_name?: string;
   services?: {
+    service_name?: string;
     service_data: string[];
   }[];
   gender?: string;
   price?: number;
   price_type?: string;
-  images?: {
-    image: string;
-  }[];
+  images?: string[]; // JSON'da string array olarak geliyor
+  image_thumbnail?: string[]; // Thumbnail'ler de string array olarak geliyor
   food?: boolean;
   address?: string;
   location?: string;
@@ -49,10 +49,13 @@ const FilterCard = ({
   const [imageUrl, setImageUrl] = useState<string | typeof apart_image>(apart_image);
 
   useEffect(() => {
-    if (apart.images && apart.images.length > 0 && apart.images[0]?.image) {
-      setImageUrl(apart.images[0].image);
+    // Önce thumbnail'i kontrol et, yoksa normal resmi kullan
+    if (apart.image_thumbnail && apart.image_thumbnail.length > 0) {
+      setImageUrl(apart.image_thumbnail[0]);
+    } else if (apart.images && apart.images.length > 0) {
+      setImageUrl(apart.images[0]);
     }
-  }, [apart.images]);
+  }, [apart.image_thumbnail, apart.images]);
 
   const handleCardClick = () => {
     if (apart.slug) {
