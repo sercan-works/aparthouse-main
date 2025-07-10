@@ -160,7 +160,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
              alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
              fill // layout="fill" yerine sadece fill kullanın (Next.js 13+)
              style={{objectFit: "cover"}} // objectFit yerine style içinde
-             priority
+             loading="lazy"
            />
          </SwiperSlide>
        ))} 

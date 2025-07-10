@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: BASE_SOCIAL_METADATA.openGraph,
   twitter: BASE_SOCIAL_METADATA.twitter,
   alternates: {
-    canonical: 'https://aparthouse.com',
+    canonical: 'https://aparthouse.com.tr',
   },
   robots: {
     index: true,
