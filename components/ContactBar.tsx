@@ -29,7 +29,7 @@ const ContactBar = ({ phone, price, apartName, apartSlug ,apartId}: { phone: str
             <Button variant="flat" onPress={() => {
               handleWhatsappClick();
               window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank');
-            }} className='bg-primary text-white h-12 w-1/3 p-0'>
+            }} className='bg-primary text-white h-12 w-1/3 p-0 px-1'>
             <FaWhatsapp className='w-6 h-6 text-white animate-bounce'/>
             <p>Hızlı bilgi al</p>
         </Button>
