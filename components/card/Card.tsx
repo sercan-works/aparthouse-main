@@ -150,20 +150,36 @@ const Card = ({ apart }: { apart: ApiApart }) => {
        slidesPerView={1}
        spaceBetween={1}
      >
-       {apart?.image_thumbnail?.map((img: string, index: number) => (
-         <SwiperSlide 
-           key={index}
-           className="aspect-square w-full relative" // Önemli: aspect-square ve relative
-         >
+       {apart?.image_thumbnail && apart.image_thumbnail.length > 0 ? (
+         apart.image_thumbnail.map((img: string, index: number) => (
+           <SwiperSlide 
+             key={index}
+             className="aspect-square w-full relative"
+           >
+             <Image
+               src={img && img.trim() !== "" ? img : apart_image}
+               alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
+               fill
+               style={{objectFit: "cover"}}
+               loading="lazy"
+               onError={(e) => {
+                 const target = e.target as HTMLImageElement;
+                 target.src = apart_image.src || apart_image;
+               }}
+             />
+           </SwiperSlide>
+         ))
+       ) : (
+         <SwiperSlide className="aspect-square w-full relative">
            <Image
-             src={img || apart_image}
-             alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
-             fill // layout="fill" yerine sadece fill kullanın (Next.js 13+)
-             style={{objectFit: "cover"}} // objectFit yerine style içinde
+             src={apart_image}
+             alt={`${apart.apart_name || "Apart"} varsayılan resim`}
+             fill
+             style={{objectFit: "cover"}}
              loading="lazy"
            />
          </SwiperSlide>
-       ))} 
+       )}
      </Swiper>
      {localIsViewed && (
        <div className="absolute top-3 left-3 bg-white bg-opacity-80 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-sm shadow-md">
