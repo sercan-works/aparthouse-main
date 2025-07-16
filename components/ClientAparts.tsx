@@ -112,110 +112,53 @@ const ClientAparts = ({
   // API'den gelen veriler geldiğinde state'i güncelle
   useEffect(() => {
     if (paginatedData && typeof paginatedData === 'object') {
-      // Toplam apart sayısını güncelle
       setTotalApartCount(paginatedData.count || 0);
       
-      // Results array'ini güvenli şekilde kontrol et
       const results = Array.isArray(paginatedData.results) ? paginatedData.results : [];
-      
-      // Sayfa numarasını güvenli şekilde kontrol et
       const currentPageNum = Number(paginatedData.current_page) || 1;
       const totalPagesNum = Number(paginatedData.total_pages) || 1;
       
-      // DEBUG: Pagination verilerini logla
-      const debugCalculatedTotalPages = Math.ceil((paginatedData.count || 0) / pageSize);
-      const manualHasMore = currentPageNum < debugCalculatedTotalPages;
-      const apiHasMore = currentPageNum < totalPagesNum;
-      
-      console.log('Pagination Debug:', {
-        currentPageNum,
-        totalPagesNum,
-        debugCalculatedTotalPages,
-        resultsLength: results.length,
-        totalCount: paginatedData.count,
-        pageSize,
-        apiHasMore,
-        manualHasMore,
-        hasMoreMatch: apiHasMore === manualHasMore,
-        existingApartsLength: paginatedAparts.length,
-        totalAfterAppend: currentPageNum === 1 ? results.length : paginatedAparts.length + results.length
-      });
-      
       if (currentPageNum === 1) {
-        // İlk sayfa - verileri değiştir
         dispatch(setPaginatedAparts(results));
       } else {
-        // Sonraki sayfalar - verileri ekle
         dispatch(appendPaginatedAparts(results));
       }
       
-      // Manual hesaplama ile double-check
-      const recalculatedTotalPages = Math.ceil((paginatedData.count || 0) / pageSize);
-      const finalTotalPages = Math.max(totalPagesNum, recalculatedTotalPages);
-      const finalHasMore = currentPageNum < finalTotalPages;
-      
-      dispatch(setTotalPages(finalTotalPages));
-      dispatch(setHasMore(finalHasMore));
+      dispatch(setTotalPages(totalPagesNum));
+      dispatch(setHasMore(currentPageNum < totalPagesNum));
       dispatch(setIsLoadingMore(false));
     }
   }, [paginatedData, dispatch]);
 
   // Intersection Observer callback
   const lastApartElementRef = useCallback((node: HTMLDivElement) => {
-    console.log('Ref callback called:', {
-      nodeExists: !!node,
-      isFetching,
-      isLoadingMore: isLoadingMoreRef.current,
-      hasMore: hasMoreRef.current,
-      currentPage: currentPageRef.current,
-      totalAparts: paginatedAparts.length
-    });
-    
-    // isFetching kontrolünü kaldırıyoruz - sadece isLoadingMore kontrol edelim
-    if (isLoadingMoreRef.current) {
-      console.log('Ref callback returned early - isLoadingMore true');
-      return;
-    }
+    if (isLoadingMore || !hasMore) return;
     
     if (observer.current) {
-      console.log('Disconnecting previous observer');
       observer.current.disconnect();
     }
     
     if (node) {
-      console.log('Setting up new observer for node:', node);
-      observer.current = new IntersectionObserver(entries => {
-        console.log('Observer callback triggered:', {
-          isIntersecting: entries[0].isIntersecting,
-          hasMore: hasMoreRef.current,
-          isLoadingMore: isLoadingMoreRef.current,
-          currentPage: currentPageRef.current,
-          totalAparts: paginatedAparts.length
-        });
-        
-        if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
-          console.log('Loading next page...');
-          
-          // Debounce: 500ms içinde sadece bir kez tetiklenir
-          const now = Date.now();
-          if (now - lastTriggerTime.current < 500) {
-            console.log('Debounced - too soon');
-            return;
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
+            const now = Date.now();
+            if (now - lastTriggerTime.current < 1000) return;
+            lastTriggerTime.current = now;
+            
+            dispatch(setIsLoadingMore(true));
+            dispatch(setCurrentPage(currentPageRef.current + 1));
           }
-          lastTriggerTime.current = now;
-          
-          dispatch(setIsLoadingMore(true));
-          dispatch(setCurrentPage(currentPageRef.current + 1));
+        },
+        {
+          threshold: 0.1,
+          rootMargin: '20px'
         }
-      }, {
-        threshold: 0,
-        rootMargin: '50px'
-      });
+      );
       
       observer.current.observe(node);
-      console.log('Observer attached to node');
     }
-  }, [dispatch, paginatedAparts.length]); // dependencies değiştirildi
+  }, [dispatch, hasMore, isLoadingMore]);
 
   // Aktif filtreleri kaldır
   const RemoveActiveFilter = (filter: string) => {
@@ -282,30 +225,10 @@ const ClientAparts = ({
       <div className="flex flex-wrap gap-4 justify-center items-center">
         {paginatedAparts && paginatedAparts.length > 0 ? (
           paginatedAparts.map((apart, index) => {
-            // Son elemente ref ekle
             if (paginatedAparts.length === index + 1) {
-              // DEBUG: Son elemente ref eklendiğini logla
-              console.log('Last element ref added:', {
-                apartId: apart.id,
-                index,
-                totalLength: paginatedAparts.length,
-                hasMore: hasMore,
-                refFunction: lastApartElementRef
-              });
               return (
-                <div 
-                  key={apart.id} 
-                  ref={lastApartElementRef}
-                  style={{ 
-                    border: '2px solid red', 
-                    minHeight: '20px',
-                    backgroundColor: 'rgba(255,0,0,0.1)' 
-                  }}
-                >
+                <div key={apart.id} ref={lastApartElementRef}>
                   <Card apart={apart} />
-                  <div style={{ color: 'red', fontSize: '12px' }}>
-                    SON ELEMENT (Index: {index})
-                  </div>
                 </div>
               );
             } else {
@@ -330,34 +253,7 @@ const ClientAparts = ({
         </div>
       )}
 
-      {/* DEBUG: Manual load more button */}
-      {hasMore && !isLoadingMore && (
-        <button 
-          onClick={() => {
-            console.log('Manual load more clicked:', {
-              currentPage: currentPageRef.current,
-              hasMore: hasMoreRef.current,
-              isLoadingMore: isLoadingMoreRef.current,
-              totalAparts: paginatedAparts.length,
-              totalCount: totalApartCount
-            });
-            dispatch(setIsLoadingMore(true));
-            dispatch(setCurrentPage(currentPageRef.current + 1));
-          }}
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-        >
-          DEBUG: Load More (Page {currentPage + 1}) - {paginatedAparts.length}/{totalApartCount}
-        </button>
-      )}
-      
-      {/* DEBUG: Current state info */}
-      <div className="mt-4 p-4 bg-gray-100 rounded text-xs">
-        <div>Current Page: {currentPage}</div>
-        <div>Has More: {hasMore ? 'true' : 'false'}</div>
-        <div>Is Loading: {isLoadingMore ? 'true' : 'false'}</div>
-        <div>Apartments: {paginatedAparts.length}/{totalApartCount}</div>
-        <div>Expected Pages: {Math.ceil(totalApartCount / pageSize)}</div>
-      </div>
+
 
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && isHydrated && (
