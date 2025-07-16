@@ -16,7 +16,7 @@ export default function Header() {
   const shouldShowCategory = noCategoryPaths.includes(pathname);
 
   return (
-    <header className=" mt-10 md:mt-0 md:bg-white md:shadow">
+    <header className=" mt-5 md:mt-0 md:bg-white md:shadow">
       {/* Anons Bar */}
       {/* TODO: Anons bar yapılacak */}
 
@@ -45,6 +45,14 @@ export default function Header() {
       {/* MOBILE HEADER ARAMA VE FİLTRE ÇUBUĞU*/}
       <div className="block md:hidden overflow-hidden">
         <div className="flex items-center justify-between gap-4 mx-4 max-w-full">
+          <Link className="flex items-center cursor-pointer" href="/">
+              <Image src={Logo} alt="Logo" width={150} height={100} />
+          </Link>
+          <div className="flex items-center gap-4 text-gray-500 text-sm">
+            Apart ve Yurt Rehberi
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4 mx-4 max-w-full mt-2">
           <div className="w-3/4">
           <SearchBar placeholder="Şehir, Apart Adı ile ara" />
 
