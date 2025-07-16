@@ -84,22 +84,32 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
-                  Apart
+                  Eskişehir Apart
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
-                  Yurt
+                  Eskişehir Yurt
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
-                  Pansiyon
+                  Eskişehir Kız Apart
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
-                  Öğrenci Evi
+                  Eskişehir Erkek Apart
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
+                  Eskişehir Kız Yurt
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-600 hover:text-gray-900">
+                  Eskişehir Erkek Yurt
                 </Link>
               </li>
             </ul>
