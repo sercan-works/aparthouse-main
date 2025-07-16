@@ -9,8 +9,10 @@ import { ApiApart } from '@/store/api/apartsApi';
 // API'den veri çeken fonksiyon - generateMetadata ve sayfada kullanılacak
 async function getApartData(slug: string): Promise<ApiApart | null> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/aparts/${slug}`, { 
-      next: { revalidate: 3600 } // 1 saat cache
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
+    const response = await fetch(`${apiUrl}/api/aparts/${slug}`, { 
+      next: { revalidate: 3600 }, // 1 saat cache
+      signal: AbortSignal.timeout(10000) // 10 saniye timeout
     });
     
     if (!response.ok) {
@@ -52,18 +54,39 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // Dinamik sayfaları statik olarak oluşturmak için sitemap API'den alınabilir
 export async function generateStaticParams() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/aparts`, {
-      next: { revalidate: 3600 } // 1 saat cache
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
+    
+    // Tüm apartları almak için çok büyük bir page_size kullan
+    const response = await fetch(`${apiUrl}/api/aparts?page_size=1000`, {
+      next: { revalidate: 3600 }, // 1 saat cache
+      signal: AbortSignal.timeout(10000) // 10 saniye timeout
     });
     
     if (!response.ok) {
+      console.warn('API response not ok, returning empty array');
       return [];
     }
     
-    const apartments: ApiApart[] = await response.json();
-    return apartments.map(apartment => ({
-      slug: apartment.slug,
-    }));
+    const paginatedData = await response.json();
+    
+    // Pagination yapısından results array'ini al
+    const apartments: ApiApart[] = paginatedData?.results || [];
+    
+    // Array kontrolü
+    if (!Array.isArray(apartments)) {
+      console.warn('API response results is not an array, returning empty array');
+      return [];
+    }
+    
+    // Slug field'ları olan apartları filtrele ve map et
+    const staticParams = apartments
+      .filter(apartment => apartment?.slug) // Slug olmayan apartları filtrele
+      .map(apartment => ({
+        slug: apartment.slug,
+      }));
+    
+    console.log(`Generated ${staticParams.length} static params for build`);
+    return staticParams;
   } catch (error) {
     console.error('Error fetching aparts list for static params:', error);
     return [];
