@@ -56,6 +56,7 @@ const ClientAparts = ({
 
   // Ref'leri güncel tut
   React.useEffect(() => {
+    console.log('📝 State updated:', { currentPage, hasMore, isLoadingMore });
     currentPageRef.current = currentPage;
     hasMoreRef.current = hasMore;
     isLoadingMoreRef.current = isLoadingMore;
@@ -82,16 +83,12 @@ const ClientAparts = ({
     if (selectedCity) params.city = selectedCity;
     if (selectedUniversity) params.university = selectedUniversity;
     
+    console.log('🔧 Query params:', params);
     return params;
   }, [currentPage, pageSize, selectedCategory, selectedCity, selectedUniversity]);
 
   // Paginated data fetch
-  const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(
-    queryParams,
-    {
-      skip: isLoadingMore && currentPage > 1, // Zaten yükleme varsa skip et
-    }
-  );
+  const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(queryParams);
 
   // Filtreler değiştiğinde pagination'ı sıfırla
   useEffect(() => {
@@ -106,6 +103,13 @@ const ClientAparts = ({
   // API'den gelen veriler geldiğinde state'i güncelle
   useEffect(() => {
     if (paginatedData) {
+      console.log('📊 API Response:', {
+        currentPage: paginatedData.current_page,
+        totalPages: paginatedData.total_pages,
+        resultCount: paginatedData.results.length,
+        hasMore: paginatedData.current_page < paginatedData.total_pages
+      });
+      
       if (paginatedData.current_page === 1) {
         // İlk sayfa - verileri değiştir
         dispatch(setPaginatedAparts(paginatedData.results));
@@ -122,15 +126,32 @@ const ClientAparts = ({
 
   // Intersection Observer callback
   const lastApartElementRef = useCallback((node: HTMLDivElement) => {
+    console.log('🔍 lastApartElementRef called:', { 
+      nodeExists: !!node, 
+      isFetching, 
+      isLoadingMore: isLoadingMoreRef.current 
+    });
+    
     if (isFetching || isLoadingMoreRef.current) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
+      console.log('👁️ Observer triggered:', {
+        isIntersecting: entries[0].isIntersecting,
+        hasMore: hasMoreRef.current,
+        isLoadingMore: isLoadingMoreRef.current,
+        currentPage: currentPageRef.current
+      });
+      
       if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
         // Debounce: 1 saniye içinde sadece bir kez tetiklenir
         const now = Date.now();
-        if (now - lastTriggerTime.current < 1000) return;
+        if (now - lastTriggerTime.current < 1000) {
+          console.log('⏰ Debounced - too soon');
+          return;
+        }
         lastTriggerTime.current = now;
         
+        console.log('🚀 Loading next page:', currentPageRef.current + 1);
         dispatch(setIsLoadingMore(true));
         dispatch(setCurrentPage(currentPageRef.current + 1));
       }
