@@ -29,6 +29,7 @@ interface ClientApartsProps {
   initialUniversity?: string;
 }
 
+
 const ClientAparts = ({ 
   initialCategory,
   initialCity,
