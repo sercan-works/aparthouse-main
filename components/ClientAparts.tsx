@@ -37,6 +37,10 @@ const ClientAparts = ({
 }: ClientApartsProps) => {
   const dispatch = useDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
+  const currentPageRef = useRef(1);
+  const hasMoreRef = useRef(true);
+  const isLoadingMoreRef = useRef(false);
+  const lastTriggerTime = useRef(0);
   
   // Redux state'leri
   const selectedCategory = useSelector((state: RootState) => state.filter.selectedCategory);
@@ -49,6 +53,13 @@ const ClientAparts = ({
   const hasMore = useSelector((state: RootState) => state.apart.hasMore);
   const isLoadingMore = useSelector((state: RootState) => state.apart.isLoadingMore);
   const pageSize = useSelector((state: RootState) => state.apart.pageSize);
+
+  // Ref'leri güncel tut
+  React.useEffect(() => {
+    currentPageRef.current = currentPage;
+    hasMoreRef.current = hasMore;
+    isLoadingMoreRef.current = isLoadingMore;
+  }, [currentPage, hasMore, isLoadingMore]);
   
   // İlk yükleme sırasında başlangıç değerlerini Redux store'a ekle
   useEffect(() => {
@@ -75,17 +86,27 @@ const ClientAparts = ({
   }, [currentPage, pageSize, selectedCategory, selectedCity, selectedUniversity]);
 
   // Paginated data fetch
-  const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(queryParams);
+  const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(
+    queryParams,
+    {
+      skip: isLoadingMore && currentPage > 1, // Zaten yükleme varsa skip et
+    }
+  );
 
   // Filtreler değiştiğinde pagination'ı sıfırla
   useEffect(() => {
     dispatch(resetPagination());
+    // Ref'leri de sıfırla
+    currentPageRef.current = 1;
+    hasMoreRef.current = true;
+    isLoadingMoreRef.current = false;
+    lastTriggerTime.current = 0;
   }, [selectedCategory, selectedCity, selectedUniversity, dispatch]);
 
   // API'den gelen veriler geldiğinde state'i güncelle
   useEffect(() => {
     if (paginatedData) {
-      if (currentPage === 1) {
+      if (paginatedData.current_page === 1) {
         // İlk sayfa - verileri değiştir
         dispatch(setPaginatedAparts(paginatedData.results));
       } else {
@@ -97,20 +118,25 @@ const ClientAparts = ({
       dispatch(setHasMore(paginatedData.current_page < paginatedData.total_pages));
       dispatch(setIsLoadingMore(false));
     }
-  }, [paginatedData, currentPage, dispatch]);
+  }, [paginatedData, dispatch]);
 
   // Intersection Observer callback
   const lastApartElementRef = useCallback((node: HTMLDivElement) => {
-    if (isFetching || isLoadingMore) return;
+    if (isFetching || isLoadingMoreRef.current) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+      if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
+        // Debounce: 1 saniye içinde sadece bir kez tetiklenir
+        const now = Date.now();
+        if (now - lastTriggerTime.current < 1000) return;
+        lastTriggerTime.current = now;
+        
         dispatch(setIsLoadingMore(true));
-        dispatch(setCurrentPage(currentPage + 1));
+        dispatch(setCurrentPage(currentPageRef.current + 1));
       }
     });
     if (node) observer.current.observe(node);
-  }, [isFetching, isLoadingMore, hasMore, currentPage, dispatch]);
+  }, [isFetching, dispatch]);
 
   // Aktif filtreleri kaldır
   const RemoveActiveFilter = (filter: string) => {
