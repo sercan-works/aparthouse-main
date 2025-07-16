@@ -162,41 +162,55 @@ const ClientAparts = ({
 
   // Intersection Observer callback
   const lastApartElementRef = useCallback((node: HTMLDivElement) => {
-    if (isFetching || isLoadingMoreRef.current) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
-        // DEBUG: Intersection Observer tetiklendiğini logla
-        console.log('Intersection Observer triggered:', {
-          currentPage: currentPageRef.current,
-          hasMore: hasMoreRef.current,
-          isLoadingMore: isLoadingMoreRef.current,
-          nextPage: currentPageRef.current + 1
-        });
-        
-        // Debounce: 1 saniye içinde sadece bir kez tetiklenir
-        const now = Date.now();
-        if (now - lastTriggerTime.current < 1000) {
-          console.log('Debounced - too soon');
-          return;
-        }
-        lastTriggerTime.current = now;
-        
-        dispatch(setIsLoadingMore(true));
-        dispatch(setCurrentPage(currentPageRef.current + 1));
-      } else {
-        // DEBUG: Neden tetiklenmediğini logla
-        console.log('Intersection Observer not triggered:', {
+    console.log('Ref callback called:', {
+      nodeExists: !!node,
+      isFetching,
+      isLoadingMore: isLoadingMoreRef.current,
+      hasMore: hasMoreRef.current
+    });
+    
+    if (isFetching || isLoadingMoreRef.current) {
+      console.log('Ref callback returned early');
+      return;
+    }
+    
+    if (observer.current) {
+      console.log('Disconnecting previous observer');
+      observer.current.disconnect();
+    }
+    
+    if (node) {
+      console.log('Setting up new observer for node:', node);
+      observer.current = new IntersectionObserver(entries => {
+        console.log('Observer callback triggered:', {
           isIntersecting: entries[0].isIntersecting,
           hasMore: hasMoreRef.current,
-          isLoadingMore: isLoadingMoreRef.current
+          isLoadingMore: isLoadingMoreRef.current,
+          currentPage: currentPageRef.current
         });
-      }
-    }, {
-      threshold: 0.1,
-      rootMargin: '100px'
-    });
-    if (node) observer.current.observe(node);
+        
+        if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
+          console.log('Loading next page...');
+          
+          // Debounce: 500ms içinde sadece bir kez tetiklenir
+          const now = Date.now();
+          if (now - lastTriggerTime.current < 500) {
+            console.log('Debounced - too soon');
+            return;
+          }
+          lastTriggerTime.current = now;
+          
+          dispatch(setIsLoadingMore(true));
+          dispatch(setCurrentPage(currentPageRef.current + 1));
+        }
+      }, {
+        threshold: 0,
+        rootMargin: '50px'
+      });
+      
+      observer.current.observe(node);
+      console.log('Observer attached to node');
+    }
   }, [isFetching, dispatch]);
 
   // Aktif filtreleri kaldır
@@ -271,11 +285,23 @@ const ClientAparts = ({
                 apartId: apart.id,
                 index,
                 totalLength: paginatedAparts.length,
-                hasMore: hasMore
+                hasMore: hasMore,
+                refFunction: lastApartElementRef
               });
               return (
-                <div key={apart.id} ref={lastApartElementRef}>
+                <div 
+                  key={apart.id} 
+                  ref={lastApartElementRef}
+                  style={{ 
+                    border: '2px solid red', 
+                    minHeight: '20px',
+                    backgroundColor: 'rgba(255,0,0,0.1)' 
+                  }}
+                >
                   <Card apart={apart} />
+                  <div style={{ color: 'red', fontSize: '12px' }}>
+                    SON ELEMENT (Index: {index})
+                  </div>
                 </div>
               );
             } else {
