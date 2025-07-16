@@ -35,6 +35,17 @@ export interface Apartment {
   // İhtiyacınıza göre daha fazla alan ekleyebilirsiniz
 }
 
+// Pagination response interface
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+  page_size: number;
+  total_pages: number;
+  current_page: number;
+}
+
 // Filtreleme parametreleri için interface
 export interface FilterParams {
   city?: string | number;
@@ -44,6 +55,8 @@ export interface FilterParams {
   gender?: string;
   category?: string;
   features?: string;
+  page?: number;
+  page_size?: number;
   [key: string]: string | number | undefined;
 }
 
@@ -174,6 +187,17 @@ export const apartsApi = baseApi.injectEndpoints({
         keepUnusedDataFor: 60,
       }),
     }),
+    // Yeni paginated aparts endpoint
+    getPaginatedAparts: builder.query<PaginatedResponse<ApiApart>, FilterParams>({
+      query: (filters) => ({
+        url: '/api/aparts',
+        params: {
+          ...filters,
+          page_size: filters.page_size || 20, // Varsayılan 20 kayıt
+        },
+        keepUnusedDataFor: 60,
+      }),
+    }),
     getHiglightAparts: builder.query<ApiApart[], FilterParams>({
       query: (filters) => ({
         url: '/api/highlight-aparts/',
@@ -190,6 +214,7 @@ export const {
   useGetApartmentByIdQuery,
   useGetFilteredApartsQuery,
   useGetApartsQuery,
+  useGetPaginatedApartsQuery,
   useGetHiglightApartsQuery,
 } = apartsApi;
 
@@ -198,6 +223,7 @@ export const {
   getApartmentById,
   getFilteredAparts,
   getAparts,
+  getPaginatedAparts,
   getHiglightAparts,
 } = apartsApi.endpoints;
 
