@@ -122,6 +122,25 @@ const ClientAparts = ({
       const currentPageNum = Number(paginatedData.current_page) || 1;
       const totalPagesNum = Number(paginatedData.total_pages) || 1;
       
+      // DEBUG: Pagination verilerini logla
+      const debugCalculatedTotalPages = Math.ceil((paginatedData.count || 0) / pageSize);
+      const manualHasMore = currentPageNum < debugCalculatedTotalPages;
+      const apiHasMore = currentPageNum < totalPagesNum;
+      
+      console.log('Pagination Debug:', {
+        currentPageNum,
+        totalPagesNum,
+        debugCalculatedTotalPages,
+        resultsLength: results.length,
+        totalCount: paginatedData.count,
+        pageSize,
+        apiHasMore,
+        manualHasMore,
+        hasMoreMatch: apiHasMore === manualHasMore,
+        existingApartsLength: paginatedAparts.length,
+        totalAfterAppend: currentPageNum === 1 ? results.length : paginatedAparts.length + results.length
+      });
+      
       if (currentPageNum === 1) {
         // İlk sayfa - verileri değiştir
         dispatch(setPaginatedAparts(results));
@@ -130,8 +149,13 @@ const ClientAparts = ({
         dispatch(appendPaginatedAparts(results));
       }
       
-      dispatch(setTotalPages(totalPagesNum));
-      dispatch(setHasMore(currentPageNum < totalPagesNum));
+      // Manual hesaplama ile double-check
+      const recalculatedTotalPages = Math.ceil((paginatedData.count || 0) / pageSize);
+      const finalTotalPages = Math.max(totalPagesNum, recalculatedTotalPages);
+      const finalHasMore = currentPageNum < finalTotalPages;
+      
+      dispatch(setTotalPages(finalTotalPages));
+      dispatch(setHasMore(finalHasMore));
       dispatch(setIsLoadingMore(false));
     }
   }, [paginatedData, dispatch]);
@@ -142,16 +166,35 @@ const ClientAparts = ({
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
+        // DEBUG: Intersection Observer tetiklendiğini logla
+        console.log('Intersection Observer triggered:', {
+          currentPage: currentPageRef.current,
+          hasMore: hasMoreRef.current,
+          isLoadingMore: isLoadingMoreRef.current,
+          nextPage: currentPageRef.current + 1
+        });
+        
         // Debounce: 1 saniye içinde sadece bir kez tetiklenir
         const now = Date.now();
         if (now - lastTriggerTime.current < 1000) {
+          console.log('Debounced - too soon');
           return;
         }
         lastTriggerTime.current = now;
         
         dispatch(setIsLoadingMore(true));
         dispatch(setCurrentPage(currentPageRef.current + 1));
+      } else {
+        // DEBUG: Neden tetiklenmediğini logla
+        console.log('Intersection Observer not triggered:', {
+          isIntersecting: entries[0].isIntersecting,
+          hasMore: hasMoreRef.current,
+          isLoadingMore: isLoadingMoreRef.current
+        });
       }
+    }, {
+      threshold: 0.1,
+      rootMargin: '100px'
     });
     if (node) observer.current.observe(node);
   }, [isFetching, dispatch]);
@@ -179,8 +222,7 @@ const ClientAparts = ({
     <div className="flex flex-col justify-center items-center">
       {error && (
         <div className="w-full bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-5">
-          <p className="font-bold">API Bağlantı Hatası</p>
-          <p>API bağlantısı sırasında bir hata oluştu. Lütfen sayfayı yenileyin.</p>
+          <p className="font-bold">Hata</p>
         </div>
       )}
 
@@ -224,6 +266,13 @@ const ClientAparts = ({
           paginatedAparts.map((apart, index) => {
             // Son elemente ref ekle
             if (paginatedAparts.length === index + 1) {
+              // DEBUG: Son elemente ref eklendiğini logla
+              console.log('Last element ref added:', {
+                apartId: apart.id,
+                index,
+                totalLength: paginatedAparts.length,
+                hasMore: hasMore
+              });
               return (
                 <div key={apart.id} ref={lastApartElementRef}>
                   <Card apart={apart} />
