@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useCallback, useRef } from "react";
 import Card from "./card/Card";
-import { Button } from "@heroui/react";
 import { useGetPaginatedApartsQuery } from "@/store/api/apartsApi"; 
 import CardPlaceholder from "./ui/CardPlaceholder";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,10 +52,12 @@ const ClientAparts = ({
   const hasMore = useSelector((state: RootState) => state.apart.hasMore);
   const isLoadingMore = useSelector((state: RootState) => state.apart.isLoadingMore);
   const pageSize = useSelector((state: RootState) => state.apart.pageSize);
+  
+  // Toplam apart sayısını tutmak için state
+  const [totalApartCount, setTotalApartCount] = React.useState(0);
 
   // Ref'leri güncel tut
   React.useEffect(() => {
-    console.log('📝 State updated:', { currentPage, hasMore, isLoadingMore });
     currentPageRef.current = currentPage;
     hasMoreRef.current = hasMore;
     isLoadingMoreRef.current = isLoadingMore;
@@ -83,7 +84,6 @@ const ClientAparts = ({
     if (selectedCity) params.city = selectedCity;
     if (selectedUniversity) params.university = selectedUniversity;
     
-    console.log('🔧 Query params:', params);
     return params;
   }, [currentPage, pageSize, selectedCategory, selectedCity, selectedUniversity]);
 
@@ -103,12 +103,8 @@ const ClientAparts = ({
   // API'den gelen veriler geldiğinde state'i güncelle
   useEffect(() => {
     if (paginatedData) {
-      console.log('📊 API Response:', {
-        currentPage: paginatedData.current_page,
-        totalPages: paginatedData.total_pages,
-        resultCount: paginatedData.results.length,
-        hasMore: paginatedData.current_page < paginatedData.total_pages
-      });
+      // Toplam apart sayısını güncelle
+      setTotalApartCount(paginatedData.count);
       
       if (paginatedData.current_page === 1) {
         // İlk sayfa - verileri değiştir
@@ -126,32 +122,17 @@ const ClientAparts = ({
 
   // Intersection Observer callback
   const lastApartElementRef = useCallback((node: HTMLDivElement) => {
-    console.log('🔍 lastApartElementRef called:', { 
-      nodeExists: !!node, 
-      isFetching, 
-      isLoadingMore: isLoadingMoreRef.current 
-    });
-    
     if (isFetching || isLoadingMoreRef.current) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
-      console.log('👁️ Observer triggered:', {
-        isIntersecting: entries[0].isIntersecting,
-        hasMore: hasMoreRef.current,
-        isLoadingMore: isLoadingMoreRef.current,
-        currentPage: currentPageRef.current
-      });
-      
       if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
         // Debounce: 1 saniye içinde sadece bir kez tetiklenir
         const now = Date.now();
         if (now - lastTriggerTime.current < 1000) {
-          console.log('⏰ Debounced - too soon');
           return;
         }
         lastTriggerTime.current = now;
         
-        console.log('🚀 Loading next page:', currentPageRef.current + 1);
         dispatch(setIsLoadingMore(true));
         dispatch(setCurrentPage(currentPageRef.current + 1));
       }
@@ -252,10 +233,33 @@ const ClientAparts = ({
 
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && (
-        <div className="flex justify-center items-center mt-8 mb-20">
-          <Button className="border-colorFirst border-2 mx-auto text-colorFirst justify-center items-center bg-opacity-0">
-            <p className="font-bold">Tüm apartlar gösterildi</p>
-          </Button>
+        <div className="flex flex-col justify-center items-center mt-8 mb-20 space-y-4">
+          {/* Dekoratif çizgi */}
+          <div className="flex items-center space-x-4 w-full max-w-md">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-colorFirst to-transparent opacity-50"></div>
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-colorFirst rounded-full"></div>
+              <div className="w-2 h-2 bg-colorFirst rounded-full opacity-60"></div>
+              <div className="w-2 h-2 bg-colorFirst rounded-full opacity-30"></div>
+            </div>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent via-colorFirst to-transparent opacity-50"></div>
+          </div>
+          
+          {/* Ana mesaj */}
+          <div className="text-center">
+            <h3 className="text-lg font-bold text-colorFirst mb-2">
+              🏠 Sayfa Sonuna Ulaştınız
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Toplam <span className="font-semibold text-colorFirst">{totalApartCount}</span> apart başarıyla gösterildi
+            </p>
+          </div>
+          
+          {/* Alt bilgi */}
+          <div className="text-center text-xs text-gray-500 space-y-1">
+            <p>Yeni apartlar için filtreleri değiştirmeyi deneyebilirsiniz</p>
+            <p>veya daha sonra tekrar kontrol edebilirsiniz</p>
+          </div>
         </div>
       )}
 
