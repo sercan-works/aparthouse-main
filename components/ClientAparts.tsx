@@ -4,7 +4,6 @@ import Card from "./card/Card";
 import { Button } from "@heroui/react";
 import { useGetPaginatedApartsQuery } from "@/store/api/apartsApi"; 
 import CardPlaceholder from "./ui/CardPlaceholder";
-import LoadingAnimation from "./ui/LoadingAnimation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useGetCitiesQuery } from "@/store/api/filterApi";
@@ -182,43 +181,23 @@ const ClientAparts = ({
             // Son elemente ref ekle
             if (paginatedAparts.length === index + 1) {
               return (
-                <div 
-                  key={apart.id} 
-                  ref={lastApartElementRef}
-                  className="animate-fadeIn"
-                  style={{ animationDelay: `${(index % 20) * 0.05}s` }}
-                >
+                <div key={apart.id} ref={lastApartElementRef}>
                   <Card apart={apart} />
                 </div>
               );
             } else {
-              return (
-                <div 
-                  key={apart.id} 
-                  className="animate-fadeIn"
-                  style={{ animationDelay: `${(index % 20) * 0.05}s` }}
-                >
-                  <Card apart={apart} />
-                </div>
-              );
+              return <Card key={apart.id} apart={apart} />;
             }
           })
         ) : (
-          <div className="text-center py-8 animate-fadeIn">Hiç apart bulunamadı.</div>
+          <div className="text-center py-8">Hiç apart bulunamadı.</div>
         )}
       </div>
 
       {/* Yükleme durumu */}
-      {(isLoadingMore || isFetching) && paginatedAparts.length > 0 && (
-        <div className="w-full flex justify-center items-center animate-slideUp">
-          <LoadingAnimation />
-        </div>
-      )}
-      
-      {/* İlk yükleme skeleton'ları */}
-      {isLoading && paginatedAparts.length === 0 && (
+      {(isLoadingMore || isFetching) && (
         <div className="flex container flex-wrap gap-4 justify-center items-center py-5">
-          {Array.from({ length: 8 }).map((_, index) => (
+          {Array.from({ length: 4 }).map((_, index) => (
             <CardPlaceholder key={`loading-${index}`} />
           ))}
         </div>
@@ -226,18 +205,10 @@ const ClientAparts = ({
 
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && (
-        <div className="flex flex-col justify-center items-center mt-8 mb-20 animate-slideUp">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-colorFirst"></div>
-            <div className="w-2 h-2 bg-colorFirst rounded-full"></div>
-            <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-colorFirst"></div>
-          </div>
-          <Button className="border-colorFirst border-2 mx-auto text-colorFirst justify-center items-center bg-opacity-0 hover:bg-colorFirst hover:text-white transition-all duration-300">
+        <div className="flex justify-center items-center mt-8 mb-20">
+          <Button className="border-colorFirst border-2 mx-auto text-colorFirst justify-center items-center bg-opacity-0">
             <p className="font-bold">Tüm apartlar gösterildi</p>
           </Button>
-          <p className="text-sm text-gray-500 mt-2">
-            Toplam {paginatedAparts.length} apart gösterildi
-          </p>
         </div>
       )}
 
