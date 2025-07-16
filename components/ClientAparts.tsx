@@ -333,16 +333,27 @@ const ClientAparts = ({
             console.log('Manual load more clicked:', {
               currentPage: currentPageRef.current,
               hasMore: hasMoreRef.current,
-              isLoadingMore: isLoadingMoreRef.current
+              isLoadingMore: isLoadingMoreRef.current,
+              totalAparts: paginatedAparts.length,
+              totalCount: totalApartCount
             });
             dispatch(setIsLoadingMore(true));
             dispatch(setCurrentPage(currentPageRef.current + 1));
           }}
           className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
         >
-          DEBUG: Load More (Page {currentPage + 1})
+          DEBUG: Load More (Page {currentPage + 1}) - {paginatedAparts.length}/{totalApartCount}
         </button>
       )}
+      
+      {/* DEBUG: Current state info */}
+      <div className="mt-4 p-4 bg-gray-100 rounded text-xs">
+        <div>Current Page: {currentPage}</div>
+        <div>Has More: {hasMore ? 'true' : 'false'}</div>
+        <div>Is Loading: {isLoadingMore ? 'true' : 'false'}</div>
+        <div>Apartments: {paginatedAparts.length}/{totalApartCount}</div>
+        <div>Expected Pages: {Math.ceil(totalApartCount / pageSize)}</div>
+      </div>
 
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && isHydrated && (
