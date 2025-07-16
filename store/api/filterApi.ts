@@ -1,5 +1,5 @@
 import { baseApi } from './index';
-import { ApiApart } from './apartsApi';
+import { ApiApart, PaginatedResponse } from './apartsApi';
 
 // Define types
 interface BaseItem {
@@ -45,7 +45,7 @@ export const filterApi = baseApi.injectEndpoints({
             query: () => '/api/filters/',
         }),
 
-        getSearchResults: builder.query<ApiApart[], string>({
+        getSearchResults: builder.query<PaginatedResponse<ApiApart>, string>({
             query: (searchQuery) => `/api/aparts/?search=${searchQuery}`,
         }),
     }),

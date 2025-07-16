@@ -75,8 +75,8 @@ const SearchBar = ({placeholder}: {placeholder: string}) => {
 
   // Debugging: log when search data changes
   useEffect(() => {
-    if (searchResults) {
-      console.log('Search results available:', searchResults.length);
+    if (searchResults?.results) {
+      console.log('Search results available:', searchResults.results.length);
     }
   }, [searchResults]);
 
@@ -110,7 +110,7 @@ const SearchBar = ({placeholder}: {placeholder: string}) => {
       </div>
 
       {/* Search Results - Mobile Optimized */}
-      {showResults && searchResults && searchResults.length > 0 && (
+      {showResults && searchResults?.results && searchResults.results.length > 0 && (
         <div className="fixed md:absolute left-0 right-0 md:right-auto md:w-full top-[120px] md:top-auto md:mt-1 mx-4 md:mx-0 bg-white rounded-lg shadow-2xl border border-gray-200 max-h-[60vh] md:max-h-[400px] overflow-y-auto z-[99999]">
           {/* Desktop Table View */}
           <div className="hidden md:block">
@@ -123,7 +123,7 @@ const SearchBar = ({placeholder}: {placeholder: string}) => {
                 </tr>
               </thead>
               <tbody>
-                {searchResults.map((result: ApiApart) => (
+                {searchResults.results.map((result: ApiApart) => (
                   <tr 
                     key={result.id}
                     className="hover:bg-colorFirst hover:bg-opacity-50 cursor-pointer"
@@ -144,11 +144,11 @@ const SearchBar = ({placeholder}: {placeholder: string}) => {
           <div className="block md:hidden">
             <div className="sticky top-0 bg-colorFirst px-4 py-3 text-sm font-semibold text-white flex justify-between items-center">
               <span>Arama Sonuçları</span>
-              <span className="text-xs">{searchResults.length} sonuç</span>
+              <span className="text-xs">{searchResults.results.length} sonuç</span>
               <FaXmark className="cursor-pointer" onClick={handleClearAndClose} />
             </div>
             <div className="py-1">
-              {searchResults.map((result: ApiApart) => (
+              {searchResults.results.map((result: ApiApart) => (
                 <div 
                   key={result.id}
                   className="px-4 py-3 border-b last:border-0 hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
