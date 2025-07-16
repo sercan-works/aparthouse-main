@@ -56,6 +56,7 @@ const ClientAparts = ({
   
   // Toplam apart sayısını tutmak için state
   const [totalApartCount, setTotalApartCount] = React.useState(0);
+  const [isHydrated, setIsHydrated] = React.useState(false);
 
   // Ref'leri güncel tut
   React.useEffect(() => {
@@ -90,6 +91,13 @@ const ClientAparts = ({
 
   // Paginated data fetch
   const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(queryParams);
+  
+
+
+  // Hydration kontrolü
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Filtreler değiştiğinde pagination'ı sıfırla
   useEffect(() => {
@@ -103,20 +111,27 @@ const ClientAparts = ({
 
   // API'den gelen veriler geldiğinde state'i güncelle
   useEffect(() => {
-    if (paginatedData) {
+    if (paginatedData && typeof paginatedData === 'object') {
       // Toplam apart sayısını güncelle
-      setTotalApartCount(paginatedData.count);
+      setTotalApartCount(paginatedData.count || 0);
       
-      if (paginatedData.current_page === 1) {
+      // Results array'ini güvenli şekilde kontrol et
+      const results = Array.isArray(paginatedData.results) ? paginatedData.results : [];
+      
+      // Sayfa numarasını güvenli şekilde kontrol et
+      const currentPageNum = Number(paginatedData.current_page) || 1;
+      const totalPagesNum = Number(paginatedData.total_pages) || 1;
+      
+      if (currentPageNum === 1) {
         // İlk sayfa - verileri değiştir
-        dispatch(setPaginatedAparts(paginatedData.results));
+        dispatch(setPaginatedAparts(results));
       } else {
         // Sonraki sayfalar - verileri ekle
-        dispatch(appendPaginatedAparts(paginatedData.results));
+        dispatch(appendPaginatedAparts(results));
       }
       
-      dispatch(setTotalPages(paginatedData.total_pages));
-      dispatch(setHasMore(paginatedData.current_page < paginatedData.total_pages));
+      dispatch(setTotalPages(totalPagesNum));
+      dispatch(setHasMore(currentPageNum < totalPagesNum));
       dispatch(setIsLoadingMore(false));
     }
   }, [paginatedData, dispatch]);
@@ -149,8 +164,8 @@ const ClientAparts = ({
     localStorage.removeItem(filter);
   };
 
-  // İlk yükleme durumu
-  if (isLoading && paginatedAparts.length === 0) {
+  // İlk yükleme durumu veya hydration bekleniyor
+  if (!isHydrated || (isLoading && paginatedAparts.length === 0)) {
     return (
       <div className="flex container flex-wrap gap-4 justify-center items-center py-10">
         {Array.from({ length: 10 }).map((_, index) => (
@@ -219,7 +234,11 @@ const ClientAparts = ({
             }
           })
         ) : (
-          <div className="text-center py-8">Hiç apart bulunamadı.</div>
+          !isLoading && (
+            <div className="text-center py-8">
+              Hiç apart bulunamadı.
+            </div>
+          )
         )}
       </div>
 

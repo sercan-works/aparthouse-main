@@ -24,16 +24,23 @@ const saveViewedToStorage = (ids: number[]) => {
 
 interface ViewedState {
     viewedApartIds: number[];
+    isHydrated: boolean;
 }
 
 const initialState: ViewedState = {
-    viewedApartIds: getViewedFromStorage(),
+    viewedApartIds: [], // Hydration mismatch'i önlemek için server'da boş başlat
+    isHydrated: false,
 };
 
 export const viewedSlice = createSlice({
     name: 'viewed',
     initialState,
     reducers: {
+        // Hydration tamamlandıktan sonra localStorage'dan yükle
+        loadViewedFromStorage: (state) => {
+            state.viewedApartIds = getViewedFromStorage();
+            state.isHydrated = true;
+        },
         addViewed: (state, action: PayloadAction<number>) => {
             if (!state.viewedApartIds.includes(action.payload)) {
                 state.viewedApartIds.push(action.payload);
@@ -47,6 +54,6 @@ export const viewedSlice = createSlice({
     },
 });
 
-export const { addViewed, clearViewed } = viewedSlice.actions;
+export const { loadViewedFromStorage, addViewed, clearViewed } = viewedSlice.actions;
 
 export default viewedSlice.reducer; 

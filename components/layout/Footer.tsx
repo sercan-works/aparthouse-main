@@ -9,12 +9,19 @@ import paymentImage from "@/public/assets/images/payment_logos.png";
 import Link from "next/link"; 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { clearViewed } from "@/store/features/ViewedSlice";
+import { clearViewed, loadViewedFromStorage } from "@/store/features/ViewedSlice";
 import { FaHistory } from "react-icons/fa";
 
 const Footer = () => {
   const dispatch = useDispatch();
-  const { viewedApartIds } = useSelector((state: RootState) => state.viewed);
+  const { viewedApartIds, isHydrated } = useSelector((state: RootState) => state.viewed);
+  
+  // Hydration tamamlandıktan sonra localStorage'dan yükle
+  React.useEffect(() => {
+    if (!isHydrated) {
+      dispatch(loadViewedFromStorage());
+    }
+  }, [dispatch, isHydrated]);
   
   const handleClearViewed = () => {
     if (confirm('Tüm inceleme geçmişiniz silinecek. Onaylıyor musunuz?')) {
@@ -63,10 +70,10 @@ const Footer = () => {
                 <button 
                   onClick={handleClearViewed}
                   className="text-colorFirst hover:text-colorFirst/80 flex items-center gap-1"
-                  disabled={viewedApartIds.length === 0}
+                  disabled={!isHydrated || viewedApartIds.length === 0}
                 >
                   <FaHistory className="w-3 h-3" /> 
-                  İnceleme Geçmişini Temizle {viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                  İnceleme Geçmişini Temizle {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
                 </button>
               </li>
             </ul>
@@ -198,10 +205,10 @@ const Footer = () => {
                 <button 
                   onClick={handleClearViewed}
                   className="text-colorFirst hover:text-colorFirst/80 flex items-center gap-1"
-                  disabled={viewedApartIds.length === 0}
+                  disabled={!isHydrated || viewedApartIds.length === 0}
                 >
                   <FaHistory className="w-3 h-3" /> 
-                  İnceleme Geçmişini Temizle {viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                  İnceleme Geçmişini Temizle {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
                 </button>
               </li>
             </ul>

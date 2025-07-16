@@ -37,10 +37,11 @@ const apartSlice = createSlice({
         },
         // Pagination reducer'ları
         setPaginatedAparts: (state, action: PayloadAction<ApiApart[]>) => {
-            state.paginatedAparts = action.payload;
+            state.paginatedAparts = Array.isArray(action.payload) ? action.payload : [];
         },
         appendPaginatedAparts: (state, action: PayloadAction<ApiApart[]>) => {
-            state.paginatedAparts = [...state.paginatedAparts, ...action.payload];
+            const newData = Array.isArray(action.payload) ? action.payload : [];
+            state.paginatedAparts = [...state.paginatedAparts, ...newData];
         },
         setCurrentPage: (state, action: PayloadAction<number>) => {
             state.currentPage = action.payload;
