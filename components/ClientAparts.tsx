@@ -300,6 +300,24 @@ const ClientAparts = ({
         </div>
       )}
 
+      {/* DEBUG: Manual load more button */}
+      {hasMore && !isLoadingMore && (
+        <button 
+          onClick={() => {
+            console.log('Manual load more clicked:', {
+              currentPage: currentPageRef.current,
+              hasMore: hasMoreRef.current,
+              isLoadingMore: isLoadingMoreRef.current
+            });
+            dispatch(setIsLoadingMore(true));
+            dispatch(setCurrentPage(currentPageRef.current + 1));
+          }}
+          className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+        >
+          DEBUG: Load More (Page {currentPage + 1})
+        </button>
+      )}
+
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && isHydrated && (
         <div className="flex flex-col justify-center items-center mt-8 mb-20 space-y-4">
