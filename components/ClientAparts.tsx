@@ -21,7 +21,7 @@ import {
   resetPagination,
   setPaginatedAparts 
 } from "@/store/features/ApartSlice";
-import MobileCitySelection from "./filter-modal/MobileCitySelection";
+// import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
   initialCategory?: string;
@@ -284,9 +284,9 @@ const ClientAparts = ({
       )}
 
       {/* Mobile şehir seçimi modal */}
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <MobileCitySelection />
-      </div>
+      </div> */}
     </div>
   );
 };
