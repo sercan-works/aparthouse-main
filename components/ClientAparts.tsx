@@ -166,11 +166,14 @@ const ClientAparts = ({
       nodeExists: !!node,
       isFetching,
       isLoadingMore: isLoadingMoreRef.current,
-      hasMore: hasMoreRef.current
+      hasMore: hasMoreRef.current,
+      currentPage: currentPageRef.current,
+      totalAparts: paginatedAparts.length
     });
     
-    if (isFetching || isLoadingMoreRef.current) {
-      console.log('Ref callback returned early');
+    // isFetching kontrolünü kaldırıyoruz - sadece isLoadingMore kontrol edelim
+    if (isLoadingMoreRef.current) {
+      console.log('Ref callback returned early - isLoadingMore true');
       return;
     }
     
@@ -186,7 +189,8 @@ const ClientAparts = ({
           isIntersecting: entries[0].isIntersecting,
           hasMore: hasMoreRef.current,
           isLoadingMore: isLoadingMoreRef.current,
-          currentPage: currentPageRef.current
+          currentPage: currentPageRef.current,
+          totalAparts: paginatedAparts.length
         });
         
         if (entries[0].isIntersecting && hasMoreRef.current && !isLoadingMoreRef.current) {
@@ -211,7 +215,7 @@ const ClientAparts = ({
       observer.current.observe(node);
       console.log('Observer attached to node');
     }
-  }, [isFetching, dispatch]);
+  }, [dispatch, paginatedAparts.length]); // dependencies değiştirildi
 
   // Aktif filtreleri kaldır
   const RemoveActiveFilter = (filter: string) => {
