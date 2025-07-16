@@ -252,7 +252,7 @@ const ClientAparts = ({
       )}
 
       {/* Sayfa sonuna ulaşıldığında göster */}
-      {!hasMore && paginatedAparts.length > 0 && (
+      {!hasMore && paginatedAparts.length > 0 && isHydrated && (
         <div className="flex flex-col justify-center items-center mt-8 mb-20 space-y-4">
           {/* Dekoratif çizgi */}
           <div className="flex items-center space-x-4 w-full max-w-md">
@@ -268,10 +268,10 @@ const ClientAparts = ({
           {/* Ana mesaj */}
           <div className="text-center">
             <h3 className="text-lg font-bold text-colorFirst mb-2">
-              🏠 Sayfa Sonuna Ulaştınız
+              Sayfa Sonuna Ulaştınız
             </h3>
             <p className="text-gray-600 text-sm">
-              Toplam <span className="font-semibold text-colorFirst">{totalApartCount}</span> apart başarıyla gösterildi
+              Toplam <span className="font-semibold text-colorFirst">{totalApartCount || 0}</span> apart başarıyla gösterildi
             </p>
           </div>
           
