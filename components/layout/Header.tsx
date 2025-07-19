@@ -225,13 +225,13 @@ export default function Header() {
 
                                    {/* Eskişehir Teknik Üniversitesi */}
             <button 
-              onClick={() => dispatch(setSelectedUniversity(2))}
+              onClick={() => dispatch(setSelectedUniversity(4))}
               className="flex-shrink-0 group"
             >
-                               <div className={`${getUniversityCardStyle('2')} rounded-xl p-2 shadow-sm transition-all duration-200 group-active:scale-95 w-20 h-20`}>
+                               <div className={`${getUniversityCardStyle('4')} rounded-xl p-2 shadow-sm transition-all duration-200 group-active:scale-95 w-20 h-20`}>
                   <div className="flex flex-col items-center justify-center gap-1 h-full">
                   {/* Logo Placeholder */}
-                                       <div className={`w-10 h-10 bg-white rounded-lg flex items-center justify-center ${getUniversityLogoStyle('2')}`}>
+                                       <div className={`w-10 h-10 bg-white rounded-lg flex items-center justify-center ${getUniversityLogoStyle('4')}`}>
                       <Image src={EstuLogo} alt="Eskişehir Teknik Üniversitesi" width={32} height={32} />
                   </div>
                   {/* Üniversite Adı */}
@@ -246,13 +246,13 @@ export default function Header() {
 
                                    {/* Eskişehir Osmangazi Üniversitesi */}
             <button 
-              onClick={() => dispatch(setSelectedUniversity(3))}
+              onClick={() => dispatch(setSelectedUniversity(2))}
               className="flex-shrink-0 group"
             >
-                               <div className={`${getUniversityCardStyle('3')} rounded-xl p-2 shadow-sm transition-all duration-200 group-active:scale-95 w-20 h-20`}>
+                               <div className={`${getUniversityCardStyle('2')} rounded-xl p-2 shadow-sm transition-all duration-200 group-active:scale-95 w-20 h-20`}>
                   <div className="flex flex-col items-center justify-center gap-1 h-full">
                   {/* Logo Placeholder */}
-                                       <div className={`w-10 h-10 bg-white rounded-lg flex items-center justify-center ${getUniversityLogoStyle('3')}`}>
+                                       <div className={`w-10 h-10 bg-white rounded-lg flex items-center justify-center ${getUniversityLogoStyle('2')}`}>
                       <Image src={OsmangaziLogo} alt="Osmangazi Üniversitesi" width={32} height={32} />
                   </div>
                   {/* Üniversite Adı */}
