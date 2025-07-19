@@ -173,17 +173,23 @@ export const apartsApi = baseApi.injectEndpoints({
       // Gerçek API endpoint'ini kullanıyoruz
       query: (slug) => `/api/aparts/${slug}`,
     }),
-    getFilteredAparts: builder.query<Apartment[], FilterParams>({
+    getFilteredAparts: builder.query<PaginatedResponse<Apartment>, FilterParams>({
       query: (filters) => ({
         url: '/api/aparts',
-        params: filters,
+        params: {
+          ...filters,
+          page_size: filters.page_size || 20,
+        },
         keepUnusedDataFor: 60,
       }),
     }),
-    getAparts: builder.query<ApiApart[], FilterParams>({
+    getAparts: builder.query<PaginatedResponse<ApiApart>, FilterParams>({
       query: (filters) => ({
         url: '/api/aparts',
-        params: filters,
+        params: {
+          ...filters,
+          page_size: filters.page_size || 20,
+        },
         keepUnusedDataFor: 60,
       }),
     }),

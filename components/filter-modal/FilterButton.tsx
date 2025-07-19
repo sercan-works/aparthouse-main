@@ -16,7 +16,7 @@ import PriceSlider from "./PriceSlider";
 import { useGetFiltersQuery } from "@/store/api/filterApi";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { prepareSearchParams, useGetFilteredApartsQuery } from "@/store/api/apartsApi";
+import { prepareSearchParams, useGetPaginatedApartsQuery } from "@/store/api/apartsApi";
 
 interface FilterOption {
   value: string | number;
@@ -108,13 +108,19 @@ export default function FilterButton() {
     return prepareSearchParams(selectedFilters);
   }, [selectedFilters]);
 
-  // Filtrelenmiş apartları getir
-  const { data: filteredAparts, isLoading: isFiltering } = useGetFilteredApartsQuery(
-    searchParams,
+  // Filtrelenmiş apartları getir - pagination kullan
+  const { data: paginatedData, isLoading: isFiltering } = useGetPaginatedApartsQuery(
+    {
+      ...searchParams,
+      page_size: 100 // Filtre modal'da daha fazla sonuç göster
+    },
     { 
       skip: Object.keys(searchParams).length === 0, // Filtre yoksa sorguyu atlayın
     }
   );
+
+  // Paginated data'dan apartları çıkar
+  const filteredAparts = paginatedData?.results || [];
 
   // Şehir değiştiğinde üniversite listesini güncelle
   useEffect(() => {

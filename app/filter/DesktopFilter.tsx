@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Switch } from "@heroui/react";
 import FilterCard from "@/components/card/FilterCard";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useGetApartsQuery, ApiApart } from "@/store/api/apartsApi";
+import { useGetPaginatedApartsQuery, ApiApart } from "@/store/api/apartsApi";
 import { 
   useGetCitiesQuery, 
   useGetUniversitiesQuery, 
@@ -29,11 +29,17 @@ const DesktopFilter = () => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: filters = [] } = useGetFiltersQuery();
   
-  // Filtrelenmiş apartları API'den getir
-  const { data: filteredAparts, isLoading, error } = useGetApartsQuery(params);
+  // Filtrelenmiş apartları API'den getir - pagination kullan
+  const { data: paginatedData, isLoading, error } = useGetPaginatedApartsQuery({
+    ...params,
+    page_size: 100 // Filter sayfasında daha fazla sonuç göster
+  });
 
+  // Paginated data'dan apartları çıkar
+  const filteredAparts = paginatedData?.results || [];
+  
   // Sonuç sayısını hesapla
-  const resultCount = filteredAparts ? filteredAparts.length : 0;
+  const resultCount = paginatedData?.count || 0;
 
   // Sıralama işlemi için handler fonksiyonu
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
