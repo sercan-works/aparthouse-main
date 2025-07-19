@@ -78,6 +78,32 @@ export default function FilterButton() {
             ...prev,
             city: [cityId]
           }));
+        } else {
+          // Şehir mevcut değilse default olarak şehir ID'si 1'i ayarla
+          const defaultCityExists = filters.filters.find(f => f.filter_key === "city")?.options?.some(
+            option => Number(option.value) === 1
+          );
+          
+          if (defaultCityExists) {
+            setSelectedFilters(prev => ({
+              ...prev,
+              city: [1]
+            }));
+            localStorage.setItem(STORAGE_KEY_CITY, "1");
+          }
+        }
+      } else if (filters?.filters) {
+        // LocalStorage'da şehir yoksa default olarak şehir ID'si 1'i ayarla
+        const defaultCityExists = filters.filters.find(f => f.filter_key === "city")?.options?.some(
+          option => Number(option.value) === 1
+        );
+        
+        if (defaultCityExists) {
+          setSelectedFilters(prev => ({
+            ...prev,
+            city: [1]
+          }));
+          localStorage.setItem(STORAGE_KEY_CITY, "1");
         }
       }
     } catch (error) {
