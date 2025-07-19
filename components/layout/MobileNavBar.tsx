@@ -185,7 +185,7 @@ const MobileNavBar = () => {
                     <Image src={UserIcon} alt="User" width={24} height={24} />
                   )}
                 </div>
-                <p>{isLoggedIn ? "Profil" : "Giriş Yap"}</p>
+                <p>{isLoggedIn ? "Profil" : "Menü"}</p>
               </>
             )}
           </div>

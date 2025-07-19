@@ -122,7 +122,10 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   };
 
   if (isLoading) return <div className="flex justify-center items-center mt-48">
-    <Loading />
+    <div className="flex flex-col mx-auto max-w-sm mb-48">
+      <Loading />
+    <p className="text-gray-500 text-sm mt-5"> Apart Detayı Yükleniyor...</p>
+    </div>
   </div>;
   if (error) return <div className="flex flex-col mx-auto max-w-sm my-10">Hata: {JSON.stringify(error)}</div>;
   if (!apart) return <div className="flex flex-col mx-auto max-w-sm my-10">Apart bulunamadı</div>;
