@@ -21,6 +21,7 @@ import {
   resetPagination,
   setPaginatedAparts 
 } from "@/store/features/ApartSlice";
+import Loading from "./ui/Loading";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
@@ -238,7 +239,7 @@ const ClientAparts = ({
         ) : (
           !isLoading && (
             <div className="text-center py-8">
-              Hiç apart bulunamadı.
+             <Loading/>
             </div>
           )
         )}
