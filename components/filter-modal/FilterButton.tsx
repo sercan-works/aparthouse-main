@@ -294,41 +294,8 @@ export default function FilterButton() {
                       )
                     }
 
-                    {/* Konaklama Türü */}
-                    {/* {filters.filters.find(f => f.filter_key === "category") && 
-                      renderFilterOptions(
-                        "Konaklama Türü",
-                        "category",
-                        filters.filters.find(f => f.filter_key === "category")?.options || []
-                      )
-                    } */}
-
-                    {/* Fiyat Aralığı */}
-                    <li className="border-b pb-4">
-                      <h3 className="font-medium mb-2">Fiyat aralığı</h3>
-                      <p className="text-sm text-gray-500 my-2">
-                        Oda fiyatları içeriklere göre değişiklik gösterebilir.
-                      </p>
-                      <div className="flex flex-wrap gap-2 mt-5">
-                        <PriceSlider 
-                          min={filters.filters.find(f => f.filter_key === "price")?.min || 0} 
-                          max={filters.filters.find(f => f.filter_key === "price")?.max || 10000}
-                          onChange={(values) => setSelectedFilters(prev => ({...prev, price: values}))}
-                        />
-                      </div>
-                    </li>
-
-                    {/* Fiyat Türü */}
-                    {filters.filters.find(f => f.filter_key === "price_type") && 
-                      renderFilterOptions(
-                        "Fiyat Türü",
-                        "price_type",
-                        filters.filters.find(f => f.filter_key === "price_type")?.options || []
-                      )
-                    }
-
-                    {/* Şehir */}
-                    {filters.filters.find(f => f.filter_key === "city") && (
+                      {/* Şehir */}
+                      {filters.filters.find(f => f.filter_key === "city") && (
                       <li className="border-b pb-4">
                         <h3 className="font-medium mb-2">Şehir</h3>
                         <Autocomplete 
@@ -367,6 +334,41 @@ export default function FilterButton() {
                       </li>
                     )}
 
+
+                    {/* Konaklama Türü */}
+                    {/* {filters.filters.find(f => f.filter_key === "category") && 
+                      renderFilterOptions(
+                        "Konaklama Türü",
+                        "category",
+                        filters.filters.find(f => f.filter_key === "category")?.options || []
+                      )
+                    } */}
+
+                    {/* Fiyat Aralığı */}
+                    <li className="border-b pb-4">
+                      <h3 className="font-medium mb-2">Fiyat aralığı</h3>
+                      <p className="text-sm text-gray-500 my-2">
+                        Oda fiyatları içeriklere göre değişiklik gösterebilir.
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-5">
+                        <PriceSlider 
+                          min={filters.filters.find(f => f.filter_key === "price")?.min || 0} 
+                          max={filters.filters.find(f => f.filter_key === "price")?.max || 10000}
+                          onChange={(values) => setSelectedFilters(prev => ({...prev, price: values}))}
+                        />
+                      </div>
+                    </li>
+
+                    {/* Fiyat Türü */}
+                    {filters.filters.find(f => f.filter_key === "price_type") && 
+                      renderFilterOptions(
+                        "Fiyat Türü",
+                        "price_type",
+                        filters.filters.find(f => f.filter_key === "price_type")?.options || []
+                      )
+                    }
+
+                  
                     {/* Özellikler */}
                     {filters.filters.find(f => f.filter_key === "features") && 
                       renderFilterOptions(

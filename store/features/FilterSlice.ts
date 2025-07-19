@@ -11,7 +11,7 @@ interface FilterState {
 const initialState: FilterState = {
   selectedCategory: null,
   selectedGender: null,
-  selectedCity: null,
+  selectedCity: 1, // Default şehir ID'si 1 olarak ayarlandı
   selectedUniversity: null,
 };
 
