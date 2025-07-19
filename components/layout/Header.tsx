@@ -8,7 +8,7 @@ import HeaderBanner from "./HeaderBanner";
 import FilterButton from "../filter-modal/FilterButton";
 import SearchBar from "../SearchBar";
 import CategoryBar from "../CategoryBar";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FaXmark } from "react-icons/fa6";
@@ -17,14 +17,13 @@ import { setSelectedUniversity } from '@/store/features/FilterSlice';
 import { RootState } from '@/store';
 export default function Header() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   
   // Redux'dan seçili üniversiteyi al
   const selectedUniversityFromRedux = useSelector((state: RootState) => state.filter.selectedUniversity);
   
-  // URL ve Redux'dan gelen değerleri kontrol et (priorite URL'de)
-  const selectedUniversity = searchParams.get('university') || selectedUniversityFromRedux?.toString();
+  // Sadece Redux state'i kullan
+  const selectedUniversity = selectedUniversityFromRedux?.toString();
   
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
 
