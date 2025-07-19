@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CiShare2, CiWifiOn } from "react-icons/ci";
+import { CiShare2 } from "react-icons/ci";
 import { MdCompareArrows, MdOutlineLocalPhone } from "react-icons/md";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { SlGraduation } from "react-icons/sl";
@@ -11,10 +11,9 @@ import {
   FaTrainSubway,
   FaWhatsapp
 } from "react-icons/fa6";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaCheck, FaExternalLinkAlt } from "react-icons/fa";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
-import { LuWashingMachine } from "react-icons/lu";
 import { Tabs, Tab, Button } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
@@ -273,11 +272,11 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                         <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
                           {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
                           {categoryName === "Hizmetler" ? (
-                            <LuWashingMachine className="h-4 w-4 text-gray-500" />
+                            <FaCheck className="h-4 w-4 text-gray-500" />
                           ) : categoryName === "Faturaya Dahil Olanlar" ? (
-                            <CiWifiOn className="h-4 w-4 text-gray-500" />
+                            <FaCheck className="h-4 w-4 text-gray-500" />
                           ) : (
-                            <CiWifiOn className="h-4 w-4 text-gray-500" />
+                            <FaCheck className="h-4 w-4 text-gray-500" />
                           )}
                           <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
                             {service.name}

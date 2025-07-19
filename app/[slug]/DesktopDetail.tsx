@@ -2,14 +2,13 @@
 import DesktopImageGallery from "@/components/DesktopImageGallery";
 import { Button, Link, Tab, Tabs } from "@heroui/react";
 import React, { useState, useEffect, useRef } from "react";
-import { CiShare2, CiWifiOn } from "react-icons/ci";
-import { FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
+import { CiShare2 } from "react-icons/ci";
+import { FaCheck, FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
 import { FaBus, FaExternalLinkAlt } from "react-icons/fa";
 import { FaTrainSubway } from "react-icons/fa6";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { MdCompareArrows, MdOutlineLocalPhone } from "react-icons/md";
 import { SlGraduation } from "react-icons/sl";
-import { LuWashingMachine } from "react-icons/lu";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import PinkPhone from "@/public/assets/images/pink-phone.png";
 import Image from "next/image";
@@ -385,11 +384,11 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                           >
                             {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
                             {categoryName === "Hizmetler" ? (
-                              <LuWashingMachine className="h-4 w-4 text-gray-500" />
+                              <FaCheck className="h-4 w-4 text-gray-500" />
                             ) : categoryName === "Faturaya Dahil Olanlar" ? (
-                              <CiWifiOn className="h-4 w-4 text-gray-500" />
+                              <FaCheck className="h-4 w-4 text-gray-500" />
                             ) : (
-                              <CiWifiOn className="h-4 w-4 text-gray-500" />
+                              <FaCheck className="h-4 w-4 text-gray-500" />
                             )}
                             <h3 className="text-gray-500 min-w-20 max-w-36 truncate">
                               {service.name}
