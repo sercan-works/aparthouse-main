@@ -183,8 +183,9 @@ export default function Header() {
       {shouldShowCategory && <CategoryBar />}
 
  
-       {/* ÜNİVERSİTELERE GÖRE FİLTRELEYEN HIZLI ERİŞİM LİNKLERİ - SADECE MOBİL */}
-       <div className="block md:hidden px-2 py-3 bg-gray-50">
+       {/* ÜNİVERSİTELERE GÖRE FİLTRELEYEN HIZLI ERİŞİM LİNKLERİ - SADECE MOBİL VE ANA SAYFA */}
+       {pathname === "/" && (
+         <div className="block md:hidden px-2 py-3 bg-gray-50">
          <div className="flex items-center justify-between px-2 mb-3">
            <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
              Üniversitene yakın apartları keşfet
@@ -284,6 +285,7 @@ export default function Header() {
              </Link>
          </div>
        </div>
+       )}
     </header>
   )
 }
