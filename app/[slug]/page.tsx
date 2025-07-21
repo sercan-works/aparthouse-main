@@ -27,8 +27,8 @@ async function getApartData(slug: string): Promise<ApiApart | null> {
 }
 
 // Dinamik metadata oluşturma
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
   
   // API'den apart verilerini alıyoruz
   const apartment = await getApartData(slug);
@@ -93,8 +93,8 @@ export async function generateStaticParams() {
   }
 }
 
-const DetailPage = async ({ params }: { params: { slug: string } }) => {
-  const { slug } = params;
+const DetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const { slug } = await params;
   
   // API'den apart verilerini alıyoruz
   const apartment = await getApartData(slug);
