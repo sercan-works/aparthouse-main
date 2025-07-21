@@ -65,10 +65,10 @@ const DetailPage = ({ params }: { params: { slug: string } }) => {
   return (
     <>
       <div className="block md:hidden">
-        <MobileDetail apartmentId={apartment.id} />
+        <MobileDetail apartSlug={apartment.slug} />
       </div>
       <div className="hidden md:block">
-        <DesktopDetail apartmentId={apartment.id} />
+        <DesktopDetail apartSlug={apartment.slug} />
       </div>
     </>
   );

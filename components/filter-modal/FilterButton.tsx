@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import Image from "next/image";
 import FilterIcon from "@/public/assets/icons/FilterIcon.svg";
-import PriceSlider from "./PriceSlider";
+// import PriceSlider from "./PriceSlider";
 import { useGetFiltersQuery } from "@/store/api/filterApi";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -371,7 +371,7 @@ export default function FilterButton() {
                     } */}
 
                     {/* Fiyat Aralığı */}
-                    <li className="border-b pb-4">
+                    {/* <li className="border-b pb-4">
                       <h3 className="font-medium mb-2">Fiyat aralığı</h3>
                       <p className="text-sm text-gray-500 my-2">
                         Oda fiyatları içeriklere göre değişiklik gösterebilir.
@@ -383,29 +383,29 @@ export default function FilterButton() {
                           onChange={(values) => setSelectedFilters(prev => ({...prev, price: values}))}
                         />
                       </div>
-                    </li>
+                    </li> */}
 
                     {/* Fiyat Türü */}
-                    {filters.filters.find(f => f.filter_key === "price_type") && 
+                    {/* {filters.filters.find(f => f.filter_key === "price_type") && 
                       renderFilterOptions(
                         "Fiyat Türü",
                         "price_type",
                         filters.filters.find(f => f.filter_key === "price_type")?.options || []
                       )
-                    }
+                    } */}
 
                   
                     {/* Özellikler */}
-                    {filters.filters.find(f => f.filter_key === "features") && 
+                    {/* {filters.filters.find(f => f.filter_key === "features") && 
                       renderFilterOptions(
                         "Özellikler",
                         "features",
                         filters.filters.find(f => f.filter_key === "features")?.options || []
                       )
-                    }
+                    } */}
 
                     {/* Service Filters */}
-                    {filters.service_filters.map((serviceFilter) => (
+                    {/* {filters.service_filters.map((serviceFilter) => (
                       <li key={serviceFilter.category_name} className="border-b pb-4">
                         <h3 className="font-medium mb-2">{serviceFilter.category_name}</h3>
                         <div className="flex flex-wrap gap-4">
@@ -421,7 +421,7 @@ export default function FilterButton() {
                           ))}
                         </div>
                       </li>
-                    ))}
+                    ))} */}
                   </ul>
                 )}
               </ModalBody>

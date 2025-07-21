@@ -29,6 +29,7 @@ import Loading from "@/components/ui/Loading";
 import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
 import { getWhatsAppLink } from "../utils/contacts";
+import HighlightsMobile from "@/components/HighlightsMobile";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -388,6 +389,11 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           apartId={apart?.id}
         />
       </div>
+
+        {/* Highlights */}
+          <HighlightsMobile />
+
+
     </div>
   );
 };

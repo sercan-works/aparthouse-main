@@ -54,9 +54,6 @@ export default function Header() {
     // Sadece ana sayfada çalış
     if (pathname !== "/") return;
     
-    // Test için localStorage'ı temizle
-    localStorage.removeItem('infoDrawerShown');
-    
     const drawerShown = localStorage.getItem('infoDrawerShown');
     
     if (!drawerShown) {
