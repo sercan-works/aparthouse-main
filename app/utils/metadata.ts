@@ -6,7 +6,7 @@ export const BASE_METADATA = {
   description: 'Öğrenciler için tasarlanmış ev arama platformu',
   keywords: 'kiralık daire, öğrenci evi, apart, kiralık ev',
   applicationName: 'Aparthouse',
-  authors: [{ name: 'Aparthouse', url: 'https://aparthouse.com' }],
+  authors: [{ name: 'Aparthouse', url: 'https://aparthouse.com.tr' }],
   creator: 'Aparthouse',
   publisher: 'Aparthouse',
   formatDetection: {
@@ -21,7 +21,7 @@ export const BASE_SOCIAL_METADATA = {
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
-    url: 'https://aparthouse.com',
+    url: 'https://aparthouse.com.tr',
     siteName: 'Aparthouse',
     title: 'Aparthouse || Hadi Yeni Evini Bul',
     description: 'Öğrenciler için tasarlanmış ev arama platformu',
@@ -59,7 +59,7 @@ export function createMetadata({
   image?: string;
   type?: 'website' | 'article';
 }): Metadata {
-  const url = `https://aparthouse.com${path}`;
+  const url = `https://aparthouse.com.tr${path}`;
   
   return {
     ...BASE_METADATA,
