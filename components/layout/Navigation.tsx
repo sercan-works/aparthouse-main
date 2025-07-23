@@ -13,6 +13,7 @@ import FavoritesIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { RootState } from "@/store";
 import { MdCompareArrows } from "react-icons/md";
 import { Chip } from "@heroui/react";
+import { useLanguage } from "@/i18n/context";
 
 export default function Navigation() {
   const { data: session } = useSession();
@@ -21,6 +22,7 @@ export default function Navigation() {
   const dispatch = useDispatch();
   const [favorites, setFavorites] = useState<number[]>([]);
   const [compareAparts, setCompareAparts] = useState<number[]>([]);
+  const { t } = useLanguage();
   // Redux store kullanıcı durumunu al
   const authState = useSelector((state: RootState) => state.auth);
   const reduxUser = authState?.user;
@@ -121,7 +123,7 @@ export default function Navigation() {
   return (
     <nav className="flex items-center gap-5">
       <Link href="/help" className="text-gray-700 hover:text-gray-900">
-        Yardım
+        {t('navigation.help')}
       </Link>
       <Link href="/favorites" className="text-gray-700 hover:text-gray-900">
         <Image src={FavoritesIcon} alt="Favorites" width={20} height={20} />
@@ -206,27 +208,27 @@ export default function Navigation() {
                 </div>
                 <Link href="/profile" className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2">
                   <Image src={UserIcon} alt="User" width={16} height={16} />
-                  Profilim
+                  {t('navigation.profile')}
                 </Link>
                 <Link 
                   href="https://business.aparthouse.com.tr" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
-                  Aparthouse Business
+                  {t('navigation.business')}
                 </Link>
                 <Link 
                   href="/compare" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
                   <MdCompareArrows className="w-4 h-4" />
-                  Karşılaştırma
+                  {t('navigation.compare')}
                   <Chip color="primary" size="sm">{compareAparts.length}</Chip>
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                 >
-                  Çıkış Yap
+                  {t('navigation.logout')}
                 </button>
               </>
             ) : (
@@ -235,27 +237,27 @@ export default function Navigation() {
                   href="/login" 
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  Giriş Yap
+                  {t('navigation.login')}
                 </Link>
                 <Link 
                   href="/register" 
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  Kayıt Ol
+                  {t('navigation.register')}
                 </Link>
                 <Link 
                   href="https://business.aparthouse.com.tr" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
-                  Aparthouse Business
+                  {t('navigation.business')}
                 </Link>
                 <Link 
                   href="/compare" 
                   className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center gap-2"
                 >
                   <MdCompareArrows className="w-4 h-4" />
-                  Karşılaştırma
-                  <Chip color="primary" size="sm">{compareAparts.length} öğe</Chip>
+                  {t('navigation.compare')}
+                  <Chip color="primary" size="sm">{compareAparts.length} {t('navigation.items')}</Chip>
                 </Link>
               </>
             )}

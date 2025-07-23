@@ -8,6 +8,7 @@ import HeaderBanner from "./HeaderBanner";
 import FilterButton from "../filter-modal/FilterButton";
 import SearchBar from "../SearchBar";
 import CategoryBar from "../CategoryBar";
+import LanguageSwitcher from "../LanguageSwitcher";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -15,9 +16,11 @@ import { FaXmark } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedUniversity } from '@/store/features/FilterSlice';
 import { RootState } from '@/store';
+import { useLanguage } from '@/i18n/context';
 export default function Header() {
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const { t } = useLanguage();
   
   // Redux'dan seçili üniversiteyi al
   const selectedUniversityFromRedux = useSelector((state: RootState) => state.filter.selectedUniversity);
@@ -89,13 +92,16 @@ export default function Header() {
 
           {/* ARAMA BARI */}
           <div className="flex items-center gap-4">
-          <SearchBar placeholder="Arama Yap" />
+          <SearchBar placeholder={t('header.searchPlaceholder')} />
           {pathname === "/filter" && (
             <FilterButton />
           )}
           </div>
           {/* NAVIGATION */}
-          <Navigation />
+          <div className="flex items-center gap-4">
+            <Navigation />
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
       <div className="hidden md:block">
@@ -109,12 +115,12 @@ export default function Header() {
               <Image src={Logo} alt="Logo" width={150} height={100} />
           </Link>
           <div className="flex items-center gap-4 text-gray-500 text-sm">
-            Eskişehir Apartlar ve Yurtlar
+            {t('header.mobileSubtitle')}
           </div>
         </div>
         <div className="flex items-center justify-between gap-4 mx-4 max-w-full mt-2">
           <div className="w-3/4">
-          <SearchBar placeholder="Şehir, Apart Adı ile ara" />
+          <SearchBar placeholder={t('header.mobileSearchPlaceholder')} />
 
           </div>
           <div className="w-1/4">
@@ -152,10 +158,10 @@ export default function Header() {
                  </div>
                  <div className="flex-1">
                    <div className="flex items-center gap-2 mb-1">
-                     <h2 className="text-sm font-semibold text-gray-800">İpucu</h2>
+                     <h2 className="text-sm font-semibold text-gray-800">{t('header.infoTip')}</h2>
                    </div>
                    <p className="text-xs text-gray-600 leading-relaxed">
-                     Filtre menüsünden <span className="font-semibold text-blue-700">Üniversite</span> seçerek size en uygun apart ve yurt seçeneklerini daraltabilirsiniz.
+                     {t('header.infoText')}
                    </p>
                  </div>
                  {/* Kapatma butonu */}
@@ -185,7 +191,7 @@ export default function Header() {
          <div className="block md:hidden px-2 py-3 bg-gray-50">
          <div className="flex items-center justify-between px-2 mb-3">
            <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-             Üniversitene yakın apartları keşfet
+             {t('header.universityTitle')}
            </h3>
            {selectedUniversityFromRedux && (
              <button 
@@ -193,7 +199,7 @@ export default function Header() {
                className="flex items-center gap-1 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-md border border-red-200 transition-colors duration-200"
              >
                <FaXmark className="text-red-600 text-xs"/>
-               <span className="text-xs text-red-700 font-medium">Temizle</span>
+               <span className="text-xs text-red-700 font-medium">{t('header.clear')}</span>
              </button>
            )}
          </div>
@@ -214,7 +220,12 @@ export default function Header() {
                   {/* Üniversite Adı */}
                   <div className="text-center">
                     <p className="text-[10px] font-medium text-gray-800 leading-tight">
-                      Anadolu<br/>Üniversitesi
+                      {t('header.universities.anadolu').split(' ').map((word, i, arr) => (
+                        <span key={i}>
+                          {word}
+                          {i < arr.length - 1 && <br />}
+                        </span>
+                      ))}
                     </p>
                   </div>
                 </div>
@@ -235,7 +246,12 @@ export default function Header() {
                   {/* Üniversite Adı */}
                   <div className="text-center">
                                          <p className="text-[10px] font-medium text-gray-800 leading-tight">
-                        Eskişehir<br/>Teknik Ünv.
+                        {t('header.universities.estu').split(' ').map((word, i, arr) => (
+                          <span key={i}>
+                            {word}
+                            {i < arr.length - 1 && <br />}
+                          </span>
+                        ))}
                       </p>
                   </div>
                 </div>
@@ -256,7 +272,12 @@ export default function Header() {
                   {/* Üniversite Adı */}
                   <div className="text-center">
                                           <p className="text-[10px] font-medium text-gray-800 leading-tight">
-                       Osmangazi<br/>Üniversitesi
+                       {t('header.universities.osmangazi').split(' ').map((word, i, arr) => (
+                         <span key={i}>
+                           {word}
+                           {i < arr.length - 1 && <br />}
+                         </span>
+                       ))}
                       </p>
                   </div>
                 </div>
@@ -274,7 +295,7 @@ export default function Header() {
                    </div>
                    <div className="text-center">
                      <p className="text-[10px] font-medium text-blue-700 leading-tight">
-                       Daha<br/>Fazlası
+                       {t('header.more')}
                      </p>
                    </div>
                  </div>

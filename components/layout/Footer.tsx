@@ -11,10 +11,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { clearViewed, loadViewedFromStorage } from "@/store/features/ViewedSlice";
 import { FaHistory } from "react-icons/fa";
+import { useLanguage } from "@/i18n/context";
+import { locales, languages } from "@/i18n/config";
+import { Select, SelectItem } from "@heroui/react";
 
 const Footer = () => {
   const dispatch = useDispatch();
   const { viewedApartIds, isHydrated } = useSelector((state: RootState) => state.viewed);
+  const { locale, setLocale, t } = useLanguage();
   
   // Hydration tamamlandıktan sonra localStorage'dan yükle
   React.useEffect(() => {
@@ -24,9 +28,9 @@ const Footer = () => {
   }, [dispatch, isHydrated]);
   
   const handleClearViewed = () => {
-    if (confirm('Tüm inceleme geçmişiniz silinecek. Onaylıyor musunuz?')) {
+    if (confirm(t('footer.clearHistoryConfirm'))) {
       dispatch(clearViewed());
-      alert('İnceleme geçmişiniz başarıyla temizlendi');
+      alert(t('footer.historyCleared'));
     }
   };
   
@@ -43,7 +47,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link href="/about" className="text-gray-600 hover:text-gray-900">
-                  Hakkımızda
+                  {t('footer.about')}
                 </Link>
               </li>
               <li>
@@ -63,7 +67,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-                  İletişim
+                  {t('footer.contact')}
                 </Link>
               </li>
               <li>
@@ -73,7 +77,7 @@ const Footer = () => {
                   disabled={!isHydrated || viewedApartIds.length === 0}
                 >
                   <FaHistory className="w-3 h-3" /> 
-                  İnceleme Geçmişini Temizle {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                  {t('footer.clearHistory')} {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
                 </button>
               </li>
             </ul>
@@ -208,7 +212,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-                  İletişim
+                  {t('footer.contact')}
                 </Link>
               </li>
               <li>
@@ -218,7 +222,7 @@ const Footer = () => {
                   disabled={!isHydrated || viewedApartIds.length === 0}
                 >
                   <FaHistory className="w-3 h-3" /> 
-                  İnceleme Geçmişini Temizle {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
+                  {t('footer.clearHistory')} {isHydrated && viewedApartIds.length > 0 && `(${viewedApartIds.length})`}
                 </button>
               </li>
             </ul>
@@ -226,7 +230,7 @@ const Footer = () => {
 
           {/* Hızlı Linkler */}
           <div>
-            <h3 className="font-bold mb-4">Konaklamalar</h3>
+            <h3 className="font-bold mb-4">{t('footer.accommodations')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
@@ -312,7 +316,7 @@ const Footer = () => {
                 height={20}
               />
             </h3>
-            <p className="text-gray-600">Bizi Sosyal Medyada Takip Edin</p>
+            <p className="text-gray-600">{t('footer.followSocial')}</p>
             {/* <div className="text-xs md:text-base text-left font-bold cursor-pointer mt-4 text-colorFirst hover:text-colorFirst/80">
              <Link href="/pricing">Fiyatlandırma</Link>
             </div> */}
@@ -323,9 +327,35 @@ const Footer = () => {
         </div>
       </div>
       <div className="container mx-auto mt-4 md:mt-8 px-4">
+        {/* Language Selector */}
+        <div className="flex justify-center mb-4">
+          <div className="w-40">
+            <Select
+              label={t('language.selector')}
+              placeholder={t('language.placeholder')}
+              selectedKeys={[locale]}
+              onSelectionChange={(keys) => {
+                const selected = Array.from(keys)[0] as string;
+                if (selected === 'tr' || selected === 'en') {
+                  setLocale(selected);
+                }
+              }}
+              className="max-w-xs"
+              size="sm"
+              variant="bordered"
+            >
+              {locales.map((lang) => (
+                <SelectItem key={lang}>
+                  {languages[lang]}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        </div>
+        
         <div className="flex justify-center items-center">
           <p className="text-gray-600 text-xs md:text-base text-center">
-            &copy; 2025 Aparthouse. Tüm hakları saklıdır.
+            &copy; 2025 Aparthouse. {t('footer.copyright')}
           </p>
         </div>
       </div>

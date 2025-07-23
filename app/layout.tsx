@@ -5,6 +5,7 @@ import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "./nextAuth";
 import ReduxProvider from "./StoreProvider"
 import { BASE_METADATA, BASE_SOCIAL_METADATA } from "./utils/metadata";
+import { LanguageProvider } from "../i18n/context";
 
 export const metadata: Metadata = {
   ...BASE_METADATA,
@@ -62,7 +63,9 @@ export default function RootLayout({
         
         <ReduxProvider>
           <AuthProvider>
-            <ClientLayout>{children}</ClientLayout>
+            <LanguageProvider>
+              <ClientLayout>{children}</ClientLayout>
+            </LanguageProvider>
           </AuthProvider>
         </ReduxProvider>
       </body>

@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import { setCredentials } from "@/store/features/AuthSlice";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useLanguage } from "@/i18n/context";
 
 // DRF hata yanıtı için tip tanımlama
 interface DRFErrorResponse {
@@ -30,6 +31,7 @@ const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const { t } = useLanguage();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -63,8 +65,8 @@ const Login = () => {
     try {
       if (!email || !password) {
         addToast({
-          title: "Giriş Hatası",
-          description: "Lütfen email ve şifre alanlarını doldurunuz.",
+          title: t('errors.loginError'),
+          description: t('auth.errors.emailPasswordRequired'),
           color: "danger",
         });
         return;
@@ -72,8 +74,8 @@ const Login = () => {
       
       if (!captchaToken) {
         addToast({
-          title: "Giriş Hatası",
-          description: "Lütfen robot olmadığınızı doğrulayın",
+          title: t('errors.loginError'),
+          description: t('auth.errors.captchaRequired'),
           color: "danger",
         });
         return;
@@ -111,8 +113,8 @@ const Login = () => {
       }));
 
       addToast({
-        title: "Giriş Başarılı",
-        description: "Başarıyla giriş yaptınız, yönlendiriliyorsunuz.",
+        title: t('auth.login'),
+        description: t('auth.errors.loginSuccess'),
         color: "success",
       });
 
@@ -148,7 +150,7 @@ const Login = () => {
       }
       
       addToast({
-        title: "Giriş Hatası",
+        title: t('errors.loginError'),
         description: errorMessage,
         color: "danger",
       });
@@ -167,8 +169,7 @@ const Login = () => {
         />
         </Link>
         <p className="lg:text-center text-gray-50 text-lg font-light max-w-[300px] lg:max-w-[1000px]">
-          Öğrencilere en iyi ve en güvenilir apart lokasyonlarını bulmaları için
-          burdayız...
+          {t('auth.studentDescription')}
         </p>
         <div className="hidden lg:block">
               <Image
@@ -204,7 +205,7 @@ const Login = () => {
             </div>
           </div>
           <div className="flex flex-col p-10 gap-3 lg:mt-20">
-            <h2 className="text-2xl">Giriş Yap</h2>
+            <h2 className="text-2xl">{t('auth.login')}</h2>
         
             
             <Button 
@@ -213,13 +214,13 @@ const Login = () => {
               isLoading={isLoading}
             >
               {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
-              Google ile Giriş Yap
+              {t('auth.googleLogin')}
             </Button>
             <p className="text-gray-500 text-center mt-2">
-              - veya -
+              {t('auth.orSeparator')}
             </p>
             <Input 
-              label="Email" 
+              label={t('auth.email')}
               type="email" 
               variant="underlined"
               value={email}
@@ -241,8 +242,8 @@ const Login = () => {
                   )}
                 </button>
               }
-              label="Şifre"
-              placeholder="Şifrenizi giriniz"
+              label={t('auth.password')}
+              placeholder={t('auth.passwordPlaceholder')}
               type={isVisible ? "text" : "password"}
               variant="underlined"
               value={password}
@@ -260,13 +261,13 @@ const Login = () => {
               onPress={handleEmailLogin}
               isLoading={isLoginLoading || isLoading}
             >
-              Giriş Yap
+              {t('auth.login')}
             </Button>
 
             <p className="text-gray-500 text-center mt-2">
               Hesabınız yok mu?{" "}
               <Link href="/register" className="text-colorFirst font-bold">
-                Kayıt ol
+                {t('auth.register')}
               </Link>
             </p>
 

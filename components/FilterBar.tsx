@@ -9,6 +9,7 @@ import { RootState } from "@/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedCity, setSelectedUniversity, setSelectedCategory } from "@/store/features/FilterSlice";
 import { useGetCategoriesQuery, useGetCitiesQuery, useGetUniversitiesQuery } from "@/store/api/filterApi";
+import { useLanguage } from "@/i18n/context";
 
 // BaseItem interface'i API'den gelen temel veri yapısını temsil eder
 interface BaseItem {
@@ -23,6 +24,7 @@ const FilterBar = () => {
   const { data: universitiesData } = useGetUniversitiesQuery();
   const { data: categoriesData } = useGetCategoriesQuery();
   const dispatch = useDispatch();
+  const { t } = useLanguage();
 
   // Redux'tan seçili değerleri al
   const selectedCity = useSelector((state: RootState) => state.filter.selectedCity);
@@ -168,7 +170,7 @@ const FilterBar = () => {
       <Autocomplete 
         className="w-[25vh]" 
         radius="none" 
-        label="Şehir" 
+        label={t('filter.city')} 
         size="sm"
         onSelectionChange={handleCityChange}
         selectedKey={getSelectedCityKey()}
@@ -183,7 +185,7 @@ const FilterBar = () => {
       <Autocomplete
         className="w-[25vh]"
         radius="none"
-        label="Üniversite"
+        label={t('filter.university')}
         size="sm"
         onSelectionChange={handleUniversityChange}
         selectedKey={getSelectedUniversityKey()}
@@ -199,7 +201,7 @@ const FilterBar = () => {
       <Autocomplete
         className="w-[25vh]"
         radius="none"
-        label="Apart Tipi"
+        label={t('filter.apartType')}
         size="sm"
         onSelectionChange={handleCategoryChange}
         selectedKey={getSelectedCategoryKey()}
@@ -215,7 +217,7 @@ const FilterBar = () => {
           className="absolute bg-colorFirst right-4 text-white rounded-lg p-6"
           onPress={handleSearch}
         >
-          Bul
+          {t('filter.find')}
         </Button>
         <div className="absolute -right-20 top-1 ring-4 ring-colorFirst rounded-xl">
           <FilterButton />

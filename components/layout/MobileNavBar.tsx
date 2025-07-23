@@ -13,6 +13,7 @@ import UserIcon from '@/public/assets/icons/UserIcon.svg'
 import { MdCompareArrows } from "react-icons/md";
 import { RootState } from "@/store";
 import { BsHeart } from 'react-icons/bs';
+import { useLanguage } from '@/i18n/context';
 
 // Kullanıcı tipi için arayüz
 interface User {
@@ -29,6 +30,7 @@ const MobileNavBar = () => {
   const dispatch = useDispatch();
   const [compareAparts, setCompareAparts] = useState<number[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const { t } = useLanguage();
   
   // Redux store kullanıcı durumunu al
   const authState = useSelector((state: { auth: { user: User | null; isAuthenticated: boolean } }) => state.auth);
@@ -133,11 +135,11 @@ const MobileNavBar = () => {
       <div className='px-4 py-2 flex justify-between items-center h-16'>
         <Link href="/" className='flex flex-col justify-center items-center'>
           <Image src={HomeIcon} alt="Home" />
-          <p>Anasayfa</p>
+          <p>{t('navigation.homeIcon')}</p>
         </Link>
         <Link href="/favorites" className='flex flex-col justify-center items-center relative'>
           <BsHeart className="w-6 h-6" />
-          <p>Favoriler</p>
+          <p>{t('navigation.favorites')}</p>
           {favorites.length > 0 && (
             <div className="absolute -top-2 -right-2 w-5 h-5 bg-rose-400 text-white text-xs rounded-full flex items-center justify-center">
               {favorites.length}
@@ -147,7 +149,7 @@ const MobileNavBar = () => {
         
         <Link href="/compare" className='flex flex-col justify-center items-center relative'>
           <MdCompareArrows className="w-6 h-6" />
-          <p>Karşılaştır</p>
+          <p>{t('navigation.compare')}</p>
           {compareAparts.length > 0 && (
             <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
               {compareAparts.length}
@@ -224,21 +226,21 @@ const MobileNavBar = () => {
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
-                    Giriş Yap
+                    {t('navigation.login')}
                   </Link>
                   <Link 
                     href="/register" 
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
-                    Kayıt Ol
+                    {t('navigation.register')}
                   </Link>
                   <Link 
                     href="https://business.aparthouse.com.tr" 
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
-                   Aparthouse Business
+                   {t('navigation.business')}
                   </Link>
                   {/* sub menü kontrat linkleri */}
                   <div className="border-t border-gray-100 pt-1 mt-1">
