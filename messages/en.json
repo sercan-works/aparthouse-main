@@ -137,6 +137,11 @@
     "quickInfo": "Get quick info",
     "call": "Call"
   },
+  "contactBanner": {
+    "title": "Contact Line",
+    "callNow": "Call Now",
+    "whatsapp": "WhatsApp"
+  },
   "footer": {
     "about": "About Us",
     "contact": "Contact",

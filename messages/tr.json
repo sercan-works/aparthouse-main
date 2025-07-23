@@ -137,6 +137,11 @@
     "quickInfo": "Hızlı bilgi al",
     "call": "Ara"
   },
+  "contactBanner": {
+    "title": "İletişim Hattı",
+    "callNow": "Şimdi Ara",
+    "whatsapp": "WhatsApp"
+  },
   "footer": {
     "about": "Hakkımızda",
     "contact": "İletişim",
