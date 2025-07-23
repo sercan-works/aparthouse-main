@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { unstable_noStore } from 'next/cache';
 import { ApiApart } from '@/store/api/apartsApi';
+import { BlogAPI } from '@/lib/api/blog';
 
 // Gerçek dinamik veri için API isteği yapabilirsiniz
 async function getApartments() {
@@ -70,6 +71,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly' as const,
       priority: 0.3,
     },
+    // Blog sayfaları
+    {
+      url: 'https://aparthouse.com.tr/blog',
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
   ];
 
   // Dinamik içerik sayfaları (apartments) - artık dinamik olarak getiriyoruz
@@ -84,5 +92,48 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-  return [...staticPages, ...apartmentPages];
+  // Blog verilerini API'den çek
+  let blogPosts: MetadataRoute.Sitemap = [];
+  let blogCategories: MetadataRoute.Sitemap = [];
+  let blogTags: MetadataRoute.Sitemap = [];
+
+  try {
+    // Blog yazıları - tüm yazıları çek
+    const postsResponse = await BlogAPI.getPosts({ page_size: 1000 });
+    if (postsResponse.data) {
+      blogPosts = postsResponse.data.results.map((post) => ({
+        url: `https://aparthouse.com.tr/blog/${post.slug}`,
+        lastModified: new Date(post.updated_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }));
+    }
+
+    // Blog kategorileri
+    const categoriesResponse = await BlogAPI.getCategories();
+    if (categoriesResponse.data) {
+      blogCategories = categoriesResponse.data.map((category) => ({
+        url: `https://aparthouse.com.tr/blog/kategori/${category.slug}`,
+        lastModified: new Date(category.created_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      }));
+    }
+
+    // Blog etiketleri
+    const tagsResponse = await BlogAPI.getTags();
+    if (tagsResponse.data) {
+      blogTags = tagsResponse.data.map((tag) => ({
+        url: `https://aparthouse.com.tr/blog/etiket/${tag.slug}`,
+        lastModified: new Date(tag.created_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.5,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching blog data for sitemap:', error);
+    // Blog verileri yüklenemezse boş array'ler kullan
+  }
+
+  return [...staticPages, ...apartmentPages, ...blogPosts, ...blogCategories, ...blogTags];
 } 

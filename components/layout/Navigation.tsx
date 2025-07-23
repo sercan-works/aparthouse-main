@@ -122,6 +122,9 @@ export default function Navigation() {
 
   return (
     <nav className="flex items-center gap-5">
+      <Link href="/blog" className="text-gray-700 hover:text-gray-900">
+        Blog
+      </Link>
       <Link href="/help" className="text-gray-700 hover:text-gray-900">
         {t('navigation.help')}
       </Link>
