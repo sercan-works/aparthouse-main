@@ -1,6 +1,6 @@
 import { BlogPost, Category, Tag, BlogStats, PaginatedResponse, CommentCreateRequest, Comment } from '@/types/blog';
 
-const BLOG_API_BASE_URL = process.env.NEXT_PUBLIC_BLOG_API_URL || 'http://localhost:8000/blog/api';
+const BLOG_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 interface ApiResponse<T> {
   data?: T;
@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
   try {
-    const url = `${BLOG_API_BASE_URL}${endpoint}`;
+    const url = `${BLOG_API_BASE_URL}/blog/api${endpoint}`;
 
     const response = await fetch(url, {
       headers: {
