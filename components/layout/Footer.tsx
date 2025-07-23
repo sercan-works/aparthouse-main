@@ -60,11 +60,11 @@ const Footer = () => {
                   info@aparthouse.com.tr
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900 text-sm">
                   Büyükdere Mah. Altınçağ Sok. No:17 Odunpazarı/ESKİŞEHİR
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   {t('footer.contact')}
@@ -205,11 +205,11 @@ const Footer = () => {
                   info@aparthouse.com.tr
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="text-gray-600 hover:text-gray-900">
                  Büyükdere Mah. Altınçağ Sok. No:17 Odunpazarı/ESKİŞEHİR
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                   {t('footer.contact')}

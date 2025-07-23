@@ -20,7 +20,7 @@ const MesafeliSatisSozlesmesi = () => {
             <p className="leading-relaxed">
               <strong>Ticari Ünvan:</strong> KİO GRUP OTELCİLİK VE TURİZM LTD. ŞTİ.<br />
               
-              <strong>Adres:</strong> Büyükdere Mah. Altınçağ Sok. No:17 Odunpazarı/ESKİŞEHİR<br />
+              {/* <strong>Adres:</strong> Büyükdere Mah. Altınçağ Sok. No:17 Odunpazarı/ESKİŞEHİR<br /> */}
               <strong>Web adresi:</strong> aparthouse.com.tr<br />
               <strong>E-posta adresi:</strong> info@aparthouse.com.tr<br />
               <strong>Telefon:</strong> +90 532 626 70 59
