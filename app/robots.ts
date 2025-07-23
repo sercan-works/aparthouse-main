@@ -8,6 +8,9 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin/'],
     },
-    sitemap: 'https://aparthouse.com/sitemap.xml',
+    sitemap: [
+      'https://aparthouse.com.tr/sitemap.xml',
+      'https://aparthouse.com.tr/blog/sitemap.xml',
+    ],
   };
 } 
