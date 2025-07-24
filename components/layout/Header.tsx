@@ -118,19 +118,22 @@ export default function Header() {
             {t('header.mobileSubtitle')}
           </div>
         </div>
-        <div>
-          {(locale === 'en' || locale === 'ru') && (
-            <div className="text-center mx-auto mt-2 bg-gray-100 rounded-lg p-2">
-              <span className="text-sm text-gray-600 font-semibold">
-                {t('header.findStudentHome')}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* Find Student Home metni - sadece ana sayfada */}
+        {pathname === "/" && (
+          <div>
+            {(locale === 'en' || locale === 'ru') && (
+              <div className="text-center mx-auto mt-2">
+                <span className="text-sm text-gray-600 font-semibold">
+                  {t('header.findStudentHome')}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-between gap-4 mx-4 max-w-full mt-2">
-          {(locale === 'en' || locale === 'ru') ? (
-            // WhatsApp destek bloğu (İngilizce ve Rusça kullanıcılar için)
+          {pathname === "/" && (locale === 'en' || locale === 'ru') ? (
+            // WhatsApp destek bloğu (İngilizce ve Rusça kullanıcılar için) - sadece ana sayfada
             <div className="w-full">
               <div 
                 onClick={() => {
@@ -173,7 +176,7 @@ export default function Header() {
               </div>
             </div>
           ) : (
-            // Normal arama çubuğu (Türkçe kullanıcılar için)
+            // Normal arama çubuğu (Türkçe kullanıcılar için veya diğer sayfalar)
             <>
               <div className="w-3/4">
                 <SearchBar placeholder={t('header.mobileSearchPlaceholder')} />
