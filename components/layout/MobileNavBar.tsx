@@ -14,6 +14,7 @@ import { MdCompareArrows } from "react-icons/md";
 import { RootState } from "@/store";
 import { BsHeart } from 'react-icons/bs';
 import { useLanguage } from '@/i18n/context';
+import { FaSignInAlt, FaUserPlus, FaBuilding, FaBlog } from 'react-icons/fa';
 
 // Kullanıcı tipi için arayüz
 interface User {
@@ -223,24 +224,35 @@ const MobileNavBar = () => {
                 <>
                   <Link 
                     href="/login" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
+                    <FaSignInAlt className="w-4 h-4" />
                     {t('navigation.login')}
                   </Link>
                   <Link 
                     href="/register" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
+                    <FaUserPlus className="w-4 h-4" />
                     {t('navigation.register')}
                   </Link>
                   <Link 
                     href="https://business.aparthouse.com.tr" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
-                   {t('navigation.business')}
+                    <FaBuilding className="w-4 h-4" />
+                    {t('navigation.business')}
+                  </Link>
+                  <Link 
+                    href="/blog" 
+                    className="block px-4 py-2 text-sm text-colorFirst hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaBlog className="w-4 h-4" />
+                   Aparthouse {t('header.blogLink')}
                   </Link>
                   {/* sub menü kontrat linkleri */}
                   <div className="border-t border-gray-100 pt-1 mt-1">

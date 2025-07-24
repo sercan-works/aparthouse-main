@@ -14,6 +14,7 @@ import { FaHistory } from "react-icons/fa";
 import { useLanguage } from "@/i18n/context";
 import { locales, languages } from "@/i18n/config";
 import { Select, SelectItem } from "@heroui/react";
+import BlogButton from "@/components/blog/BlogButton";
 
 const Footer = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,11 @@ const Footer = () => {
         
         {/* Mobile Layout */}
         <div className="flex flex-col space-y-6 md:hidden px-4">
+          {/* Blog Butonu - Sadece Mobilde görünür */}
+          <div className="flex justify-center">
+            <BlogButton />
+          </div>
+          
           <div className="flex flex-col gap-2">
             <ul className="space-y-2">
               <li>
