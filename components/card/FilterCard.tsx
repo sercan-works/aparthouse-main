@@ -4,46 +4,15 @@ import apart_image from "@/public/assets/apart.jpg";
 import FavoriteIcon from "@/public/assets/icons/FavoritesIcon.svg";
 import { Checkbox, Chip } from "@heroui/react";
 import StarReadOnly from "../rating/StarReadOnly";
-import { ApiApart } from "@/types/ApiApart";
+import { ApiApart } from "@/store/api/apartsApi";
 import { useRouter } from "next/navigation";
-
-// ApiApart türünü genişletiyoruz
-interface ExtendedApart extends ApiApart {
-  accessibility?: boolean;
-  pet?: boolean;
-  slug?: string;
-  apart_name?: string;
-  services?: {
-    service_name?: string;
-    service_data: string[];
-  }[];
-  gender?: string;
-  price?: number;
-  price_type?: string;
-  images?: string[]; // JSON'da string array olarak geliyor
-  image_thumbnail?: string[]; // Thumbnail'ler de string array olarak geliyor
-  food?: boolean;
-  address?: string;
-  location?: string;
-  info?: string;
-  lat?: number;
-  lon?: number;
-  id?: number;
-  created_at?: string;
-  updated_at?: string;
-  is_favorite?: boolean;
-  is_compare?: boolean;
-  is_active?: boolean;
-  is_deleted?: boolean;
-  
-}
 
 const FilterCard = ({
   filterVisible,
   apart
 }: {
   filterVisible: boolean;
-  apart: ExtendedApart;
+  apart: ApiApart;
 }) => {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState<string | typeof apart_image>(apart_image);
@@ -53,7 +22,7 @@ const FilterCard = ({
     if (apart.image_thumbnail && apart.image_thumbnail.length > 0) {
       setImageUrl(apart.image_thumbnail[0]);
     } else if (apart.images && apart.images.length > 0) {
-      setImageUrl(apart.images[0]);
+      setImageUrl(apart.images[0].image);
     }
   }, [apart.image_thumbnail, apart.images]);
 
@@ -84,7 +53,7 @@ const FilterCard = ({
       <div className="flex flex-col gap-1 w-full">
         {/* KART BODY HEADER */}
         <div className="flex flex-row justify-between items-center">
-          <h2 className="text-lg font-medium">{apart.apart_name || ""}</h2>
+          <h2 className="text-lg font-medium">{String(apart.apart_name) || ""}</h2>
           <div className="flex flex-row gap-2">
             <Image
               src={FavoriteIcon}
@@ -133,16 +102,6 @@ const FilterCard = ({
           )}
 
           {/* Özellikler */}
-          {apart.accessibility === true && (
-            <Chip size="sm" className="bg-green-200 text-green-700 text-xs">
-              Engelli Erişimi
-            </Chip>
-          )}
-          {apart.pet === true && (
-            <Chip size="sm" className="bg-purple-200 text-purple-700 text-xs">
-              Evcil Hayvan
-            </Chip>
-          )}
           {apart.food === true && (
             <Chip size="sm" className="bg-orange-200 text-orange-700 text-xs">
               Yemek
@@ -152,9 +111,8 @@ const FilterCard = ({
 
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex flex-row items-center gap-2">
-            <StarReadOnly />
+            {StarReadOnly(0)}
             <h4 className="text-xs font-bold">0.0</h4>
-            {/* <p className='text-xs text-gray-500'></p> */}
           </div>
           <div className="text-md font-bold">
             {apart.price}₺/

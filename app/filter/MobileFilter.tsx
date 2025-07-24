@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Switch } from "@heroui/react";
 import FilterMap from "@/components/maps/FilterMap";
-import FilterCard from "@/components/card/FilterCard";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useGetPaginatedApartsQuery, ApiApart } from "@/store/api/apartsApi";
 import { 
@@ -12,6 +11,7 @@ import {
   useGetFiltersQuery
 } from "@/store/api/filterApi";
 import Loading from "@/components/ui/Loading";
+import FilterCardMobile from "@/components/card/FilterCardMobile";
 
 const MobileFilter = () => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -262,10 +262,11 @@ const MobileFilter = () => {
             <p className="text-sm text-gray-500 mt-2">Lütfen filtre kriterlerinizi değiştirerek tekrar deneyin.</p>
           </div>
         ) : (
-          filteredAparts && filteredAparts.map((apart) => (
-            // @ts-expect-error - FilterCard bileşeni apart prop'u bekliyor
-            <FilterCard key={apart.id} apart={apart} filterVisible={filterVisible} />
-          ))
+          <div className="grid grid-cols-2 gap-3 w-full">
+            {filteredAparts && filteredAparts.map((apart) => (
+              <FilterCardMobile key={apart.id} apart={apart} filterVisible={filterVisible} />
+            ))}
+          </div>
         )}
         
         {/* Alt boşluk */}
