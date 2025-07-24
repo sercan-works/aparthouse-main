@@ -7,6 +7,7 @@ import { ApiApart } from "@/store/api/apartsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { toggleFavorite } from "@/store/features/FavoriteSlice";
+import { toggleCompare } from "@/store/features/CompareSlice";
 import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 
@@ -23,6 +24,9 @@ const FilterCardMobile = ({
   const { favoriteApartIds } = useSelector(
     (state: RootState) => state.favorite
   );
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
+  
+  const [localIsCompare, setLocalIsCompare] = useState(false);
 
   useEffect(() => {
     // Önce thumbnail'i kontrol et, yoksa normal resmi kullan
@@ -33,10 +37,44 @@ const FilterCardMobile = ({
     }
   }, [apart.image_thumbnail, apart.images]);
 
+  // Redux state'inden karşılaştırma durumunu güncelle
+  useEffect(() => {
+    if (apart && apart.id) {
+      setLocalIsCompare(compareApartIds.includes(apart.id));
+    }
+  }, [apart, compareApartIds]);
+
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(toggleFavorite(apart.id));
+  };
+
+  // Karşılaştırmaya ekleme/çıkarma işlemi
+  const handleToggleCompare = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!apart) return;
+
+    // Eğer zaten karşılaştırma listesindeyse, çıkarma işlemini yap
+    if (localIsCompare) {
+      setLocalIsCompare(false);
+      dispatch(toggleCompare(apart.id));
+      return;
+    }
+
+    // Eğer karşılaştırma listesinde değilse ve liste doluysa (3 öğe), kullanıcıya bildir
+    if (compareApartIds.length >= 3) {
+      alert(
+        "Karşılaştırma listesine en fazla 3 apart eklenebilir. Lütfen önce listeden bir apart çıkarınız."
+      );
+      return;
+    }
+
+    // Karşılaştırma listesine ekle
+    setLocalIsCompare(true);
+    dispatch(toggleCompare(apart.id));
   };
 
   const handleApartViewed = () => {
@@ -81,8 +119,9 @@ const FilterCardMobile = ({
           {filterVisible && (
             <div className="absolute top-2 left-2 z-10">
               <Checkbox 
-                defaultSelected={false}
-                className="bg-white bg-opacity-80 rounded-md"
+                isSelected={localIsCompare}
+                onChange={handleToggleCompare}
+                className="bg-transparent rounded-md"
               />
             </div>
           )}
@@ -95,7 +134,7 @@ const FilterCardMobile = ({
           </h3>
           
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-colorFirst">
+            <span className="text-lg font-gilroy text-colorFirst">
               {apart.price} ₺
               {/* <span className="text-xs text-gray-500 font-normal">
                 /{apart.price_type || "ay"}
