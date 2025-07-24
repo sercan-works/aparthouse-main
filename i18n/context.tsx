@@ -6,12 +6,14 @@ import { Locale, defaultLocale } from './config';
 // Import translation messages
 import trMessages from '../messages/tr.json';
 import enMessages from '../messages/en.json';
+import ruMessages from '../messages/ru.json';
 
 type Messages = typeof trMessages;
 
 const messages: Record<Locale, Messages> = {
   tr: trMessages,
   en: enMessages,
+  ru: ruMessages,
 };
 
 interface LanguageContextType {
@@ -34,12 +36,13 @@ const detectBrowserLanguage = (): Locale => {
   const browserLangs = navigator.languages || [navigator.language];
   
   for (const lang of browserLangs) {
-    // Dil kodunu normalize et (tr-TR -> tr, en-US -> en)
+    // Dil kodunu normalize et (tr-TR -> tr, en-US -> en, ru-RU -> ru)
     const normalizedLang = lang.split('-')[0].toLowerCase();
     
     // Desteklenen diller arasında var mı?
     if (normalizedLang === 'tr') return 'tr';
     if (normalizedLang === 'en') return 'en';
+    if (normalizedLang === 'ru') return 'ru';
   }
   
   return defaultLocale;
@@ -51,28 +54,58 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   // Load language preference: localStorage -> browser -> default
   useEffect(() => {
     const savedLocale = localStorage.getItem('locale') as Locale;
+    const userManuallyChanged = localStorage.getItem('userManuallyChanged') === 'true';
     
-    if (savedLocale && (savedLocale === 'tr' || savedLocale === 'en')) {
-      // 1. öncelik: Kayıtlı dil tercihi
+    if (savedLocale && (savedLocale === 'tr' || savedLocale === 'en' || savedLocale === 'ru') && userManuallyChanged) {
+      // Kullanıcı manuel olarak değiştirdiyse, kayıtlı tercihi kullan
       setLocale(savedLocale);
     } else {
-      // 2. öncelik: Browser'ın algılanan dili
+      // Kullanıcı manuel değiştirmediyse, tarayıcı dilini kullan
       const browserLang = detectBrowserLanguage();
       setLocale(browserLang);
       
-      // Browser dilini localStorage'a kaydet (sessiz kayıt)
+      // Browser dilini localStorage'a kaydet
       try {
         localStorage.setItem('locale', browserLang);
+        localStorage.setItem('userManuallyChanged', 'false');
       } catch (error) {
         console.warn('Could not save detected language to localStorage:', error);
       }
     }
   }, []);
 
+  // Tarayıcı dil değişikliklerini dinle
+  useEffect(() => {
+    const userManuallyChanged = localStorage.getItem('userManuallyChanged') === 'true';
+    
+    // Kullanıcı manuel değiştirmediyse, tarayıcı dilini takip et
+    if (!userManuallyChanged) {
+      const checkBrowserLanguage = () => {
+        const browserLang = detectBrowserLanguage();
+        if (browserLang !== locale) {
+          setLocale(browserLang);
+          localStorage.setItem('locale', browserLang);
+        }
+      };
+
+      // Sayfa yüklendiğinde kontrol et
+      checkBrowserLanguage();
+
+      // Dil değişikliklerini dinle (bazı tarayıcılarda desteklenir)
+      if (typeof window !== 'undefined') {
+        window.addEventListener('languagechange', checkBrowserLanguage);
+        return () => {
+          window.removeEventListener('languagechange', checkBrowserLanguage);
+        };
+      }
+    }
+  }, [locale]);
+
   // Save language to localStorage when changed
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale);
     localStorage.setItem('locale', newLocale);
+    localStorage.setItem('userManuallyChanged', 'true'); // Kullanıcı manuel değiştirdi
   };
 
   // Translation function
