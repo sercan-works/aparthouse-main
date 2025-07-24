@@ -17,6 +17,7 @@ import { useGetFiltersQuery } from "@/store/api/filterApi";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { prepareSearchParams, useGetPaginatedApartsQuery } from "@/store/api/apartsApi";
+import { useLanguage } from "@/i18n/context";
 
 interface FilterOption {
   value: string | number;
@@ -54,6 +55,7 @@ interface SelectedFilters {
 const STORAGE_KEY_CITY = 'selectedCity';
 
 export default function FilterButton() {
+  const { t } = useLanguage();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { data, isSuccess } = useGetFiltersQuery();
   const filters = isSuccess && data ? (data as unknown as FiltersResponse) : null;
@@ -291,7 +293,7 @@ export default function FilterButton() {
     <div className="w-full">
       <Button className="w-full bg-gray-100 h-10" onPress={onOpen}>
         <Image src={FilterIcon} alt="Filter" width={18} height={16} />
-        Filtre
+        {t('filter.filter')}
       </Button>
       <Modal
         isOpen={isOpen}

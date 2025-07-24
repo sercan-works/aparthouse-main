@@ -28,88 +28,145 @@ interface LanguageProviderProps {
   children: ReactNode;
 }
 
-// Browser dilini algılayan yardımcı fonksiyon
+// Browser dilini algılayan yardımcı fonksiyon (sadece gerektiğinde çalışır)
 const detectBrowserLanguage = (): Locale => {
-  if (typeof window === 'undefined') return defaultLocale;
-  
-  // Navigator dillerini kontrol et
-  const browserLangs = navigator.languages || [navigator.language];
-  
-  for (const lang of browserLangs) {
-    // Dil kodunu normalize et (tr-TR -> tr, en-US -> en, ru-RU -> ru)
-    const normalizedLang = lang.split('-')[0].toLowerCase();
-    
-    // Desteklenen diller arasında var mı?
-    if (normalizedLang === 'tr') return 'tr';
-    if (normalizedLang === 'en') return 'en';
-    if (normalizedLang === 'ru') return 'ru';
-    
-    // Kazakça (kk) algılandığında Rusça'ya yönlendir
-    if (normalizedLang === 'kk') return 'ru';
+  if (typeof window === 'undefined') {
+    return defaultLocale;
   }
   
-  // Diğer tüm diller için İngilizce varsayılan
-  return 'en';
+  // İlk olarak navigator.languages'i kontrol et (Chrome'da en güncel)
+  if (navigator.languages && navigator.languages.length > 0) {
+    const primaryLang = navigator.languages[0];
+    if (primaryLang) {
+      const normalizedPrimary = primaryLang.split('-')[0].toLowerCase().trim();
+      
+      // Desteklenen diller arasında var mı?
+      if (normalizedPrimary === 'en') return 'en';
+      if (normalizedPrimary === 'tr') return 'tr';
+      if (normalizedPrimary === 'ru') return 'ru';
+      if (normalizedPrimary === 'kk') return 'ru'; // Kazakça -> Rusça
+    }
+  }
+  
+  // Fallback için navigator.language kontrolü
+  if (navigator.language) {
+    const normalizedLang = navigator.language.split('-')[0].toLowerCase().trim();
+    if (normalizedLang === 'en') return 'en';
+    if (normalizedLang === 'tr') return 'tr';
+    if (normalizedLang === 'ru') return 'ru';
+  }
+  
+  // iOS cihazlarda Türkçe'yi öncelikli yap
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) return 'tr';
+  
+  return 'en'; // Chrome varsayılanı
+};
+
+// LocalStorage güvenli erişim fonksiyonları
+const safeGetItem = (key: string): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeSetItem = (key: string, value: string): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// HTML lang attribute'unu güncelle
+const updateHtmlLang = (locale: Locale) => {
+  if (typeof document === 'undefined') return;
+  try {
+    document.documentElement.lang = locale;
+  } catch {
+    // Sessizce ignore et
+  }
+};
+
+// localStorage'dan güvenli dil yükleme
+const getStoredLanguage = (): { locale: Locale | null; isManual: boolean } => {
+  const storedLocale = safeGetItem('locale') as Locale;
+  const isManual = safeGetItem('userManuallyChanged') === 'true';
+  
+  // Geçerli dil kodlarını kontrol et
+  const validLocale = (storedLocale === 'tr' || storedLocale === 'en' || storedLocale === 'ru') 
+    ? storedLocale 
+    : null;
+    
+  return { locale: validLocale, isManual };
 };
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load language preference: localStorage -> browser -> default
+  // İlk dil belirleme - sadece bir kez çalışır
   useEffect(() => {
-    const savedLocale = localStorage.getItem('locale') as Locale;
-    const userManuallyChanged = localStorage.getItem('userManuallyChanged') === 'true';
+    const browserLang = detectBrowserLanguage();
+    const { locale: storedLocale, isManual } = getStoredLanguage();
     
-    if (savedLocale && (savedLocale === 'tr' || savedLocale === 'en' || savedLocale === 'ru') && userManuallyChanged) {
-      // Kullanıcı manuel olarak değiştirdiyse, kayıtlı tercihi kullan
-      setLocale(savedLocale);
+    let finalLocale: Locale;
+    
+    if (storedLocale && isManual) {
+      // Kullanıcı manuel seçim yapmışsa o tercihi kullan
+      finalLocale = storedLocale;
     } else {
-      // Kullanıcı manuel değiştirmediyse, tarayıcı dilini kullan
-      const browserLang = detectBrowserLanguage();
-      setLocale(browserLang);
+      // Manuel seçim yoksa browser dilini kullan
+      finalLocale = browserLang;
       
-      // Browser dilini localStorage'a kaydet
-      try {
-        localStorage.setItem('locale', browserLang);
-        localStorage.setItem('userManuallyChanged', 'false');
-      } catch (error) {
-        console.warn('Could not save detected language to localStorage:', error);
+      // Eğer stored locale browser'dan farklıysa güncelle
+      if (storedLocale !== browserLang) {
+        safeSetItem('locale', browserLang);
+        safeSetItem('userManuallyChanged', 'false');
       }
     }
+    
+    setLocale(finalLocale);
+    updateHtmlLang(finalLocale);
+    setIsHydrated(true);
   }, []);
 
-  // Tarayıcı dil değişikliklerini dinle
+  // Sadece manual değişiklik olmadığında ve sayfa focus aldığında kontrol et
   useEffect(() => {
-    const userManuallyChanged = localStorage.getItem('userManuallyChanged') === 'true';
+    if (!isHydrated) return;
     
-    // Kullanıcı manuel değiştirmediyse, tarayıcı dilini takip et
-    if (!userManuallyChanged) {
-      const checkBrowserLanguage = () => {
-        const browserLang = detectBrowserLanguage();
-        if (browserLang !== locale) {
-          setLocale(browserLang);
-          localStorage.setItem('locale', browserLang);
-        }
-      };
-
-      // Sayfa yüklendiğinde kontrol et
-      checkBrowserLanguage();
-
-      // Dil değişikliklerini dinle (bazı tarayıcılarda desteklenir)
-      if (typeof window !== 'undefined') {
-        window.addEventListener('languagechange', checkBrowserLanguage);
-        return () => {
-          window.removeEventListener('languagechange', checkBrowserLanguage);
-        };
+    const { isManual } = getStoredLanguage();
+    if (isManual) return; // Manuel seçim varsa browser dilini takip etme
+    
+    const handleFocus = () => {
+      // Sadece focus alındığında kontrol et, sürekli değil
+      const currentBrowserLang = detectBrowserLanguage();
+      if (currentBrowserLang !== locale) {
+        setLocale(currentBrowserLang);
+        updateHtmlLang(currentBrowserLang);
+        safeSetItem('locale', currentBrowserLang);
       }
-    }
-  }, [locale]);
+    };
 
-  // Save language to localStorage when changed
+    // Sadece window focus event'ini dinle
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [locale, isHydrated]);
+
+  // Manuel dil değiştirme
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale);
-    localStorage.setItem('locale', newLocale);
-    localStorage.setItem('userManuallyChanged', 'true'); // Kullanıcı manuel değiştirdi
+    updateHtmlLang(newLocale);
+    safeSetItem('locale', newLocale);
+    safeSetItem('userManuallyChanged', 'true');
   };
 
   // Translation function
@@ -121,7 +178,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       if (value && typeof value === 'object' && k in (value as Record<string, unknown>)) {
         value = (value as Record<string, unknown>)[k];
       } else {
-        return key; // Return key if translation not found
+        return key;
       }
     }
     

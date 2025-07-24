@@ -22,6 +22,7 @@ import {
   setPaginatedAparts 
 } from "@/store/features/ApartSlice";
 import Loading from "./ui/Loading";
+import { useLanguage } from "@/i18n/context";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
@@ -37,6 +38,7 @@ const ClientAparts = ({
   initialUniversity
 }: ClientApartsProps) => {
   const dispatch = useDispatch();
+  const { t } = useLanguage();
   const observer = useRef<IntersectionObserver | null>(null);
   const currentPageRef = useRef(1);
   const hasMoreRef = useRef(true);
@@ -191,7 +193,7 @@ const ClientAparts = ({
       {/* Aktif filtreleri göster */}
       {(selectedCategory || selectedCity || selectedUniversity) && (
         <div className="fixed md:bottom-10 md:right-10 bottom-16 right-2 md:bg-gray-50 p-3 md:p-4 mb-5 rounded-lg z-50 md:shadow-lg bg-opacity-50 max-w-[90vw] md:max-w-xs">
-          <p className="font-semibold hidden md:block text-xs md:text-sm">Aktif Filtreler:</p>
+          <p className="font-semibold hidden md:block text-xs md:text-sm">{t('pages.activeFilters')}:</p>
           <div className="flex flex-wrap md:flex-col gap-2 mt-2 opacity-75">
             {selectedCategory && (
               <span 
@@ -273,20 +275,20 @@ const ClientAparts = ({
           {/* Ana mesaj */}
           <div className="text-center">
             <h3 className="text-lg font-bold text-colorFirst mb-2">
-              Sayfa Sonuna Ulaştınız
+              {t('pages.endOfPage')}
             </h3>
             <p className="text-gray-600 text-sm">
-              Toplam <span className="font-semibold text-colorFirst">{totalApartCount || 0}</span> apart başarıyla gösterildi
+             {t('pages.totalAparts')} <span className="font-semibold text-colorFirst">{totalApartCount || 0}</span> apart başarıyla gösterildi
             </p>
           </div>
           
           {/* Alt bilgi */}
           <div className="text-center text-xs text-gray-500 space-y-1">
-            <p>Yeni apartlar için filtreleri değiştirmeyi deneyebilirsiniz</p>
-            <p>veya daha sonra tekrar kontrol edebilirsiniz</p>
+            <p>{t('pages.changeFilters')}</p>
+            <p>{t('pages.checkLater')}</p>
           </div>
         </div>
-      )}
+      )}    
 
       {/* Mobile şehir seçimi modal */}
       {/* <div className="md:hidden">

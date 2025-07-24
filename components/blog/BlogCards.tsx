@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/types/blog';
 import { BlogAPI } from '@/lib/api/blog';
+import { useLanguage } from '@/i18n/context';
 
 export default function BlogCards() {
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,12 +61,12 @@ export default function BlogCards() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Son Blog Yazıları</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{t('blogCards.recentPosts')}</h2>
         <Link 
           href="/blog" 
           className="text-blue-600 hover:text-blue-700 font-medium text-sm"
         >
-          Tümünü Gör →
+          {t('blogCards.seeAll')}
         </Link>
       </div>
       

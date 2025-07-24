@@ -14,7 +14,7 @@ import { MdCompareArrows } from "react-icons/md";
 import { RootState } from "@/store";
 import { BsHeart } from 'react-icons/bs';
 import { useLanguage } from '@/i18n/context';
-import { FaSignInAlt, FaUserPlus, FaBuilding, FaBlog } from 'react-icons/fa';
+import { FaSignInAlt, FaUserPlus, FaBuilding, FaBlog, FaQuestion } from 'react-icons/fa';
 
 // Kullanıcı tipi için arayüz
 interface User {
@@ -188,7 +188,7 @@ const MobileNavBar = () => {
                     <Image src={UserIcon} alt="User" width={24} height={24} />
                   )}
                 </div>
-                <p>{isLoggedIn ? "Profil" : "Menü"}</p>
+                <p>{isLoggedIn ? t("navigation.profile") : t("navigation.menu")}</p>
               </>
             )}
           </div>
@@ -256,8 +256,27 @@ const MobileNavBar = () => {
                   </Link>
                   {/* sub menü kontrat linkleri */}
                   <div className="border-t border-gray-100 pt-1 mt-1">
-                    <p className="px-4 py-1 text-xs text-gray-500 font-medium">Yasal</p>
-                    <Link 
+{/* hakkımızda linki */}
+<Link 
+                    href="/about" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaBuilding className="w-4 h-4" />
+                    {t('navigation.about')}
+                  </Link>
+                  {/* yardım linki */}
+                  <Link 
+                    href="/help" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaQuestion className="w-4 h-4" />
+                    {t('navigation.help')}
+                  </Link>
+
+                    {/* <p className="px-4 py-1 text-xs text-gray-500 font-medium">Yasal</p> */}
+                    {/* <Link 
                       href="/gizlilik-politikasi" 
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsUserMenuOpen(false)}
@@ -284,7 +303,7 @@ const MobileNavBar = () => {
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       İptal ve İade Koşulları
-                    </Link>
+                    </Link> */}
                   </div>
                 </>
               )}

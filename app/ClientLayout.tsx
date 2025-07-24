@@ -45,11 +45,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <ToastProviders>
           {pathname === "/" && <Highlights />}
           {children}
-        <MobileNavBar />
-      </ToastProviders>
+          {shouldShowHeaderFooter && <Footer />}
+          {shouldShowHeaderFooter && <MobileNavBar />}
+        </ToastProviders>
       {pathname === "/" && <HomeInfoBanner />}
       {pathname === "/" && <ContactBanner />}
-      {shouldShowHeaderFooter && <Footer />}
       {showCookieConsent && (
         <CookieConsent 
           onAccept={handleAcceptCookies}

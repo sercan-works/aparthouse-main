@@ -11,8 +11,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useLanguage } from "@/i18n/context";
+
 
 const Highlights = () => {
+  const { t } = useLanguage();
   const selectedCity = useSelector((state: RootState) => state.filter.selectedCity);
 
   const { data: highlightAparts } = useGetHiglightApartsQuery({
@@ -23,7 +26,7 @@ const Highlights = () => {
   return (
     <div className="hidden md:flex flex-col md:flex-row justify-center items-center py-8 max-w-screen-xl mx-auto">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl text-colorFirst font-bold mb-5 mx-10">Öne Çıkanlar</h2>
+        <h2 className="text-2xl text-colorFirst font-bold mb-5 mx-10">{t('highlights.title')}</h2>
         
         {/* Swiper bileşenini ekliyoruz */}
         <div className="relative px-10">

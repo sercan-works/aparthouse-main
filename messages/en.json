@@ -3,12 +3,13 @@
     "searchPlaceholder": "Search",
     "blogLink": "Blog",
     "mobileSearchPlaceholder": "Search by City, Apartment Name",
-    "mobileSubtitle": "Eskişehir Apartments and Dormitories",
+    "mobileSubtitle": "Turkey's Student Housing",
     "infoTip": "Tip",
     "infoText": "You can narrow down the most suitable apartment and dormitory options by selecting University from the filter menu.",
     "universityTitle": "Discover apartments near your university",
     "clear": "Clear",
     "more": "More",
+    "findStudentHome": "Find Student Housing in Turkey",
     "universities": {
       "anadolu": "Anadolu University",
       "estu": "Eskişehir Technical Unv.",
@@ -25,7 +26,9 @@
     "logout": "Logout",
     "business": "Aparthouse Business",
     "homeIcon": "Home",
-    "items": "items"
+    "items": "items",
+    "menu": "Menu",
+    "about": "About Us"
   },
   "auth": {
     "login": "Login",
@@ -127,7 +130,11 @@
     "minute": "min",
     "walkingRoute": "Walking route",
     "selectUniversity": "You can see the walking route by selecting a university.",
-    "exploreAparts": "Explore Apartments"
+    "exploreAparts": "Explore Apartments",
+    "viewed": "Viewed",
+    "more": "More",
+    "featuredFeatures": "Featured Features",
+    "noFeatures": "No features found"
   },
   "search": {
     "searchResults": "Search Results",
@@ -175,7 +182,12 @@
     "compareEmptyDescription": "Add apartments you want to compare.",
     "favoritesTitle": "Your Favorites",
     "favoritesDescription": "Choose from hundreds of accommodations, \nadd to your favorites \ntry the easiest way to decide.",
-    "noFavorites": "You don't have any favorite apartments yet."
+    "noFavorites": "You don't have any favorite apartments yet.",
+    "endOfPage": "You have reached the end of the page",
+    "changeFilters": "You can change the filters for new apartments",
+    "checkLater": "or check later",
+    "totalAparts": "Total",
+    "activeFilters": "Active Filters"
   },
   "about": {
     "title": "About Us",
@@ -202,7 +214,8 @@
     "easyToFind": "Finding a student home with Aparthouse is very easy"
   },
   "highlights": {
-    "centralDescription": "Explore and reserve apartments and dormitories with extra features that offer multiple room type options within walking distance of transportation facilities."
+    "centralDescription": "Explore and reserve apartments and dormitories with extra features that offer multiple room type options within walking distance of transportation facilities.",
+    "title": "Highlights"
   },
   "pricing": {
     "title": "Pricing Plans",
@@ -229,5 +242,28 @@
     "backToHome": "Back to Home",
     "error": "Error!",
     "noFilteredAparts": "No filtered apartments found"
+  },
+  "blogCards": {
+    "recentPosts": "Recent Blog Posts",
+    "seeAll": "See All"
+  },
+  "homeInfoBanner": {
+    "title": "We help you find the most suitable accommodation",
+    "description": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title1": "Advanced Results",
+    "description1": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title2": "Budget-Friendly Accommodations",
+    "description2": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title3": "International Coverage",
+    "description3": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction."
+  },
+  "blog": {
+    "description": "Student life, apartment selection and city guides are useful content."
+  },
+  "whatsappSupport": {
+    "title": "Need Help?",
+    "subtitle": "Chat with us in your language",
+    "buttonText": "WhatsApp Support",
+    "message": "Hello! I need help finding accommodation. Can you assist me in English?"
   }
 } 

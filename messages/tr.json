@@ -25,7 +25,8 @@
     "logout": "Çıkış Yap",
     "business": "Aparthouse Business",
     "homeIcon": "Anasayfa",
-    "items": "öğe"
+    "menu": "Menü",
+    "about": "Hakkımızda"
   },
   "auth": {
     "login": "Giriş Yap",
@@ -127,7 +128,11 @@
     "minute": "dk",
     "walkingRoute": "Yürüme rotası",
     "selectUniversity": "Üniversite seçerek yürüme rotasını görebilirsiniz.",
-    "exploreAparts": "Apartları Keşfedin"
+    "exploreAparts": "Apartları Keşfedin",
+    "viewed": "Görüntülendi",
+    "more": "Daha Fazla",
+    "featuredFeatures": "Öne Çıkan Özellikler",
+    "noFeatures": "Özellik bulunamadı"
   },
   "search": {
     "searchResults": "Arama Sonuçları",
@@ -175,7 +180,12 @@
     "compareEmptyDescription": "Karşılaştırmak istediğiniz apartları ekleyin.",
     "favoritesTitle": "Favorileriniz",
     "favoritesDescription": "Yüzlerce konaklama arasından seçin, \nfavorilerinize ekleyin \nkarar vermek için en koly yolu deneyin.",
-    "noFavorites": "Henüz hiç favori apartınız bulunmuyor."
+    "noFavorites": "Henüz hiç favori apartınız bulunmuyor.",
+    "endOfPage": "Sayfa Sonu",
+    "changeFilters": "Filtreleri Değiştir",
+    "checkLater": "Sonra Kontrol Et",
+    "totalAparts": "Toplam Apart",
+    "activeFilters": "Aktif Filtreler"
   },
   "about": {
     "title": "Hakkımızda",
@@ -202,7 +212,8 @@
     "easyToFind": "Aparthouse ile öğrenci evini bulmak çok kolay"
   },
   "highlights": {
-    "centralDescription": "Ulaşım imkanlarına yürüme mesafesinde, birden fazla oda tipi seçeneği sunan, extra özellikli apart ve yurtları inceleyin ve yerinizi ayırtın."
+    "centralDescription": "Ulaşım imkanlarına yürüme mesafesinde, birden fazla oda tipi seçeneği sunan, extra özellikli apart ve yurtları inceleyin ve yerinizi ayırtın.",
+    "title": "Öne Çıkan Özellikler"
   },
   "pricing": {
     "title": "Fiyatlandırma Planları",
@@ -229,5 +240,19 @@
     "backToHome": "Ana Sayfaya Dön",
     "error": "Hata!",
     "noFilteredAparts": "Filtrelenmiş apart bulunamadı"
+  },
+  "blogCards": {
+    "recentPosts": "Son Blog Yazıları",
+    "seeAll": "Tümünü Gör"
+  },
+  "homeInfoBanner": {
+    "title": "Size en uygun konaklamayı bulmada yardımcı oluyoruz",
+    "description": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title1": "Gelişmiş Sonuçlar",
+    "description1": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title2": "Bütçe Dostu Konaklamalar",
+    "description2": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title3": "Uluslararası Kapsam",
+    "description3": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz."
   }
 } 

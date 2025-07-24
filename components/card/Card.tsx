@@ -23,9 +23,11 @@ import { toggleCompare } from "@/store/features/CompareSlice";
 import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/i18n/context";
 
 // ApiApart tipini doğrudan kullanıyoruz
 const Card = ({ apart }: { apart: ApiApart }) => {
+  const { t } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
   const { favoriteApartIds } = useSelector(
@@ -183,7 +185,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
      </Swiper>
      {localIsViewed && (
        <div className="absolute top-3 left-3 bg-white bg-opacity-80 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-sm shadow-md">
-         Bunu incelediniz
+         {t('cards.viewed')}
        </div>
      )}
    </div>
@@ -281,7 +283,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
             {/* ALT ÇEKMCE */}
             <div className="flex flex-col justify-between mt-4">
               <h4 className="text-gray-800 font-semibold md:text-sm">
-                Öne Çıkan Özellikler
+                {t('cards.featuredFeatures')}
               </h4>
               <p className="text-gray-400 opacity-70 text-lg md:text-sm overflow-hidden">
                 {(() => {
@@ -328,11 +330,11 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                     router.push(`/${apartSlug}`);
                   }}
                   className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0">
-                    <p className="font-bold ">Daha Fazlası &#62;</p>
+                    <p className="font-bold ">{t('cards.more')} &#62;</p>
                   </Button>
                 </div>
               )}
-            </div>
+            </div>  
           </div>
         </div>
       </div>
