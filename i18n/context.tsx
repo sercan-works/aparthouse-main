@@ -43,9 +43,13 @@ const detectBrowserLanguage = (): Locale => {
     if (normalizedLang === 'tr') return 'tr';
     if (normalizedLang === 'en') return 'en';
     if (normalizedLang === 'ru') return 'ru';
+    
+    // Kazakça (kk) algılandığında Rusça'ya yönlendir
+    if (normalizedLang === 'kk') return 'ru';
   }
   
-  return defaultLocale;
+  // Diğer tüm diller için İngilizce varsayılan
+  return 'en';
 };
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
