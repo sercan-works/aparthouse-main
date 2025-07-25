@@ -103,7 +103,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
       onClick={handleApartViewed}
       className="block"
     >
-      <div className="w-[24vh] h-[28vh] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
+      <div className="w-[10rem] h-[26vh] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
         {/* Fotoğraf */}
         <div className="relative aspect-[4/3] w-full">
           <Image
