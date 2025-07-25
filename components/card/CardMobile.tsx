@@ -17,6 +17,7 @@ import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
 import { FaEye } from "react-icons/fa6";
+import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
   // const { t } = useLanguage();
@@ -194,11 +195,9 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
           <div className="flex items-center justify-between">
             <span className="text-sm font-gilroy text-colorFirst font-bold">
               {apart.price} ₺
-              <span className="text-xs text-gray-500 font-normal">&apos;den</span>
-              <br />
             </span>
             {/* İletişim ikonları */}
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               {apart.phone && (
                 <Link href={`https://wa.me/${apart.phone}`} target="_blank">
                 <Image
