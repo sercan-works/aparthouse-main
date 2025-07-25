@@ -154,7 +154,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
         {/* İçerik */}
         <div className="p-3">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-sm text-gray-600 line-clamp-2 leading-tight flex-1 pr-2 overflow-hidden text-ellipsis">
+            <h3 className="font-semibold text-xs text-gray-600 line-clamp-2 leading-tight flex-1 pr-2 overflow-hidden text-ellipsis">
               {String(apart.apart_name)}
             </h3>
             
@@ -194,9 +194,9 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
           <div className="flex items-center justify-between">
             <span className="text-sm font-gilroy text-colorFirst font-bold">
               {apart.price} ₺
-              <span className="text-xs text-gray-500 font-normal">*</span>
+              <span className="text-xs text-gray-500 font-normal">&apos;den</span>
+              <br />
             </span>
-            
             {/* İletişim ikonları */}
             <div className="flex gap-2">
               {apart.phone && (
