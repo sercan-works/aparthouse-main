@@ -24,7 +24,6 @@ import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/i18n/context";
-import CardMobile from "./CardMobile";
 
 // ApiApart tipini doğrudan kullanıyoruz
 const Card = ({ apart }: { apart: ApiApart }) => {
@@ -138,19 +137,11 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   // console.log("Apart Images:", apart.images);
 
   return (
-    <>
-      {/* Mobile View */}
-      <div className="md:hidden">
-        <CardMobile apart={apart} />
-      </div>
-      
-      {/* Desktop View */}
-      <div className="hidden md:block">
-        <Link 
-          href={`/${apartSlug}`} 
-          className="block" 
-          onClick={handleApartViewed}
-        >
+    <Link 
+      href={`/${apartSlug}`} 
+      className="block" 
+      onClick={handleApartViewed}
+    >
       <div className="relative rounded-xl overflow-hidden w-[21rem] h-[21rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
       <div className="aspect-square w-full relative">
      <Swiper
@@ -175,7 +166,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                loading="lazy"
                onError={(e) => {
                  const target = e.target as HTMLImageElement;
-                 target.src = typeof apart_image === 'string' ? apart_image : apart_image.src;
+                 target.src = apart_image.src || apart_image;
                }}
              />
            </SwiperSlide>
@@ -348,8 +339,6 @@ const Card = ({ apart }: { apart: ApiApart }) => {
         </div>
       </div>
     </Link>
-      </div>
-    </>
   );
 };
 

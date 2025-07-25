@@ -41,9 +41,10 @@ const Highlights = () => {
               disableOnInteraction: false,
             }}
             breakpoints={{
-              640: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
+              320: { slidesPerView: 2, spaceBetween: 12 },
+              640: { slidesPerView: 2, spaceBetween: 16 },
+              768: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 20 },
             }}
             className="mySwiper custom-swiper"
           >
