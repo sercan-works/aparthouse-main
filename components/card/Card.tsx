@@ -104,10 +104,19 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     dispatch(toggleCompare(apart.id));
   };
 
-  // Apartı görüntülenmiş olarak işaretle
+  // Apartı görüntülenmiş olarak işaretle ve scroll pozisyonunu kaydet
   const handleApartViewed = () => {
     if (apart && apart.id) {
       dispatch(addViewed(apart.id));
+    }
+    
+    // Scroll pozisyonunu kaydet
+    if (typeof window !== 'undefined') {
+      const position = {
+        x: window.scrollX,
+        y: window.scrollY
+      };
+      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
     }
   };
 
@@ -336,6 +345,20 @@ const Card = ({ apart }: { apart: ApiApart }) => {
                 >
                   <Button 
                   onPress={() => {
+                    // Scroll pozisyonunu kaydet
+                    if (typeof window !== 'undefined') {
+                      const position = {
+                        x: window.scrollX,
+                        y: window.scrollY
+                      };
+                      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
+                    }
+                    
+                    // Apart'ı görüntülenmiş olarak işaretle
+                    if (apart && apart.id) {
+                      dispatch(addViewed(apart.id));
+                    }
+                    
                     router.push(`/${apartSlug}`);
                   }}
                   className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0">

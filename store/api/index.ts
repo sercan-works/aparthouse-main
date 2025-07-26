@@ -5,9 +5,9 @@ export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithErrorHandling,
     endpoints: () => ({}),
-    // SSR için önemli ayarlar
-    keepUnusedDataFor: 30, // 30 saniye veriyi saklıyoruz
-    refetchOnMountOrArgChange: true, // Component mount edildiğinde veriyi yeniden çekiyoruz
+    // Optimized cache settings for better UX
+    keepUnusedDataFor: 300, // 5 dakika veriyi saklıyoruz (30'dan 300'e çıkardık)
+    refetchOnMountOrArgChange: 120, // 2 dakika içinde mount olursa veriyi yeniden çekme (true yerine süre verdik)
     refetchOnFocus: false, // Sayfa fokuslanırsa veriyi yeniden çekmiyoruz
     refetchOnReconnect: true, // Bağlantı geri gelince veriyi yeniden çekiyoruz
 });

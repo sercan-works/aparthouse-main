@@ -91,6 +91,15 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
     if (apart && apart.id) {
       dispatch(addViewed(apart.id));
     }
+    
+    // Scroll pozisyonunu kaydet
+    if (typeof window !== 'undefined') {
+      const position = {
+        x: window.scrollX,
+        y: window.scrollY
+      };
+      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
+    }
   };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon

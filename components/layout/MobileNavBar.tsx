@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from "next-auth/react";
 import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { clearCredentials } from "@/store/features/AuthSlice";
 import { useLogoutMutation } from "@/store/api/authApi";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
@@ -25,6 +26,7 @@ interface User {
 }
 
 const MobileNavBar = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -134,10 +136,13 @@ const MobileNavBar = () => {
   return (
     <div className='md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-[1000] border-t border-gray-200 w-full' style={{ touchAction: 'none', transform: 'translateZ(0)' }}>
       <div className='px-4 py-2 flex justify-between items-center h-16'>
-        <Link href="/" className='flex flex-col justify-center items-center'>
+        <div 
+          className='flex flex-col justify-center items-center cursor-pointer' 
+          onClick={() => router.push('/', { scroll: false })}
+        >
           <Image src={HomeIcon} alt="Home" />
           <p>{t('navigation.homeIcon')}</p>
-        </Link>
+        </div>
         <Link href="/favorites" className='flex flex-col justify-center items-center relative'>
           <BsHeart className="w-6 h-6" />
           <p>{t('navigation.favorites')}</p>

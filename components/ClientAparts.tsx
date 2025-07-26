@@ -25,6 +25,7 @@ import Loading from "./ui/Loading";
 import { useLanguage } from "@/i18n/context";
 import { Switch } from "@heroui/react";
 import { loadViewedFromStorage } from "@/store/features/ViewedSlice";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
@@ -46,6 +47,9 @@ const ClientAparts = ({
   const hasMoreRef = useRef(true);
   const isLoadingMoreRef = useRef(false);
   const lastTriggerTime = useRef(0);
+  
+  // Scroll pozisyonunu koru
+  useScrollRestoration('homepage');
   
   // Redux state'leri
   const selectedCategory = useSelector((state: RootState) => state.filter.selectedCategory);
