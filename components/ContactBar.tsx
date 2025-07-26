@@ -26,21 +26,7 @@ const ContactBar = ({ phone, price, apartName, apartSlug ,apartId}: { phone: str
   return (
     <div className=''>
       <div className='flex flex-row gap-2 mx-4' >
-            <Button variant="flat" onPress={() => {
-              handleWhatsappClick();
-              window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank');
-            }} className='bg-primary text-white h-12 w-1/3 p-0 px-1'>
-            <FaWhatsapp className='w-6 h-6 text-white animate-bounce'/>
-            <p>Hızlı bilgi al</p>
-        </Button>
-          <Button variant="flat" onPress={() => {
-            handleCallClick();
-            window.open(getPhoneLink(phone), '_blank');
-          }} className='bg-primary text-white h-12 w-1/3 p-0'>
-            <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
-            <p>Ara</p>
-        </Button>
-        <div className='flex flex-col h-12 w-1/3 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden'>
+      <div className='flex flex-col h-12 w-1/3 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden'>
             <h3 className='text-md font-bold text-end' >{formatCurrency(price)} ₺</h3>
             <div className='overflow-hidden whitespace-nowrap w-full'>
               <p className='text-xs text-gray-500 text-center font-light animate-marquee'>
@@ -48,6 +34,21 @@ const ContactBar = ({ phone, price, apartName, apartSlug ,apartId}: { phone: str
               </p>
             </div>
         </div>
+          
+          <Button variant="flat" onPress={() => {
+            handleCallClick();
+            window.open(getPhoneLink(phone), '_blank');
+          }} className='bg-primary text-white h-12 w-1/3 p-0'>
+            <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
+            <p>Ara</p>
+        </Button>
+        <Button variant="flat" onPress={() => {
+              handleWhatsappClick();
+              window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank');
+            }} className='bg-primary text-white h-12 w-1/3 p-0 px-1'>
+            <FaWhatsapp className='w-6 h-6 text-white animate-bounce'/>
+            <p className='text-xs'>Whatsapp</p>
+        </Button>
       
       </div>
     </div>

@@ -42,6 +42,11 @@ const SwiperSlideImages = ({ images = [] }: { images: ImageItem[] }) => {
       className="h-full w-full custom-swiper rounded-xl"
       onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       initialSlide={activeIndex}
+      speed={500}
+      touchRatio={1.2}
+      resistance={true}
+      resistanceRatio={0.85}
+      watchSlidesProgress={true}
     >
       {normalizedImages.map((image, index) => (
         <SwiperSlide key={index}>
@@ -52,6 +57,9 @@ const SwiperSlideImages = ({ images = [] }: { images: ImageItem[] }) => {
             alt="apart"
             className="object-cover w-full h-full cursor-pointer"
             onClick={() => !isFullscreen && setIsFullscreen(true)}
+            loading={index === 0 ? "eager" : "lazy"}
+            priority={index === 0}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </SwiperSlide>
       ))}

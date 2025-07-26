@@ -79,12 +79,31 @@
   font-size: 50px;
 }
 
+/* Enhanced smooth transitions for swiper */
+.custom-swiper .swiper-wrapper {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.custom-swiper .swiper-slide {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
 .swiper-slide-custom {
   transition: opacity 0.3s ease;
 }
 
 .swiper-slide-custom:not(.swiper-slide-active) {
   opacity: 0.5;
+}
+
+/* Improved image transitions */
+.custom-swiper img {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* Animation for gradient blobs */
