@@ -17,7 +17,7 @@ import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
 import { FaEye } from "react-icons/fa6";
-import { FaInfoCircle } from "react-icons/fa";
+// import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
   // const { t } = useLanguage();
