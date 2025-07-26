@@ -22,14 +22,16 @@ import { FaEye } from "react-icons/fa6";
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
   // const { t } = useLanguage();
   const dispatch = useDispatch();
-  const [imageUrl, setImageUrl] = useState<string | typeof apart_image>(apart_image);
-  
+  const [imageUrl, setImageUrl] = useState<string | typeof apart_image>(
+    apart_image
+  );
+
   const { favoriteApartIds } = useSelector(
     (state: RootState) => state.favorite
   );
   // const { compareApartIds } = useSelector((state: RootState) => state.compare);
   const { viewedApartIds } = useSelector((state: RootState) => state.viewed);
-  
+
   const [localIsFavorite, setLocalIsFavorite] = useState(false);
   // const [localIsCompare, setLocalIsCompare] = useState(false);
   const [localIsViewed, setLocalIsViewed] = useState(false);
@@ -99,14 +101,10 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
   // };
 
   return (
-    <Link 
-      href={`/${apart.slug}`}
-      onClick={handleApartViewed}
-      className="block"
-    >
-      <div className="w-[10rem] h-[26vh] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
+    <Link href={`/${apart.slug}`} onClick={handleApartViewed} className="block">
+      <div className="w-[9rem] h-auto bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
         {/* Fotoğraf */}
-        <div className="relative aspect-[4/3] w-full">
+        <div className="relative aspect-[4/3] w-full min-h-[120px] sm:min-h-[140px]">
           <Image
             src={imageUrl}
             alt={String(apart.apart_name) || "Apart"}
@@ -114,31 +112,32 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
             className="object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = typeof apart_image === 'string' ? apart_image : apart_image.src;
+              target.src =
+                typeof apart_image === "string" ? apart_image : apart_image.src;
             }}
           />
-          
+
           {/* Görüntülendi etiketi */}
           {localIsViewed && (
-            <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-xs shadow-md">
+            <div className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-white bg-opacity-90 text-colorFirst font-thin rounded-md px-1 py-0.5 sm:px-2 sm:py-1 z-20 text-xs shadow-md">
               {/* {t('cards.viewed')} */}
-              <FaEye className="w-4 h-4" />
+              <FaEye className="w-3 h-3 sm:w-4 sm:h-4" />
             </div>
           )}
 
           {/* Favori ve Karşılaştır Butonları */}
-          <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
-            <button 
-              className="w-8 h-8 flex items-center justify-center"
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 z-10 flex flex-col gap-1">
+            <button
+              className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center"
               onClick={handleToggleFavorite}
             >
               {localIsFavorite ? (
-                <BsHeartFill className="w-6 h-6 text-rose-500" />
+                <BsHeartFill className="w-4 h-4 sm:w-6 sm:h-6 text-rose-500" />
               ) : (
-                <BsHeart className="w-6 h-6 text-white drop-shadow-md" />
+                <BsHeart className="w-4 h-4 sm:w-6 sm:h-6 text-white drop-shadow-md" />
               )}
             </button>
-            
+
             {/* <button 
               className="w-8 h-8 flex items-center justify-center"
               onClick={handleToggleCompare}
@@ -153,12 +152,12 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
         </div>
 
         {/* İçerik */}
-        <div className="p-3">
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-xs text-gray-600 line-clamp-2 leading-tight flex-1 pr-2 overflow-hidden text-ellipsis">
+        <div className="p-2 sm:p-3">
+          <div className="flex items-start justify-between mb-1 sm:mb-2">
+            <h3 className="font-medium text-[10px] sm:text-xs md:text-sm text-gray-700 line-clamp-2 leading-tight flex-1 pr-1 sm:pr-2 overflow-hidden text-ellipsis">
               {String(apart.apart_name)}
             </h3>
-            
+
             {/* Cinsiyet İndikatörü */}
             {/* {apart.gender && (
               <div className="flex-shrink-0">
@@ -191,34 +190,32 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               ))}
             </div>
           )} */}
-          
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-gilroy text-colorFirst font-bold">
+
+          <div className="flex items-center justify-between mt-1 sm:mt-2">
+            <span className="text-xs sm:text-sm md:text-base font-gilroy text-colorFirst font-bold">
               {apart.price} ₺
             </span>
             {/* İletişim ikonları */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {apart.phone && (
-                <Link href={`https://wa.me/${apart.phone}`} target="_blank">
-                <Image
-                  src={WhatsappIcon}
-                  alt="WhatsappIcon"
-                  className="w-5 h-5"
-                />
-                </Link>
+                  <Image
+                    src={WhatsappIcon}
+                    alt="WhatsappIcon"
+                    className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                  />
               )}
               {/* {apart.phone && (
-                <Image
-                  src={PhoneIcon}
-                  alt="PhoneIcon"
-                  className="w-4 h-4"
-                />
-              )} */}
+                 <Image
+                   src={PhoneIcon}
+                   alt="PhoneIcon"
+                   className="w-4 h-4"
+                 />
+               )} */}
               {apart.food && (
                 <Image
                   src={RestaurantIcon}
                   alt="RestaurantIcon"
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                 />
               )}
             </div>
@@ -229,4 +226,4 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
   );
 };
 
-export default CardMobile; 
+export default CardMobile;
