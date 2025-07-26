@@ -195,10 +195,14 @@ const ClientAparts = ({
   // İlk yükleme durumu veya hydration bekleniyor
   if (!isHydrated || (isLoading && paginatedAparts.length === 0)) {
     return (
-      <div className="flex container flex-wrap gap-4 justify-center items-center py-10">
-        {Array.from({ length: 10 }).map((_, index) => (
-          <CardPlaceholder key={index} />
-        ))}
+      // <div className="flex container flex-wrap gap-4 justify-center items-center py-10">
+      //   {Array.from({ length: 10 }).map((_, index) => (
+      //     <CardPlaceholder key={index} />
+      //   ))}
+      // </div>
+      <div className="flex container flex-col gap-4 justify-center items-center py-10">
+        <Loading/>
+        <p className="text-colorFirst font-bold">Yükleniyor...</p>
       </div>
     );
   }
