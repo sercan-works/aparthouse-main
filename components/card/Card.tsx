@@ -13,7 +13,7 @@ import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
 import { MdCompareArrows } from "react-icons/md";
-import { Button } from "@heroui/react";
+import { Button} from "@heroui/react";
 import { ApiApart } from "@/store/api/apartsApi";
 import Loading from "../ui/Loading";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +27,7 @@ import { useLanguage } from "@/i18n/context";
 import CardMobile from "./CardMobile";
 
 // ApiApart tipini doğrudan kullanıyoruz
-const Card = ({ apart }: { apart: ApiApart }) => {
+const Card = ({ apart, selectedView = "desktop" }: { apart: ApiApart; selectedView?: string }) => {
   const { t } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
   const [localIsCompare, setLocalIsCompare] = useState(false);
   const [localIsViewed, setLocalIsViewed] = useState(false);
   const router = useRouter();
-  
+
   // Redux state'inden favori durumunu güncelle
   useEffect(() => {
     if (apart && apart.id) {
@@ -54,7 +54,7 @@ const Card = ({ apart }: { apart: ApiApart }) => {
       setLocalIsCompare(compareApartIds.includes(apart.id));
     }
   }, [apart, compareApartIds]);
-  
+
   // Redux state'inden görüntüleme durumunu güncelle
   useEffect(() => {
     if (apart && apart.id) {
@@ -109,14 +109,14 @@ const Card = ({ apart }: { apart: ApiApart }) => {
     if (apart && apart.id) {
       dispatch(addViewed(apart.id));
     }
-    
+
     // Scroll pozisyonunu kaydet
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const position = {
         x: window.scrollX,
         y: window.scrollY
       };
-      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
+      sessionStorage.setItem("scroll_homepage", JSON.stringify(position));
     }
   };
 
@@ -148,230 +148,244 @@ const Card = ({ apart }: { apart: ApiApart }) => {
 
   return (
     <>
-      {/* Mobile View */}
-      <div className="md:hidden">
+      {/* Conditional rendering based on selected view */}
+      {selectedView === "mobile" ? (
         <CardMobile apart={apart} />
-      </div>
-      
-      {/* Desktop View */}
-      <div className="hidden md:block">
-        <Link 
-          href={`/${apartSlug}`} 
-          className="block" 
+      ) : (
+        <div className="block">
+        <Link
+          href={`/${apartSlug}`}
+          className="block"
           onClick={handleApartViewed}
         >
-      <div className="relative rounded-xl overflow-hidden w-[21rem] h-[21rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
-      <div className="aspect-square w-full relative">
-     <Swiper
-       modules={[Navigation]}
-       navigation
-       loop={true}
-       className="h-full w-full custom-swiper"
-       slidesPerView={1}
-       spaceBetween={1}
-     >
-       {apart?.image_thumbnail && apart.image_thumbnail.length > 0 ? (
-         apart.image_thumbnail.map((img: string, index: number) => (
-           <SwiperSlide 
-             key={index}
-             className="aspect-square w-full relative"
-           >
-             <Image
-               src={img && img.trim() !== "" ? img : apart_image}
-               alt={`${apart.apart_name || "Apart"} resim ${index + 1}`}
-               fill
-               style={{objectFit: "cover"}}
-               loading="lazy"
-               onError={(e) => {
-                 const target = e.target as HTMLImageElement;
-                 target.src = typeof apart_image === 'string' ? apart_image : apart_image.src;
-               }}
-             />
-           </SwiperSlide>
-         ))
-       ) : (
-         <SwiperSlide className="aspect-square w-full relative">
-           <Image
-             src={apart_image}
-             alt={`${apart.apart_name || "Apart"} varsayılan resim`}
-             fill
-             style={{objectFit: "cover"}}
-             loading="lazy"
-           />
-         </SwiperSlide>
-       )}
-     </Swiper>
-     {localIsViewed && (
-       <div className="absolute top-3 left-3 bg-white bg-opacity-80 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-sm shadow-md">
-         {t('cards.viewed')}
-       </div>
-     )}
-   </div>
-
-        {/* Icon buttons */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
-          <button className="rounded-full" onClick={handleToggleFavorite}>
-            {localIsFavorite ? (
-              <BsHeartFill className={`w-8 h-8 md:w-6 md:h-6 text-rose-400`} />
-            ) : (
-              <BsHeart className={`w-7 h-7 md:w-6 md:h-6 text-white`} />
-            )}
-          </button>
-          <button className="rounded-full" onClick={handleToggleCompare}>
-            <MdCompareArrows
-              className={`w-8 h-8 md:w-6 md:h-6 ${
-                localIsCompare ? "text-blue-400" : "text-white"
-              }`}
-            />
-          </button>
-        </div>
-
-        <div
-          className={`absolute bottom-0 left-0 right-0 bg-white p-4 md:p-3 transition-all duration-300 cursor-pointer z-10
-          ${isExpanded ? "h-2/6" : "h-4/6"}`}
-          onClick={(e) => {
-            e.preventDefault(); // Link'in çalışmasını engelle
-            setIsExpanded(!isExpanded);
-          }}
-        >
-          <div className="text-gray-800">
-            <div className="flex justify-center mb-1">
-              <div className="w-8 h-[2px] bg-gray-600"></div>
-            </div>
-            {/* ÜST ÇEKMCE */}
-
-            <div className="flex justify-between">
-              <div className="w-2/3">
-                <h3 className="flex items-center gap-4 font-bold text-lg md:text-medium overflow-hidden">
-                  {apart.apart_name}
-                  {apart.gender == "K" && (
-                    <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-colorFirst"></span>
-                  )}
-                  {apart.gender == "E" && (
-                    <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-colorSecond"></span>
-                  )}
-                  {apart.gender == "K+E" && (
-                    <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-yellow-500"></span>
-                  )}
-                </h3>
-                {/* Distances - Maksimum ilk 2 üniversite mesafesini gösteriyoruz */}
-                {apart.distances &&
-                  apart.distances.slice(0, 2).map((distance) => (
-                    <React.Fragment key={distance.id}>
-                    <p className="mt-1 md:text-xs">
-                      {truncateText(`${distance.university.name} `, 15)}{" "}
-                      {distance.yurume} dk
-                    </p>
-                    {/* placeholder */}
-                    {apart.distances && apart.distances.length < 2 &&  <div className="h-6 w-6 bg-white rounded-full opacity-0">placeholder</div>}
-                    </React.Fragment>
-                  ))}
-              </div>
-              <div className="w-1/3">
-                <div className="flex flex-col items-end">
-                  <div className="text-xl md:text-sm font-bold ">
-                    {apart.price} ₺*
-                  </div>
-                  <div className="flex gap-2 mt-5">
-                    {apart.phone && (
+          <div className="relative rounded-xl overflow-hidden w-[21rem] h-[21rem] sm:w-[360px] sm:h-[360px] md:w-[320px] md:h-[320px] lg:w-[280px] lg:h-[280px] cursor-pointer">
+            <div className="aspect-square w-full relative">
+              <Swiper
+                modules={[Navigation]}
+                navigation
+                loop={true}
+                className="h-full w-full custom-swiper"
+                slidesPerView={1}
+                spaceBetween={1}
+              >
+                {apart?.image_thumbnail && apart.image_thumbnail.length > 0 ? (
+                  apart.image_thumbnail.map((img: string, index: number) => (
+                    <SwiperSlide
+                      key={index}
+                      className="aspect-square w-full relative"
+                    >
                       <Image
-                        src={WhatsappIcon}
-                        alt="WhatsappIcon"
-                        className="w-5 h-5 md:w-4 md:h-4"
+                        src={img && img.trim() !== "" ? img : apart_image}
+                        alt={`${apart.apart_name || "Apart"} resim ${
+                          index + 1
+                        }`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src =
+                            typeof apart_image === "string"
+                              ? apart_image
+                              : apart_image.src;
+                        }}
                       />
-                    )}
-                    {apart.phone && (
-                      <Image
-                        src={PhoneIcon}
-                        alt="PhoneIcon"
-                        className="w-5 h-5 md:w-4 md:h-4"
-                      />
-                    )}
-                    {apart.food && (
-                      <Image
-                        src={RestaurantIcon}
-                        alt="RestaurantIcon"
-                        className="w-5 h-5 md:w-4 md:h-4"
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* ALT ÇEKMCE */}
-            <div className="flex flex-col justify-between mt-4">
-              <h4 className="text-gray-800 font-semibold md:text-sm">
-                {t('cards.featuredFeatures')}
-              </h4>
-              <p className="text-gray-400 opacity-70 text-lg md:text-sm overflow-hidden">
-                {(() => {
-                  // Önce services özelliğinin var olup olmadığını kontrol et
-                  if (!apart.services || !Array.isArray(apart.services)) {
-                    return "Hizmet bilgisi bulunmuyor";
-                  }
-
-                  // Eğer hiç hizmet yoksa
-                  if (apart.services.length === 0) {
-                    return "Hizmet bilgisi bulunmuyor";
-                  }
-
-                  // Tüm service_data dizilerini tek bir düz dizide birleştir
-                  const allServices = apart.services.flatMap(
-                    (serviceCategory) => {
-                      // Eğer service_data varsa ve bir dizi ise kullan, yoksa boş dizi döndür
-                      return serviceCategory.service_data &&
-                        Array.isArray(serviceCategory.service_data)
-                        ? serviceCategory.service_data
-                        : [];
-                    }
-                  );
-
-                  // Eğer hiç hizmet yoksa
-                  if (allServices.length === 0) {
-                    return "Hizmet bilgisi bulunmuyor";
-                  }
-
-                  // Aralarına bullet (•) işaretleri ekleyerek birleştirme
-                  return allServices.join(" \u2022 ");
-                })()}
-              </p>
-              {!isExpanded && (
-                <div
-                  className="absolute bottom-0 left-0 right-0 bg-white p-4 transition-all duration-300 cursor-pointer bg-opacity-50 animate-fade-in"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Doğrudan link sayfasına gitmesine izin ver
-                  }}
-                >
-                  <Button 
-                  onPress={() => {
-                    // Scroll pozisyonunu kaydet
-                    if (typeof window !== 'undefined') {
-                      const position = {
-                        x: window.scrollX,
-                        y: window.scrollY
-                      };
-                      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
-                    }
-                    
-                    // Apart'ı görüntülenmiş olarak işaretle
-                    if (apart && apart.id) {
-                      dispatch(addViewed(apart.id));
-                    }
-                    
-                    router.push(`/${apartSlug}`);
-                  }}
-                  className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0">
-                    <p className="font-bold ">{t('cards.more')} &#62;</p>
-                  </Button>
+                    </SwiperSlide>
+                  ))
+                ) : (
+                  <SwiperSlide className="aspect-square w-full relative">
+                    <Image
+                      src={apart_image}
+                      alt={`${apart.apart_name || "Apart"} varsayılan resim`}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      loading="lazy"
+                    />
+                  </SwiperSlide>
+                )}
+              </Swiper>
+              {localIsViewed && (
+                <div className="absolute top-3 left-3 bg-white bg-opacity-80 text-colorFirst font-thin rounded-md px-2 py-1 z-20 text-sm shadow-md">
+                  {t("cards.viewed")}
                 </div>
               )}
-            </div>  
+            </div>
+
+            {/* Icon buttons */}
+            <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
+              <button className="rounded-full" onClick={handleToggleFavorite}>
+                {localIsFavorite ? (
+                  <BsHeartFill
+                    className={`w-8 h-8 md:w-6 md:h-6 text-rose-400`}
+                  />
+                ) : (
+                  <BsHeart className={`w-7 h-7 md:w-6 md:h-6 text-white`} />
+                )}
+              </button>
+              <button className="rounded-full" onClick={handleToggleCompare}>
+                <MdCompareArrows
+                  className={`w-8 h-8 md:w-6 md:h-6 ${
+                    localIsCompare ? "text-blue-400" : "text-white"
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div
+              className={`absolute bottom-0 left-0 right-0 bg-white p-4 md:p-3 transition-all duration-300 cursor-pointer z-10
+          ${isExpanded ? "h-2/6" : "h-4/6"}`}
+              onClick={(e) => {
+                e.preventDefault(); // Link'in çalışmasını engelle
+                setIsExpanded(!isExpanded);
+              }}
+            >
+              <div className="text-gray-800">
+                <div className="flex justify-center mb-1">
+                  <div className="w-8 h-[2px] bg-gray-600"></div>
+                </div>
+                {/* ÜST ÇEKMCE */}
+
+                <div className="flex justify-between">
+                  <div className="w-2/3">
+                    <h3 className="flex items-center gap-4 font-bold text-lg md:text-medium overflow-hidden">
+                      {apart.apart_name}
+                      {apart.gender == "K" && (
+                        <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-colorFirst"></span>
+                      )}
+                      {apart.gender == "E" && (
+                        <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-colorSecond"></span>
+                      )}
+                      {apart.gender == "K+E" && (
+                        <span className="w-4 h-4 md:h-3 md:w-3 rounded-full bg-yellow-500"></span>
+                      )}
+                    </h3>
+                    {/* Distances - Maksimum ilk 2 üniversite mesafesini gösteriyoruz */}
+                    {apart.distances &&
+                      apart.distances.slice(0, 2).map((distance) => (
+                        <React.Fragment key={distance.id}>
+                          <p className="mt-1 md:text-xs">
+                            {truncateText(`${distance.university.name} `, 15)}{" "}
+                            {distance.yurume} dk
+                          </p>
+                          {/* placeholder */}
+                          {apart.distances && apart.distances.length < 2 && (
+                            <div className="h-6 w-6 bg-white rounded-full opacity-0">
+                              placeholder
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                  </div>
+                  <div className="w-1/3">
+                    <div className="flex flex-col items-end">
+                      <div className="text-xl md:text-sm font-bold ">
+                        {apart.price} ₺*
+                      </div>
+                      <div className="flex gap-2 mt-5">
+                        {apart.phone && (
+                          <Image
+                            src={WhatsappIcon}
+                            alt="WhatsappIcon"
+                            className="w-5 h-5 md:w-4 md:h-4"
+                          />
+                        )}
+                        {apart.phone && (
+                          <Image
+                            src={PhoneIcon}
+                            alt="PhoneIcon"
+                            className="w-5 h-5 md:w-4 md:h-4"
+                          />
+                        )}
+                        {apart.food && (
+                          <Image
+                            src={RestaurantIcon}
+                            alt="RestaurantIcon"
+                            className="w-5 h-5 md:w-4 md:h-4"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* ALT ÇEKMCE */}
+                <div className="flex flex-col justify-between mt-4">
+                  <h4 className="text-gray-800 font-semibold md:text-sm">
+                    {t("cards.featuredFeatures")}
+                  </h4>
+                  <p className="text-gray-400 opacity-70 text-lg md:text-sm overflow-hidden">
+                    {(() => {
+                      // Önce services özelliğinin var olup olmadığını kontrol et
+                      if (!apart.services || !Array.isArray(apart.services)) {
+                        return "Hizmet bilgisi bulunmuyor";
+                      }
+
+                      // Eğer hiç hizmet yoksa
+                      if (apart.services.length === 0) {
+                        return "Hizmet bilgisi bulunmuyor";
+                      }
+
+                      // Tüm service_data dizilerini tek bir düz dizide birleştir
+                      const allServices = apart.services.flatMap(
+                        (serviceCategory) => {
+                          // Eğer service_data varsa ve bir dizi ise kullan, yoksa boş dizi döndür
+                          return serviceCategory.service_data &&
+                            Array.isArray(serviceCategory.service_data)
+                            ? serviceCategory.service_data
+                            : [];
+                        }
+                      );
+
+                      // Eğer hiç hizmet yoksa
+                      if (allServices.length === 0) {
+                        return "Hizmet bilgisi bulunmuyor";
+                      }
+
+                      // Aralarına bullet (•) işaretleri ekleyerek birleştirme
+                      return allServices.join(" \u2022 ");
+                    })()}
+                  </p>
+                  {!isExpanded && (
+                    <div
+                      className="absolute bottom-0 left-0 right-0 bg-white p-4 transition-all duration-300 cursor-pointer bg-opacity-50 animate-fade-in"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Doğrudan link sayfasına gitmesine izin ver
+                      }}
+                    >
+                      <Button
+                        onPress={() => {
+                          // Scroll pozisyonunu kaydet
+                          if (typeof window !== "undefined") {
+                            const position = {
+                              x: window.scrollX,
+                              y: window.scrollY
+                            };
+                            sessionStorage.setItem(
+                              "scroll_homepage",
+                              JSON.stringify(position)
+                            );
+                          }
+
+                          // Apart'ı görüntülenmiş olarak işaretle
+                          if (apart && apart.id) {
+                            dispatch(addViewed(apart.id));
+                          }
+
+                          router.push(`/${apartSlug}`);
+                        }}
+                        className="border-colorFirst border-2 mx-auto text-colorFirst flex justify-center items-center bg-opacity-0"
+                      >
+                        <p className="font-bold ">{t("cards.more")} &#62;</p>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
+        </Link>
         </div>
-      </div>
-    </Link>
-      </div>
+      )}
     </>
   );
 };

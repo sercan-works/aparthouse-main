@@ -6,7 +6,8 @@ import CardPlaceholder from "./ui/CardPlaceholder";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useGetCitiesQuery } from "@/store/api/filterApi";
-import { FaXmark } from "react-icons/fa6";
+import { FaList, FaXmark } from "react-icons/fa6";
+import { AiOutlineAppstore } from "react-icons/ai";
 import { 
   setSelectedCity, 
   setSelectedCategory, 
@@ -23,8 +24,8 @@ import {
 } from "@/store/features/ApartSlice";
 import Loading from "./ui/Loading";
 import { useLanguage } from "@/i18n/context";
-import { Switch } from "@heroui/react";
-import { loadViewedFromStorage } from "@/store/features/ViewedSlice";
+import { Tab, Tabs } from "@heroui/react";
+
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
@@ -63,15 +64,14 @@ const ClientAparts = ({
   const isLoadingMore = useSelector((state: RootState) => state.apart.isLoadingMore);
   const pageSize = useSelector((state: RootState) => state.apart.pageSize);
   
-  // Viewed apartları için Redux state
-  const { viewedApartIds, isHydrated: viewedIsHydrated } = useSelector((state: RootState) => state.viewed);
+
   
   // Toplam apart sayısını tutmak için state
   const [totalApartCount, setTotalApartCount] = React.useState(0);
   const [isHydrated, setIsHydrated] = React.useState(false);
   
-  // Görüntülenenleri gizle switch state'i - default false (disable)
-  const [hideViewedAparts, setHideViewedAparts] = React.useState(false);
+  // Görünüm seçici state'i - mobile'da mobile default, desktop'ta desktop default
+  const [selectedView, setSelectedView] = React.useState("mobile");
 
   // Ref'leri güncel tut
   React.useEffect(() => {
@@ -87,11 +87,28 @@ const ClientAparts = ({
     if (initialUniversity) dispatch(setSelectedUniversity(parseInt(initialUniversity)));
   }, [dispatch, initialCategory, initialCity, initialUniversity]);
 
-  // Hydration kontrolü ve viewed apartları yükle
+  // Hydration kontrolü ve responsive view management
   React.useEffect(() => {
     setIsHydrated(true);
-    dispatch(loadViewedFromStorage());
-  }, [dispatch]);
+    
+    // Desktop'ta her zaman tekli (desktop) mod, mobile'da kullanıcı seçimi
+    const handleResize = () => {
+      if (window.innerWidth >= 768) { // md breakpoint
+        setSelectedView("desktop"); // Desktop'ta her zaman tekli
+      }
+      // Mobile'da kullanıcı seçimini koruyoruz
+    };
+    
+    // İlk yüklemede kontrol et
+    handleResize();
+    
+    // Resize olaylarını dinle
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // filterApi.ts'te tanımlandığı gibi boş string parametresi kullan
   const { data: cities } = useGetCitiesQuery("");
@@ -113,13 +130,8 @@ const ClientAparts = ({
   // Paginated data fetch
   const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(queryParams);
   
-  // Viewed apartları filtrele (eğer switch aktifse)
-  const filteredAparts = React.useMemo(() => {
-    if (!hideViewedAparts || !viewedIsHydrated) {
-      return paginatedAparts;
-    }
-    return paginatedAparts.filter(apart => !viewedApartIds.includes(apart.id));
-  }, [paginatedAparts, hideViewedAparts, viewedApartIds, viewedIsHydrated]);
+  // Viewed apartları filtrele kaldırıldı - artık tüm apartlar gösteriliyor
+  const filteredAparts = paginatedAparts;
 
 
 
@@ -249,30 +261,46 @@ const ClientAparts = ({
         </div>
       )}
 
-      {/* Görüntülenenleri gizle-göster switch  */}
-      <div className="flex flex-wrap gap-2 justify-end items-center mb-4 w-full">
-      <p className="text-sm font-gilroy text-colorFirst">İncelenenleri gizle</p>
+      
 
-        <Switch 
-          isSelected={hideViewedAparts}
-          onValueChange={setHideViewedAparts}
+           {/* Görünüm Seçici Tab HeroUI - Sadece Mobile'da Görünür */}
+           <div className="md:hidden flex justify-center items-center mb-4">
+        <Tabs
+          key="primary"
+          aria-label="View selector tabs"
           color="primary"
-          size="sm"
-        />
-      </div>
+          radius="full"
+          selectedKey={selectedView}
+          onSelectionChange={(key) => setSelectedView(key as string)}
+        >
+          <Tab key="mobile" title={
+            <div className="flex items-center space-x-2">
+              <AiOutlineAppstore className="w-4 h-4" />
+              <span>Hızlı Görünüm</span>
+            </div>
+          } />
+          <Tab key="desktop" title={
+            <div className="flex items-center space-x-2">
+              <FaList className="w-4 h-4" />
+              <span>Detaylı Görünüm</span>
+            </div>
+          } />
+        </Tabs>
+      </div> 
 
       {/* Apart kartları */}
       <div className="flex flex-wrap gap-4 justify-center items-center">
+         
         {filteredAparts && filteredAparts.length > 0 ? (
           filteredAparts.map((apart, index) => {
             if (filteredAparts.length === index + 1) {
               return (
                 <div key={apart.id} ref={lastApartElementRef}>
-                  <Card apart={apart} />
+                  <Card apart={apart} selectedView={selectedView} />
                 </div>
               );
             } else {
-              return <Card key={apart.id} apart={apart} />;
+              return <Card key={apart.id} apart={apart} selectedView={selectedView} />;
             }
           })
         ) : (
