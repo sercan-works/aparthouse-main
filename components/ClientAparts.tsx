@@ -23,6 +23,8 @@ import {
 } from "@/store/features/ApartSlice";
 import Loading from "./ui/Loading";
 import { useLanguage } from "@/i18n/context";
+import { Switch } from "@heroui/react";
+import { loadViewedFromStorage } from "@/store/features/ViewedSlice";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
@@ -57,9 +59,15 @@ const ClientAparts = ({
   const isLoadingMore = useSelector((state: RootState) => state.apart.isLoadingMore);
   const pageSize = useSelector((state: RootState) => state.apart.pageSize);
   
+  // Viewed apartları için Redux state
+  const { viewedApartIds, isHydrated: viewedIsHydrated } = useSelector((state: RootState) => state.viewed);
+  
   // Toplam apart sayısını tutmak için state
   const [totalApartCount, setTotalApartCount] = React.useState(0);
   const [isHydrated, setIsHydrated] = React.useState(false);
+  
+  // Görüntülenenleri gizle switch state'i - default false (disable)
+  const [hideViewedAparts, setHideViewedAparts] = React.useState(false);
 
   // Ref'leri güncel tut
   React.useEffect(() => {
@@ -74,6 +82,12 @@ const ClientAparts = ({
     if (initialCity) dispatch(setSelectedCity(parseInt(initialCity)));
     if (initialUniversity) dispatch(setSelectedUniversity(parseInt(initialUniversity)));
   }, [dispatch, initialCategory, initialCity, initialUniversity]);
+
+  // Hydration kontrolü ve viewed apartları yükle
+  React.useEffect(() => {
+    setIsHydrated(true);
+    dispatch(loadViewedFromStorage());
+  }, [dispatch]);
 
   // filterApi.ts'te tanımlandığı gibi boş string parametresi kullan
   const { data: cities } = useGetCitiesQuery("");
@@ -95,12 +109,15 @@ const ClientAparts = ({
   // Paginated data fetch
   const { data: paginatedData, error, isLoading, isFetching } = useGetPaginatedApartsQuery(queryParams);
   
+  // Viewed apartları filtrele (eğer switch aktifse)
+  const filteredAparts = React.useMemo(() => {
+    if (!hideViewedAparts || !viewedIsHydrated) {
+      return paginatedAparts;
+    }
+    return paginatedAparts.filter(apart => !viewedApartIds.includes(apart.id));
+  }, [paginatedAparts, hideViewedAparts, viewedApartIds, viewedIsHydrated]);
 
 
-  // Hydration kontrolü
-  React.useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   // Filtreler değiştiğinde pagination'ı sıfırla
   useEffect(() => {
@@ -224,11 +241,23 @@ const ClientAparts = ({
         </div>
       )}
 
+      {/* Görüntülenenleri gizle-göster switch  */}
+      <div className="flex flex-wrap gap-2 justify-end items-center mb-4 w-full">
+      <p className="text-sm font-gilroy text-colorFirst">İncelenenleri gizle</p>
+
+        <Switch 
+          isSelected={hideViewedAparts}
+          onValueChange={setHideViewedAparts}
+          color="primary"
+          size="sm"
+        />
+      </div>
+
       {/* Apart kartları */}
       <div className="flex flex-wrap gap-4 justify-center items-center">
-        {paginatedAparts && paginatedAparts.length > 0 ? (
-          paginatedAparts.map((apart, index) => {
-            if (paginatedAparts.length === index + 1) {
+        {filteredAparts && filteredAparts.length > 0 ? (
+          filteredAparts.map((apart, index) => {
+            if (filteredAparts.length === index + 1) {
               return (
                 <div key={apart.id} ref={lastApartElementRef}>
                   <Card apart={apart} />
@@ -255,8 +284,6 @@ const ClientAparts = ({
           ))}
         </div>
       )}
-
-
 
       {/* Sayfa sonuna ulaşıldığında göster */}
       {!hasMore && paginatedAparts.length > 0 && isHydrated && (
