@@ -111,7 +111,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
 
   return (
     <Link href={`/${apart.slug}`} onClick={handleApartViewed} className="block">
-      <div className="w-[9rem] h-auto bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
+      <div className="w-[9rem] h-[14rem] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
         {/* Fotoğraf */}
         <div className="relative aspect-[4/3] w-full min-h-[120px] sm:min-h-[140px]">
           <Image
@@ -163,7 +163,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
         {/* İçerik */}
         <div className="p-2 sm:p-3">
           <div className="flex items-start justify-between mb-1 sm:mb-2">
-            <h3 className="font-medium text-[10px] sm:text-xs md:text-sm text-gray-700 line-clamp-2 leading-tight flex-1 pr-1 sm:pr-2 overflow-hidden text-ellipsis">
+            <h3 className="font-bold text-[12px] sm:text-xs md:text-sm text-gray-700 line-clamp-2 leading-tight flex-1 pr-1 sm:pr-2 overflow-hidden text-ellipsis">
               {String(apart.apart_name)}
             </h3>
 
@@ -202,7 +202,19 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
 
           <div className="flex items-center justify-between mt-1 sm:mt-2">
             <span className="text-xs sm:text-sm md:text-base font-gilroy text-colorFirst font-bold">
-              {apart.price} ₺
+              {/* {apart.price} ₺ */}
+              {/* üniversite adı */}
+              {apart.distances && apart.distances.length > 0 && (
+                <p className="text-xs font-light text-gray-500">
+                  {apart.distances[0].university.name}
+                </p>
+              )}
+              {/* yürüme mesafesi */}
+              {apart.distances && apart.distances.length > 0 && (
+                <p className="text-xs font-light text-gray-500">
+                  {apart.distances[0].yurume_text || `${apart.distances[0].yurume} dk`}
+                </p>
+              )}
             </span>
             {/* İletişim ikonları */}
             <div className="flex items-center gap-1 sm:gap-2">

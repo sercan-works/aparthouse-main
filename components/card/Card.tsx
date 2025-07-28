@@ -278,9 +278,9 @@ const Card = ({ apart, selectedView = "desktop" }: { apart: ApiApart; selectedVi
                   </div>
                   <div className="w-1/3">
                     <div className="flex flex-col items-end">
-                      <div className="text-xl md:text-sm font-bold ">
+                      {/* <div className="text-xl md:text-sm font-bold ">
                         {apart.price} ₺*
-                      </div>
+                      </div> */}
                       <div className="flex gap-2 mt-5">
                         {apart.phone && (
                           <Image

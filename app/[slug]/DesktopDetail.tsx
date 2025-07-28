@@ -3,7 +3,7 @@ import DesktopImageGallery from "@/components/DesktopImageGallery";
 import { Button, Link, Tab, Tabs } from "@heroui/react";
 import React, { useState, useEffect, useRef } from "react";
 import { CiShare2 } from "react-icons/ci";
-import { FaCheck, FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
+import { FaBoltLightning, FaCheck, FaPersonWalking, FaRegEnvelope, FaWhatsapp } from "react-icons/fa6";
 import { FaBus, FaExternalLinkAlt } from "react-icons/fa";
 import { FaTrainSubway } from "react-icons/fa6";
 import { GoHeart, GoLocation } from "react-icons/go";
@@ -50,10 +50,7 @@ const formatPhoneNumber = (phone: string = ""): string => {
   return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
 };
 
-// Para birimini Türkçe formatına göre düzenle: 1000 -> 1.000
-const formatCurrency = (amount: number) => {
-  return amount?.toLocaleString("tr-TR");
-};
+
 
 const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const dispatch = useDispatch();
@@ -282,16 +279,16 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           </Tabs>
         </div>
         <div className="col-span-1">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             <Link
               href={`tel:+${apart?.firma.phone}`}
               className="grid grid-cols-1"
             >
               <Button className="bg-colorFirst text-white h-12 font-bold" onPress={handlePhoneClick}>
-                Ara
+               <FaBoltLightning className="w-6 h-6" /> Hemen Fiyatları Öğren
               </Button>
             </Link>
-            <div className="flex flex-col h-12 p-1 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
+            {/* <div className="flex flex-col h-12 p-1 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
               <h3 className="text-md font-bold text-end">
                 {formatCurrency(apart?.price)} ₺
               </h3>
@@ -300,7 +297,7 @@ const DesktopDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                   &apos;den başlayan fiyatlar
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

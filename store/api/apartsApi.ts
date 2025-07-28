@@ -125,6 +125,7 @@ export interface ApiApart {
   }[];
   cover_image: string;
   distances?: {
+    [x: string]: string;
     id: number;
     university: {
       id: number;
