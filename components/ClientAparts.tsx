@@ -3,6 +3,7 @@ import React, { useEffect, useCallback, useRef } from "react";
 import Card from "./card/Card";
 import { useGetPaginatedApartsQuery } from "@/store/api/apartsApi"; 
 import CardPlaceholder from "./ui/CardPlaceholder";
+import MobileLoadingPlaceholder from "./ui/MobileLoadingPlaceholder";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useGetCitiesQuery } from "@/store/api/filterApi";
@@ -314,11 +315,19 @@ const ClientAparts = ({
 
       {/* Yükleme durumu */}
       {(isLoadingMore || isFetching) && (
-        <div className="flex container flex-wrap gap-4 justify-center items-center py-5">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <CardPlaceholder key={`loading-${index}`} />
-          ))}
-        </div>
+        <>
+          {/* Mobil için modern loading placeholder */}
+          <div className="block md:hidden">
+            <MobileLoadingPlaceholder />
+          </div>
+          
+          {/* Desktop için card placeholder'lar */}
+          <div className="hidden md:flex container flex-wrap gap-4 justify-center items-center py-5">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <CardPlaceholder key={`loading-${index}`} />
+            ))}
+          </div>
+        </>
       )}
 
       {/* Sayfa sonuna ulaşıldığında göster */}
