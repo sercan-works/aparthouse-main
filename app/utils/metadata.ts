@@ -2,9 +2,9 @@ import { Metadata } from 'next';
 
 // SEO için temel metadata şablonu
 export const BASE_METADATA = {
-  title: 'Aparthouse || Hadi Yeni Evini Bul',
-  description: 'Öğrenciler için tasarlanmış ev arama platformu',
-  keywords: 'kiralık daire, öğrenci evi, apart, kiralık ev',
+  title: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
+  description: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
+  keywords: 'eskisehir apart, eskisehir yurt, eskisehir apart ve yurt rehberi, eskisehir apart ve yurt rehberi',
   applicationName: 'Aparthouse',
   authors: [{ name: 'Aparthouse', url: 'https://aparthouse.com.tr' }],
   creator: 'Aparthouse',
@@ -23,8 +23,8 @@ export const BASE_SOCIAL_METADATA = {
     locale: 'tr_TR',
     url: 'https://aparthouse.com.tr',
     siteName: 'Aparthouse',
-    title: 'Aparthouse || Hadi Yeni Evini Bul',
-    description: 'Öğrenciler için tasarlanmış ev arama platformu',
+    title: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
+    description: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
     images: [
       {
         url: '/images/og-image.jpg',
@@ -36,8 +36,8 @@ export const BASE_SOCIAL_METADATA = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Aparthouse || Hadi Yeni Evini Bul',
-    description: 'Öğrenciler için tasarlanmış ev arama platformu',
+    title: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
+    description: 'Eskişehir Apart ve Yurt Rehberi | Aparthouse',
     images: ['/images/twitter-image.jpg'],
     creator: '@aparthouse',
   },

@@ -84,10 +84,10 @@ const HighlightsMobile = () => {
                   {apart.apart_name}
                 </h3>
                 
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-colorFirst">
+                <div className="flex flex-col items-start justify-between line-clamp-1">
+                  {/* <span className="text-lg font-bold text-colorFirst">
                     {apart.price} ₺<span className="text-xs text-gray-500 font-normal">&apos;den başlayan fiyatlar</span>
-                  </span>
+                  </span> */}
                   
                   {/* Cinsiyet İndikatörü */}
                   {/* {apart.gender && (
@@ -101,6 +101,22 @@ const HighlightsMobile = () => {
                       }`}></span>
                     </div>
                   )} */}
+
+                               {/* üniversite adı */}
+                               {apart.distances && apart.distances.length > 0 && (
+                    <p className="text-xs font-light text-gray-500">
+                      {apart.distances[0].university.name}
+                    </p>
+                  )}
+
+                  {/* yürüme mesafesi */}
+                  {apart.distances && apart.distances.length > 0 && (
+                    <p className="text-xs font-light text-gray-500">
+                      {apart.distances[0].yurume_text || `${apart.distances[0].yurume} dk`}
+                    </p>
+                  )}
+     
+
                 </div>
               </div>
             </div>

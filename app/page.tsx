@@ -3,7 +3,7 @@ import BlogCards from "@/components/blog/BlogCards";
 import { createMetadata } from "./utils/metadata";
 
 export const metadata = createMetadata({
-  title: "Hadi yeni evini bul!",
+  title: "Eskişehir Apart ve Yurt Rehberi",
   description: "Aparthouse platformunda öğrenciler için en uygun kiralık daireler ve apartlar. Tüm şehirlerde üniversite yakını konforlu, güvenli ve uygun fiyatlı daireleri keşfedin.",
   keywords: "kiralık daire, öğrenci evi, apart, kiralık ev, apartlar, üniversite yakını ev, uygun fiyatlı daire",
   path: "/",

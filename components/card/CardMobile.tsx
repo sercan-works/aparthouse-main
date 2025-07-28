@@ -13,10 +13,9 @@ import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 // import { MdCompareArrows } from "react-icons/md";
 // import { useLanguage } from "@/i18n/context";
-import WhatsappIcon from "@/public/assets/icons/WhatsappIcon.svg";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
-import RestaurantIcon from "@/public/assets/icons/RestaurantIcon.svg";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaPersonWalking } from "react-icons/fa6";
+import { Chip } from "@heroui/react";
 // import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
@@ -91,14 +90,14 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
     if (apart && apart.id) {
       dispatch(addViewed(apart.id));
     }
-    
+
     // Scroll pozisyonunu kaydet
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const position = {
         x: window.scrollX,
         y: window.scrollY
       };
-      sessionStorage.setItem('scroll_homepage', JSON.stringify(position));
+      sessionStorage.setItem("scroll_homepage", JSON.stringify(position));
     }
   };
 
@@ -111,7 +110,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
 
   return (
     <Link href={`/${apart.slug}`} onClick={handleApartViewed} className="block">
-      <div className="w-[9rem] h-[14rem] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
+      <div className="w-[9rem] h-[15rem] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
         {/* Fotoğraf */}
         <div className="relative aspect-[4/3] w-full min-h-[120px] sm:min-h-[140px]">
           <Image
@@ -205,26 +204,21 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               {/* {apart.price} ₺ */}
               {/* üniversite adı */}
               {apart.distances && apart.distances.length > 0 && (
-                <p className="text-xs font-light text-gray-500">
+                <p className="text-[10px] font-light text-gray-500 line-clamp-1">
                   {apart.distances[0].university.name}
                 </p>
               )}
               {/* yürüme mesafesi */}
               {apart.distances && apart.distances.length > 0 && (
-                <p className="text-xs font-light text-gray-500">
-                  {apart.distances[0].yurume_text || `${apart.distances[0].yurume} dk`}
+                <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
+                  <FaPersonWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
+                  {apart.distances[0].yurume_text ||
+                    `${apart.distances[0].yurume} dk`}
                 </p>
               )}
             </span>
             {/* İletişim ikonları */}
             <div className="flex items-center gap-1 sm:gap-2">
-              {apart.phone && (
-                  <Image
-                    src={WhatsappIcon}
-                    alt="WhatsappIcon"
-                    className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
-                  />
-              )}
               {/* {apart.phone && (
                  <Image
                    src={PhoneIcon}
@@ -233,13 +227,17 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                  />
                )} */}
               {apart.food && (
-                <Image
-                  src={RestaurantIcon}
-                  alt="RestaurantIcon"
-                  className="w-3 h-3 sm:w-4 sm:h-4"
-                />
+               <Chip size="sm" className="bg-colorFirst text-white text-[10px] px-0 py-0">
+                Yemekli
+               </Chip>
               )}
             </div>
+          </div>
+          {/* Hemen İncele butonu */}
+          <div className="flex items-center justify-center mt-2 border-2 border-colorFirst rounded-md p-1 w-full">
+            <span className="text-xs font-light text-colorFirst">
+              Hemen İncele
+            </span>
           </div>
         </div>
       </div>

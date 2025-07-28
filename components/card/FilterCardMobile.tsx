@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import apart_image from "@/public/assets/apart.jpg";
-import { Checkbox, Chip } from "@heroui/react";
+import { Checkbox } from "@heroui/react";
 import { ApiApart } from "@/store/api/apartsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -10,6 +10,7 @@ import { toggleFavorite } from "@/store/features/FavoriteSlice";
 import { toggleCompare } from "@/store/features/CompareSlice";
 import { addViewed } from "@/store/features/ViewedSlice";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FaUtensils } from "react-icons/fa";
 
 const FilterCardMobile = ({
   filterVisible,
@@ -135,14 +136,26 @@ const FilterCardMobile = ({
           
           <div className="flex items-center justify-between">
             <span className="text-lg font-gilroy text-colorFirst">
-              {apart.price} ₺
+              {/* {apart.price} ₺ */}
+              {/* yürüme mesafesi */}
+              {apart.distances && apart.distances.length > 0 && (
+                <p className="text-xs font-light text-gray-500">
+                  {apart.distances[0].yurume_text || `${apart.distances[0].yurume} dk`}
+                </p>
+              )}
+              {/* üniversite adı */}
+              {apart.distances && apart.distances.length > 0 && (
+                <p className="text-xs font-light text-gray-500">
+                  {apart.distances[0].university.name}
+                </p>
+              )}
               {/* <span className="text-xs text-gray-500 font-normal">
                 /{apart.price_type || "ay"}
               </span> */}
             </span>
             
             {/* Cinsiyet İndikatörü */}
-            {apart.gender && (
+            {/* {apart.gender && (
               <div className="flex items-center">
                 {apart.gender === "K" && (
                   <Chip size="sm" className="bg-colorFirst text-white text-xs px-2 py-1">
@@ -160,8 +173,15 @@ const FilterCardMobile = ({
                   </Chip>
                 )}
               </div>
+              
+            )} */}
+            {/* yemekli chip */}
+            {apart.food && (
+       <FaUtensils className="w-6 h-6 text-colorFirst" />
             )}
           </div>
+          {/* yemekli chip */}
+
         </div>
       </div>
     </Link>
