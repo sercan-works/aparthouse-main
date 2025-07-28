@@ -169,7 +169,7 @@ export const prepareSearchParams = (selectedFilters: SelectedFilters): FilterPar
 export const apartsApi = baseApi.injectEndpoints({
 
   endpoints: (builder) => ({
-    getApartmentById: builder.query<Apartment, string>({
+    getApartmentById: builder.query<ApiApart, string>({
       // Gerçek API endpoint'ini kullanıyoruz
       query: (slug) => `/api/aparts/${slug}`,
     }),

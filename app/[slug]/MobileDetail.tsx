@@ -138,7 +138,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
 
       <div className="flex flex-col">
         <div className="flex flex-row justify-between px-4">
-          <h1 className="text-2xl font-medium">{apart?.name || apart?.title}</h1>
+          <h1 className="text-2xl font-medium">{apart?.name}</h1>
           <div className="flex flex-row gap-3">
             <button onClick={handleShareClick}>
               <CiShare2 className="h-6 w-6 text-gray-500" />
@@ -164,7 +164,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         <ShareModal 
           isOpen={isShareOpen} 
           onOpenChange={() => setIsShareOpen(!isShareOpen)}
-          title={apart.name || apart.title || "ApartHouse Detay"}
+          title={apart.name || "ApartHouse Detay"}
           url={typeof window !== 'undefined' ? window.location.href : `https://aparthouse.com/${apartSlug}`}
         />
         
@@ -191,7 +191,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             {/* AÇIKLAMA */}
             <div>
               <p className="text-gray-500">
-                {apart?.info || apart?.description}
+                {apart?.info}
               </p>
             </div>
 
@@ -199,7 +199,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             <div className="mt-5 text-gray-500 flex flex-row items-center gap-2">
               <div className="flex flex-row items-center gap-2">
                 <GoLocation className="h-4 w-4 text-gray-500" />
-                Adres : {apart?.address || apart?.location}
+                Adres : {apart?.address}
               </div>
             </div>
 
@@ -380,13 +380,18 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       </div>
       {/* CONTACT BAR */}
       <div className="fixed bottom-[68px] left-0 right-0 bg-white py-2 z-50">
-        {/* Props göndermeyi şimdilik atlayalım */}
         <ContactBar 
           phone={apart?.firma.phone} 
           price={apart?.price} 
-          apartName={apart?.apart_name} 
+          apartName={apart?.apart_name || apart?.name} 
           apartSlug={apart?.slug}
           apartId={apart?.id}
+          gender={
+            apart?.category?.name === 'Kız' ? 'K' :
+            apart?.category?.name === 'Erkek' ? 'E' :
+            apart?.category?.name === 'Karışık' ? 'K+E' : 'E'
+          }
+          universities={apart?.distances?.map((distance) => distance.university.id) || []}
         />
       </div>
 
