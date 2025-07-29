@@ -38,7 +38,7 @@ export const getWhatsAppLink = (phone: string, apartName?: string, apartUrl?: st
   const formattedPhone = formatTurkishPhoneNumber(phone).replace('+', '');
   
   // Create the message text
-  let message = 'Merhaba ilanınızı aparthouse.com.tr\'de gördüm. Konaklamanız hakkında bilgi almak istiyorum.';
+  let message = 'Merhaba ilanınızı aparthouse.com.tr\'de gördüm. Konaklamanız hakkında fiyat ve bilgi almak istiyorum.';
   
   // Add the apartment URL if provided
   if (apartUrl) {
