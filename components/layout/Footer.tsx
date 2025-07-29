@@ -5,7 +5,7 @@ import FacebookIcon from "@/public/assets/icons/FacebookIcon.svg";
 import TiktokIcon from "@/public/assets/icons/TiktokIcon.svg";
 import InstagramIcon from "@/public/assets/icons/InstagramIcon.svg";
 import LinkedInIcon from "@/public/assets/icons/LinkedinIcon.svg";
-import paymentImage from "@/public/assets/images/payment_logos.png";
+// import paymentImage from "@/public/assets/images/payment_logos.png";
 import Link from "next/link"; 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -185,9 +185,9 @@ const Footer = () => {
               />
             </div>
             <p className="text-gray-600 text-sm">Bizi Sosyal Medyada Takip Edin</p>
-            <div className="relative w-full h-10 mt-4">
+            {/* <div className="relative w-full h-10 mt-4">
               <Image src={paymentImage} alt="payment" layout="fill" objectFit="contain" />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -326,9 +326,9 @@ const Footer = () => {
             {/* <div className="text-xs md:text-base text-left font-bold cursor-pointer mt-4 text-colorFirst hover:text-colorFirst/80">
              <Link href="/pricing">Fiyatlandırma</Link>
             </div> */}
-            <div className="relative w-full h-10 mt-10">
+            {/* <div className="relative w-full h-10 mt-10">
               <Image src={paymentImage} alt="payment" layout="fill" objectFit="contain" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
