@@ -14,7 +14,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 // import { MdCompareArrows } from "react-icons/md";
 // import { useLanguage } from "@/i18n/context";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
-import { FaEye, FaPersonWalking } from "react-icons/fa6";
+import { FaEye, FaMapPin } from "react-icons/fa6";
 import { Chip } from "@heroui/react";
 // import { FaInfoCircle } from "react-icons/fa";
 
@@ -204,16 +204,15 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               {/* {apart.price} ₺ */}
               {/* üniversite adı */}
               {apart.distances && apart.distances.length > 0 && (
-                <p className="text-[10px] font-light text-gray-500 line-clamp-1">
-                  {apart.distances[0].university.name}
+                <p className="flex items-center gap-1 text-[10px] font-light text-gray-500 line-clamp-1">
+                   {apart.distances[0].university.name}
                 </p>
               )}
               {/* yürüme mesafesi */}
               {apart.distances && apart.distances.length > 0 && (
                 <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
-                  <FaPersonWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
-                  {apart.distances[0].yurume_text ||
-                    `${apart.distances[0].yurume} dk`}
+                  <FaMapPin className="w-3 h-3 text-gray-500 inline-block mr-1" />
+                  {`${apart.distances[0].yurume} dk`}
                 </p>
               )}
             </span>

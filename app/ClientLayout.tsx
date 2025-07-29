@@ -7,6 +7,7 @@ import ToastProviders from "./toast_provider";
 import ContactBanner from "@/components/ContactBanner";
 import HomeInfoBanner from "@/components/HomeInfoBanner";
 import Highlights from "@/components/Highlights";
+import HighlightsMobile from "@/components/HighlightsMobile";
 import StoreProvider from "./StoreProvider";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from 'react';
@@ -44,6 +45,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {shouldShowHeaderFooter && <Header />}
       <ToastProviders>
           {pathname === "/" && <Highlights />}
+          {pathname === "/" && <HighlightsMobile />}
           {children}
           {pathname === "/" && <HomeInfoBanner />}
           {pathname === "/" && <ContactBanner />}

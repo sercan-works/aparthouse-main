@@ -28,6 +28,8 @@ import { useLanguage } from "@/i18n/context";
 import { Tab, Tabs } from "@heroui/react";
 
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+// import HighlightsMobile from "./HighlightsMobile";
+// import Highlights from "./Highlights";
 // import MobileCitySelection from "./filter-modal/MobileCitySelection";
 
 interface ClientApartsProps {
@@ -261,6 +263,11 @@ const ClientAparts = ({
           </div>
         </div>
       )}
+
+      {/* Mobile Higlights - Kaldırılıyor çünkü ClientLayout'ta var */}
+      {/* <div className="md:hidden">
+        <HighlightsMobile/>
+      </div> */}
 
       
 

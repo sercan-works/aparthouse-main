@@ -11,7 +11,6 @@ import aparthouse_logo from '@/public/assets/apart.jpg';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 // API Setting - Backend endpoint konfigürasyonu
 const API_SETTINGS = {
