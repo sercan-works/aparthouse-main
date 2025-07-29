@@ -79,7 +79,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className=" mt-1 md:mt-0 md:bg-white md:shadow">
+    <header className=" mt-5 md:mt-0 md:bg-white md:shadow">
       {/* Anons Bar */}
       {/* TODO: Anons bar yapılacak */}
 
