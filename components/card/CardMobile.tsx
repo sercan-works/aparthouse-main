@@ -203,14 +203,14 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
             <span className="text-xs sm:text-sm md:text-base font-gilroy text-colorFirst font-bold">
               {/* {apart.price} ₺ */}
               {/* üniversite adı */}
-              {apart.distances && apart.distances.length > 0 && (
+              {apart.distances && apart.distances.length > 0 && apart.distances[0].university.image && (
                 <p className="flex items-center gap-1 text-[10px] font-light text-gray-500 line-clamp-1">
                   <Image 
                     src={apart.distances[0].university.image.startsWith('http') 
                       ? apart.distances[0].university.image 
                       : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${apart.distances[0].university.image}`
                     } 
-                    alt={apart.distances[0].university.name} 
+                    alt={apart.distances[0].university.name || ''} 
                     width={30} 
                     height={30} 
                     className="rounded-full"
