@@ -128,6 +128,7 @@ export interface ApiApart {
     [x: string]: string;
     id: number;
     university: {
+      image: string | StaticImport;
       id: number;
       name: string;
     };

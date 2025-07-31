@@ -14,7 +14,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 // import { MdCompareArrows } from "react-icons/md";
 // import { useLanguage } from "@/i18n/context";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
-import { FaEye, FaMapPin } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa6";
 import { Chip } from "@heroui/react";
 // import { FaInfoCircle } from "react-icons/fa";
 
@@ -205,16 +205,28 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               {/* üniversite adı */}
               {apart.distances && apart.distances.length > 0 && (
                 <p className="flex items-center gap-1 text-[10px] font-light text-gray-500 line-clamp-1">
-                   {apart.distances[0].university.name}
+                  <Image 
+                    src={apart.distances[0].university.image.startsWith('http') 
+                      ? apart.distances[0].university.image 
+                      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${apart.distances[0].university.image}`
+                    } 
+                    alt={apart.distances[0].university.name} 
+                    width={30} 
+                    height={30} 
+                    className="rounded-full"
+                  />
                 </p>
               )}
               {/* yürüme mesafesi */}
-              {apart.distances && apart.distances.length > 0 && (
+              {/*apart.distances && apart.distances.length > 0 && (
                 <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
                   <FaMapPin className="w-3 h-3 text-gray-500 inline-block mr-1" />
                   {`${apart.distances[0].yurume} dk`}
                 </p>
-              )}
+              )}*/}
+              {/* <p className="text-[10px] font-light text-gray-500 line-clamp-1">
+               yürüme mesafesi
+              </p> */}
             </span>
             {/* İletişim ikonları */}
             <div className="flex items-center gap-1 sm:gap-2">
