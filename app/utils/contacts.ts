@@ -3,6 +3,20 @@
  */
 
 /**
+ * Detects if the user is on iOS Safari
+ * @returns True if iOS Safari, false otherwise
+ */
+export const isIOSSafari = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  
+  const userAgent = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+  const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/.test(userAgent);
+  
+  return isIOS && isSafari;
+};
+
+/**
  * Formats a phone number to the Turkish WhatsApp format
  * @param phone Phone number in any format
  * @returns Formatted phone number starting with "+905"
@@ -65,4 +79,22 @@ export const getWhatsAppLink = (phone: string, apartName?: string, apartUrl?: st
 export const getPhoneLink = (phone: string): string => {
   const formattedPhone = formatTurkishPhoneNumber(phone);
   return phone ? `tel:${formattedPhone}` : '#';
+};
+
+/**
+ * Opens WhatsApp link in a way that works across all browsers including iOS Safari
+ * @param phone Phone number to send the WhatsApp message to
+ * @param apartName Name of the apart
+ * @param apartUrl Full URL to the apart listing
+ */
+export const openWhatsAppLink = (phone?: string, apartName?: string, apartUrl?: string): void => {
+  const whatsappUrl = getWhatsAppLink(phone || '', apartName, apartUrl);
+  
+  if (isIOSSafari()) {
+    // iOS Safari'de popup blocker'ı bypass etmek için window.location.href kullan
+    window.location.href = whatsappUrl;
+  } else {
+    // Diğer tarayıcılarda normal window.open kullan
+    window.open(whatsappUrl, '_blank');
+  }
 }; 

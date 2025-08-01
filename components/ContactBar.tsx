@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FaWhatsapp } from "react-icons/fa6";
 import { MdOutlineLocalPhone } from "react-icons/md";
 import { Button } from '@heroui/react'
-import { getWhatsAppLink, getPhoneLink } from '@/app/utils/contacts';
+import { getPhoneLink, openWhatsAppLink } from '@/app/utils/contacts';
 import axios from 'axios';
 import WhatsAppModal from './WhatsAppModal';
 
@@ -51,8 +51,8 @@ const ContactBar: React.FC<ContactBarProps> = ({
     await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
         apart: apartId,
     });
-    // WhatsApp linkini aç
-    window.open(getWhatsAppLink(phone, apartName, apartUrl), '_blank');
+    // WhatsApp linkini iOS Safari uyumlu şekilde aç
+    openWhatsAppLink(phone, apartName, apartUrl);
     
     // Modal'ı sadece mobilde aç
     if (isMobile) {

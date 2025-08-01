@@ -28,7 +28,7 @@ import { BsHeartFill } from "react-icons/bs";
 import Loading from "@/components/ui/Loading";
 import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
-import { getWhatsAppLink } from "../utils/contacts";
+import { openWhatsAppLink } from "../utils/contacts";
 import HighlightsMobile from "@/components/HighlightsMobile";
 import axios from "axios";
 
@@ -87,9 +87,8 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
         apart: apart?.id,
     });
-    // WhatsApp linkini aç
-    window.open(getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`), '_blank');
-    
+    // WhatsApp linkini iOS Safari uyumlu şekilde aç
+    openWhatsAppLink(apart?.firma.phone, apart?.name, ` https://www.aparthouse.com.tr/${apart?.slug}`);
   };
 
   // Handle compare toggle
@@ -396,14 +395,15 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               </div>
             </Link>
 
-            <Link href={getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`)} target="_blank">
-              <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-                <p className="text-gray-500 text-md font-bold">
-                  Whatsapp
-                </p>
-              </div>
-            </Link>
+            <div 
+              onClick={() => openWhatsAppLink(apart?.firma.phone, apart?.name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
+              className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <FaWhatsapp className="w-6 h-6 text-colorFirst" />
+              <p className="text-gray-500 text-md font-bold">
+                Whatsapp
+              </p>
+            </div>
           </div>
 
           {/* MOBİLE FOOTER YAPILACAK */}
