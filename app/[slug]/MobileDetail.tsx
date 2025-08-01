@@ -30,6 +30,7 @@ import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
 import { getWhatsAppLink } from "../utils/contacts";
 import HighlightsMobile from "@/components/HighlightsMobile";
+import axios from "axios";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
@@ -82,6 +83,15 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     dispatch(toggleFavorite(Number(apart.id)));
   };
 
+  const handleWhatsappClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
+        apart: apart?.id,
+    });
+    // WhatsApp linkini aç
+    window.open(getWhatsAppLink(apart?.firma.phone, apart?.apart_name, ` https://www.aparthouse.com.tr/${apart?.slug}`), '_blank');
+    
+  };
+
   // Handle compare toggle
   const handleToggleCompare = () => {
     if (!apart) return;
@@ -132,8 +142,32 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   if (!apart) return <div className="flex flex-col mx-auto max-w-sm my-10">Apart bulunamadı</div>;
 
   return (
-    <div className="flex flex-col mx-auto max-w-sm my-10 gap-4 relative min-h-screen pb-24">
-      {/* API'den gelen verileri SwiperSlideImages'a uygun formatta aktarıyoruz */}
+    <div className="flex flex-col mx-auto max-w-sm mt-5 mb-10 gap-4 relative min-h-screen pb-24">
+     {/* Kampanya Duyuru Kartı */}
+     <div className="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <div className="bg-red-500 text-white p-2 rounded-full animate-pulse">
+          <FaExternalLinkAlt className="w-4 h-4" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-red-600 font-semibold text-sm">🔥 ERKEN KAYIT FIRSATI</h3>
+          <p className="text-gray-700 text-xs mt-1">
+            Sınırlı süre! Hemen fiyat bilgisini al, <span className="font-semibold text-red-600">erken kayıt kontenjanından yararlan !</span>
+          </p>
+        </div>
+      </div>
+      
+      {/* Mini CTA Button */}
+      <div className="mt-3 pt-2 border-t border-red-100">
+        <div className="flex items-center justify-center">
+          <div className="bg-green-500 text-white px-2 py-2 rounded-full text-xs animate-pulse">
+            <button onClick={handleWhatsappClick} className="text-xs text-white flex items-center gap-2">
+            <FaWhatsapp className="w-4 h-4" /> WhatsApp ile iletişime geç
+            </button>
+          </div>
+        </div>
+      </div>
+     </div>
       <SwiperSlideImages images={apart?.images || []} />
 
       <div className="flex flex-col">
