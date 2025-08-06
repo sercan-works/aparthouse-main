@@ -11,7 +11,7 @@ import {
   FaTrainSubway,
   FaWhatsapp
 } from "react-icons/fa6";
-import { FaCheck, FaExternalLinkAlt } from "react-icons/fa";
+import { FaCheck, FaExternalLinkAlt, FaUtensils } from "react-icons/fa";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
 import { Tabs, Tab, Button } from "@heroui/react";
@@ -288,6 +288,18 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               )}
             </div>
 
+            {/* YEMEKLİ KART*/}
+            {apart?.food && (
+              <Button variant="flat" className='w-full mt-1 first-letter:bg-white text-white h-12 p-0 px-1 border-2 border-primary rounded-xl' >
+                  <FaUtensils className='w-6 h-6 text-primary'/>
+                  <div className='text-sm text-primary '>
+                    <p>Bu konaklama <span className="font-bold">yemek hizmeti</span> vermektedir.</p>
+                    <p className="text-gray-500 text-xs">(Detaylar için  WhatsApp ile iletişime geçiniz.)</p>
+                    </div>
+              </Button>
+            )}
+
+
             {/* HİZMETLER */}
             <div className="mt-5 grid grid-cols-2 gap-4">
               {apart?.services && Array.isArray(apart.services) && (
@@ -417,6 +429,8 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         <ContactBar 
           phone={apart?.firma.phone} 
           price={apart?.price} 
+          lat={apart?.lat}
+          lon={apart?.lon}
           apartName={apart?.apart_name || apart?.name} 
           apartSlug={apart?.slug}
           apartId={apart?.id}

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { FaWhatsapp } from "react-icons/fa6";
-import { MdOutlineLocalPhone } from "react-icons/md";
+import { FaMap, FaWhatsapp } from "react-icons/fa6";
 import { Button } from '@heroui/react'
-import { getPhoneLink, openWhatsAppLink } from '@/app/utils/contacts';
+import { openWhatsAppLink } from '@/app/utils/contacts';
 import axios from 'axios';
 import WhatsAppModal from './WhatsAppModal';
 
@@ -14,6 +13,8 @@ interface ContactBarProps {
   apartId?: number;
   gender?: string;
   universities?: number[];
+  lat?: number;
+  lon?: number;
 }
 
 const ContactBar: React.FC<ContactBarProps> = ({ 
@@ -23,7 +24,9 @@ const ContactBar: React.FC<ContactBarProps> = ({
   apartSlug, 
   apartId, 
   gender = 'E', 
-  universities = [] 
+  universities = [],
+  lat,
+  lon
 }) => {
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -59,11 +62,11 @@ const ContactBar: React.FC<ContactBarProps> = ({
       setIsWhatsAppModalOpen(true);
     }
   };
-  const handleCallClick = async () => {
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
-        apart: apartId,
-    });
-  };
+  // const handleCallClick = async () => {
+  //   await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
+  //       apart: apartId,
+  //   });
+  // };
 
   return (
     <div className=''>
@@ -77,13 +80,22 @@ const ContactBar: React.FC<ContactBarProps> = ({
             </div>
         </div>
           
-          <Button variant="flat" onPress={() => {
+          {/* <Button variant="flat" onPress={() => {
             handleCallClick();
             window.open(getPhoneLink(phone), '_blank');
           }} className='bg-primary text-white h-12 w-1/2 p-0'>
             <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
             <p>Ara</p>
+        </Button> */}
+
+      
+        <Button variant="bordered" onPress={() => {
+          window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`, '_blank');
+        }} className=' text-primary h-12 w-1/2 p-0 px-1 border-2 border-primary rounded-xl' >
+            <FaMap className='w-6 h-6 text-primary'/>
+            <p className='text-sm text-primary'>Konum Bilgisi</p>
         </Button>
+
         <Button variant="flat" onPress={handleWhatsappClick} className='bg-primary text-white h-12 w-1/2 p-0 px-1'>
             <FaWhatsapp className='w-6 h-6 text-white animate-bounce'/>
             <p className='text-sm'>Fiyat Bilgisi Al</p>
