@@ -16,6 +16,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
 import { FaEye } from "react-icons/fa6";
 import { Chip } from "@heroui/react";
+import { FaWalking } from "react-icons/fa";
 // import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
@@ -102,11 +103,11 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
   };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
-  // const truncateText = (text: string, maxLength: number) => {
-  //   if (!text) return "";
-  //   if (text.length <= maxLength) return text;
-  //   return text.slice(0, maxLength) + "...";
-  // };
+  const truncateText = (text: string, maxLength: number) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
 
   return (
     <Link href={`/${apart.slug}`} onClick={handleApartViewed} className="block">
@@ -157,6 +158,13 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               />
             </button> */}
           </div>
+
+
+          {apart.food && (
+               <Chip size="sm" variant="flat" className="rounded-none bg-colorFirst text-white text-[10px] px-0 py-0 mt-24">
+                Yemekli
+               </Chip>
+              )}
         </div>
 
         {/* İçerik */}
@@ -189,21 +197,36 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
           </div>
 
           {/* Üniversite mesafeleri */}
-          {/* {apart.distances && apart.distances.length > 0 && (
+          {apart.distances && apart.distances.length > 0 && (
             <div className="mb-2">
               {apart.distances.slice(0, 1).map((distance) => (
-                <p key={distance.id} className="text-xs text-gray-600">
-                  {truncateText(`${distance.university.name}`, 20)} - {distance.yurume} dk
+                <p key={distance.id} className="text-[10px] text-gray-600">
+                  {truncateText(`${distance.university.name}`, 20)} 
+                  {/* - {distance.yurume} dk */}
+                   {/* yürüme mesafesi */}
+              {apart.distances && apart.distances.length > 0 && (
+                <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
+                  <FaWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
+                  {`${apart.distances[0].yurume} dk`}
+
+                  {/* <FaBus className="w-3 h-3 text-gray-500 inline-block mr-1"/>
+                  {apart.distances[1] && `${apart.distances[0].otobus} dk`}
+
+                  <FaTrain className="w-3 h-3 text-gray-500 inline-block mr-1"/>
+                  {apart.distances[1] && `${apart.distances[0].tramway} dk`} */}
+
+                </p>
+              )}
                 </p>
               ))}
             </div>
-          )} */}
+          )}
 
           <div className="flex items-center justify-between mt-1 sm:mt-2">
             <span className="text-xs sm:text-sm md:text-base font-gilroy text-colorFirst font-bold">
               {/* {apart.price} ₺ */}
               {/* üniversite adı */}
-              {apart.distances && apart.distances.length > 0 && apart.distances[0].university.image && (
+              {/* {apart.distances && apart.distances.length > 0 && apart.distances[0].university.image && (
                 <p className="flex items-center gap-1 text-[10px] font-light text-gray-500 line-clamp-1">
                   <Image 
                     src={apart.distances[0].university.image.startsWith('http') 
@@ -216,14 +239,8 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                     className="rounded-full"
                   />
                 </p>
-              )}
-              {/* yürüme mesafesi */}
-              {/*apart.distances && apart.distances.length > 0 && (
-                <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
-                  <FaMapPin className="w-3 h-3 text-gray-500 inline-block mr-1" />
-                  {`${apart.distances[0].yurume} dk`}
-                </p>
-              )}*/}
+              )} */}
+             
               {/* <p className="text-[10px] font-light text-gray-500 line-clamp-1">
                yürüme mesafesi
               </p> */}
@@ -237,11 +254,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                    className="w-4 h-4"
                  />
                )} */}
-              {apart.food && (
-               <Chip size="sm" className="bg-colorFirst text-white text-[10px] px-0 py-0">
-                Yemekli
-               </Chip>
-              )}
+             
             </div>
           </div>
           {/* Hemen İncele butonu */}
