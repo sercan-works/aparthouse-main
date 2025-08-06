@@ -200,24 +200,15 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
           {apart.distances && apart.distances.length > 0 && (
             <div className="mb-2">
               {apart.distances.slice(0, 1).map((distance) => (
-                <p key={distance.id} className="text-[10px] text-gray-600">
-                  {truncateText(`${distance.university.name}`, 20)} 
-                  {/* - {distance.yurume} dk */}
-                   {/* yürüme mesafesi */}
-              {apart.distances && apart.distances.length > 0 && (
-                <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
-                  <FaWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
-                  {`${apart.distances[0].yurume} dk`}
-
-                  {/* <FaBus className="w-3 h-3 text-gray-500 inline-block mr-1"/>
-                  {apart.distances[1] && `${apart.distances[0].otobus} dk`}
-
-                  <FaTrain className="w-3 h-3 text-gray-500 inline-block mr-1"/>
-                  {apart.distances[1] && `${apart.distances[0].tramway} dk`} */}
-
-                </p>
-              )}
-                </p>
+                <div key={distance.id}>
+                  <p className="text-[10px] text-gray-600">
+                    {truncateText(`${distance.university.name}`, 20)} 
+                  </p>
+                  <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
+                    <FaWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
+                    {`${apart.distances[0].yurume} dk`}
+                  </p>
+                </div>
               ))}
             </div>
           )}
