@@ -18,6 +18,44 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedUniversity } from '@/store/features/FilterSlice';
 import { RootState } from '@/store';
 import { useLanguage } from '@/i18n/context';
+
+// Animated Counter Component
+const AnimatedCounter = () => {
+  const [count, setCount] = useState(0);
+  const targetCount = 40;
+
+  useEffect(() => {
+    const duration = 2000; // 2 saniye
+    const increment = targetCount / (duration / 50); // 50ms intervals
+    
+    const timer = setInterval(() => {
+      setCount(prev => {
+        const next = prev + increment;
+        if (next >= targetCount) {
+          clearInterval(timer);
+          return targetCount;
+        }
+        return next;
+      });
+    }, 50);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="text-center">
+      <div className="text-sm font-semibold text-gray-700">
+        Eskişehir&apos;de <span className="inline-flex items-center justify-center bg-gradient-to-tr from-pink-600 to-pink-400 text-white text-xs font-bold rounded-md px-2 py-1 min-w-[38px]">
+          {Math.floor(count)}+
+        </span>
+      </div>
+      <div className="text-xs font-light text-gray-700 text-end mt-1">
+        Apart ve Yurt
+      </div>
+    </div>
+  );
+};
+
 export default function Header() {
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -116,7 +154,7 @@ export default function Header() {
               <Image src={Logo} alt="Logo" width={150} height={100} />
           </Link>
           <div className="flex items-center gap-4 text-gray-500 text-sm">
-            {t('header.mobileSubtitle')}
+            <AnimatedCounter />
           </div>
         </div>
         {/* Find Student Home metni - sadece ana sayfada */}
