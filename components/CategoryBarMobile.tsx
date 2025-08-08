@@ -39,7 +39,8 @@ const CategoryBarMobile = () => {
     return (
       <div className='container mx-auto mt-4 z-50'>
         <h2 className='text-xs font-semibold text-gray-700 mb-4 px-2'>KATEGORİLER</h2> 
-        <div className='grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 p-2 pb-4'>
+        <div className='grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 p-2 pb-4'>
+          <CategoryPlaceHolder />
           <CategoryPlaceHolder />
           <CategoryPlaceHolder />
           <CategoryPlaceHolder />
