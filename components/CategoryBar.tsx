@@ -37,20 +37,19 @@ const CategoryBar = () => {
   };
 
   if (isLoading) {
-    return <div className='flex gap-4 container p-2 mx-auto justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4  md:justify-center md:gap-8 z-50 '>
+    return <div className='flex gap-8 container p-2 mx-auto justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4 z-50'>
        <CategoryPlaceHolder />
        <CategoryPlaceHolder />
        <CategoryPlaceHolder />
-       
        </div>;
   }
 
   return (
-    <div className='flex gap-4 container mx-auto justify-start md:justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4  md:gap-8 z-50 ' >
+    <div className='flex gap-8 container mx-auto justify-center overflow-x-auto whitespace-nowrap pb-4 mt-4 z-50' >
       {categories && categories.map((category) => (
         <div 
           key={category.name} 
-          className={`mt-3 relative flex-shrink-0  cursor-pointer ${selectedCategory === category.id ? 'ring-2 ring-colorFirst rounded-lg bg-colorFirst/75 text-gray-50 font-bold' : ''}`} 
+          className={`mt-3 relative flex-shrink-0 cursor-pointer ${selectedCategory === category.id ? 'ring-2 ring-colorFirst rounded-lg bg-colorFirst/75 text-gray-50 font-bold' : ''}`} 
           onClick={(e) => handleCategoryClick(category.id, e)}
         >
           {selectedCategory === category.id && (
@@ -64,12 +63,12 @@ const CategoryBar = () => {
           <Image 
             src={category.image} 
             alt={category.name} 
-            className={`w-20 h-20 md:w-40 md:h-40 object-cover rounded-lg ${selectedCategory === category.id ? '' : 'hover:scale-105'} transition-all duration-300`}
-            width={100}
-            height={100}
+            className={`w-40 h-40 object-cover rounded-lg ${selectedCategory === category.id ? '' : 'hover:scale-105'} transition-all duration-300`}
+            width={160}
+            height={160}
             priority
           />
-          <p className='text-center text-lg md:text-sm'>{category.name}</p>
+          <p className='text-center text-sm'>{category.name}</p>
         </div>
       ))}
     </div>

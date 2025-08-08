@@ -8,6 +8,7 @@ import HeaderBanner from "./HeaderBanner";
 import FilterButton from "../filter-modal/FilterButton";
 import SearchBar from "../SearchBar";
 import CategoryBar from "../CategoryBar";
+import CategoryBarMobile from "../CategoryBarMobile";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -242,7 +243,18 @@ export default function Header() {
       </div>
 
       {/* KATEGORİLER */}
-      {shouldShowCategory && <CategoryBar />}
+      {shouldShowCategory && (
+        <>
+          {/* Desktop CategoryBar */}
+          <div className="hidden md:block">
+            <CategoryBar />
+          </div>
+          {/* Mobile CategoryBar */}
+          <div className="block md:hidden">
+            <CategoryBarMobile />
+          </div>
+        </>
+      )}
 
  
        {/* ÜNİVERSİTELERE GÖRE FİLTRELEYEN HIZLI ERİŞİM LİNKLERİ - SADECE MOBİL VE ANA SAYFA */}
