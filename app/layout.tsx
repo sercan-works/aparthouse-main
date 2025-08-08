@@ -37,27 +37,16 @@ export default function RootLayout({
       <body className="font-gilroy antialiased">
         {/* Google Analytics */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17437128307"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics-ga4" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-17437128307');
-          `}
-        </Script>
-        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-N8XHCSGGSM"
           strategy="afterInteractive"
         />
-        <Script id="google-analytics-ga4" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-N8XHCSGGSM');
+            gtag('config', 'AW-17437128307');
           `}
         </Script>
        
