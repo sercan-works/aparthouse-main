@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { CiShare2 } from "react-icons/ci";
-import { MdCompareArrows, MdOutlineLocalPhone } from "react-icons/md";
+import { MdCompareArrows } from "react-icons/md";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { SlGraduation } from "react-icons/sl";
 import {
@@ -32,26 +32,26 @@ import { openWhatsAppLink } from "../utils/contacts";
 import HighlightsMobile from "@/components/HighlightsMobile";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
-const formatPhoneNumber = (phone: string = ""): string => {
-  // Başında 0 yoksa ekle
-  let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
+// const formatPhoneNumber = (phone: string = ""): string => {
+//   // Başında 0 yoksa ekle
+//   let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
 
-  // Sadece rakamları al
-  formattedPhone = formattedPhone.replace(/\D/g, "");
+//   // Sadece rakamları al
+//   formattedPhone = formattedPhone.replace(/\D/g, "");
 
-  // İstenen formata dönüştür: "0 545 446 77 21"
-  if (formattedPhone.length === 11) {
-    return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(
-      1,
-      4
-    )} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(
-      7,
-      9
-    )} ${formattedPhone.slice(9, 11)}`;
-  }
+//   // İstenen formata dönüştür: "0 545 446 77 21"
+//   if (formattedPhone.length === 11) {
+//     return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(
+//       1,
+//       4
+//     )} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(
+//       7,
+//       9
+//     )} ${formattedPhone.slice(9, 11)}`;
+//   }
 
-  return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
-};
+//   return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
+// };
 
 const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const dispatch = useDispatch();
