@@ -30,6 +30,13 @@ const ContactBar: React.FC<ContactBarProps> = ({
 }) => {
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+
+  // WhatsApp button için farklı metin seçenekleri
+  const whatsappTexts = [
+    { main: 'Fiyat Bilgisi Al', sub: '' },
+    { main: 'Whatsapp', sub: '' },
+  ];
 
   // Mobil kontrolü için useEffect
   useEffect(() => {
@@ -42,6 +49,15 @@ const ContactBar: React.FC<ContactBarProps> = ({
 
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+  // WhatsApp button metin rotasyonu için useEffect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTextIndex((prevIndex) => (prevIndex + 1) % whatsappTexts.length);
+    }, 2000); // 2 saniyede bir değiştir
+
+    return () => clearInterval(interval);
+  }, [whatsappTexts.length]);
   
   // Para birimini Türkçe formatına göre düzenle: 1000 -> 1.000
   const formatCurrency = (amount: number) => {
@@ -96,9 +112,31 @@ const ContactBar: React.FC<ContactBarProps> = ({
             <p className='text-sm text-primary'>Konum Bilgisi</p>
         </Button>
 
-        <Button variant="flat" onPress={handleWhatsappClick} className='bg-primary text-white h-12 w-1/2 p-0 px-1'>
-            <FaWhatsapp className='w-6 h-6 text-white animate-bounce'/>
-            <p className='text-sm'>Fiyat Bilgisi Al</p>
+        <Button variant="flat" onPress={handleWhatsappClick} className='bg-primary text-white h-12 w-1/2 p-0 px-1 relative overflow-hidden'>
+            <FaWhatsapp className='w-6 h-6 text-white rounded-full'/>
+            <div className='relative h-8 w-1/2 flex items-center justify-center'>
+              {whatsappTexts.map((text, index) => (
+                <div
+                  key={index}
+                  className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${
+                    index === textIndex
+                      ? 'opacity-100 translate-y-0'
+                      : index === (textIndex - 1 + whatsappTexts.length) % whatsappTexts.length
+                      ? 'opacity-0 translate-y-4'
+                      : 'opacity-0 -translate-y-4'
+                  }`}
+                >
+                  <p className='text-sm font-medium'>
+                    {text.main}
+                  </p>
+                  {text.sub && (
+                    <p className='text-xs text-white opacity-90'>
+                      {text.sub}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
         </Button>
       
       </div>

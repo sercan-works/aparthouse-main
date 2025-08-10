@@ -11,10 +11,10 @@ import {
   FaTrainSubway,
   FaWhatsapp
 } from "react-icons/fa6";
-import { FaCheck, FaExternalLinkAlt, FaUtensils } from "react-icons/fa";
+import { FaCheck, FaExternalLinkAlt, FaUtensils, FaShieldAlt } from "react-icons/fa";
 import { FaBus } from "react-icons/fa";
 import SwiperSlideImages from "@/components/swiper/SwiperSlideImages";
-import { Tabs, Tab, Button } from "@heroui/react";
+import { Tabs, Tab, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
 import ContactBar from "@/components/ContactBar";
 import SwiperSlideComments from "@/components/swiper/SwiperSlideComments";
 import Link from "next/link";
@@ -30,34 +30,46 @@ import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
 import { openWhatsAppLink } from "../utils/contacts";
 import HighlightsMobile from "@/components/HighlightsMobile";
-import axios from "axios";
 
 // Telefon numarasını formatlamak için yardımcı fonksiyon
 const formatPhoneNumber = (phone: string = ""): string => {
   // Başında 0 yoksa ekle
   let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
-  
+
   // Sadece rakamları al
   formattedPhone = formattedPhone.replace(/\D/g, "");
-  
+
   // İstenen formata dönüştür: "0 545 446 77 21"
   if (formattedPhone.length === 11) {
-    return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(1, 4)} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(7, 9)} ${formattedPhone.slice(9, 11)}`;
+    return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(
+      1,
+      4
+    )} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(
+      7,
+      9
+    )} ${formattedPhone.slice(9, 11)}`;
   }
-  
+
   return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
 };
 
 const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const dispatch = useDispatch();
-  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  const { favoriteApartIds } = useSelector(
+    (state: RootState) => state.favorite
+  );
   const { compareApartIds } = useSelector((state: RootState) => state.compare);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCompare, setIsCompare] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isVerificationOpen, setIsVerificationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
 
-  const { data: apart, isLoading, error } = useGetApartmentByIdQuery(apartSlug || '', {
+  const {
+    data: apart,
+    isLoading,
+    error
+  } = useGetApartmentByIdQuery(apartSlug || "", {
     skip: !apartSlug
   });
 
@@ -83,28 +95,37 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
     dispatch(toggleFavorite(Number(apart.id)));
   };
 
-  const handleWhatsappClick = async () => {
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
-        apart: apart?.id,
-    });
-    // WhatsApp linkini iOS Safari uyumlu şekilde aç
-    openWhatsAppLink(apart?.firma.phone, apart?.name, ` https://www.aparthouse.com.tr/${apart?.slug}`);
-  };
+  // const handleWhatsappClick = async () => {
+  //   await axios.post(
+  //     `${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`,
+  //     {
+  //       apart: apart?.id
+  //     }
+  //   );
+  //   // WhatsApp linkini iOS Safari uyumlu şekilde aç
+  //   openWhatsAppLink(
+  //     apart?.firma.phone,
+  //     apart?.name,
+  //     ` https://www.aparthouse.com.tr/${apart?.slug}`
+  //   );
+  // };
 
   // Handle compare toggle
   const handleToggleCompare = () => {
     if (!apart) return;
-    
+
     // If already in compare list, remove it
     if (isCompare) {
       setIsCompare(false);
       dispatch(toggleCompare(Number(apart.id)));
       return;
     }
-    
+
     // If not in compare list and list is full (3 items), notify user
     if (compareApartIds.length >= 3) {
-      alert("Karşılaştırma listesine en fazla 3 apart eklenebilir. Lütfen önce listeden bir apart çıkarınız.");
+      alert(
+        "Karşılaştırma listesine en fazla 3 apart eklenebilir. Lütfen önce listeden bir apart çıkarınız."
+      );
       return;
     }
 
@@ -127,61 +148,67 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const openInGoogleMaps = () => {
     if (apart && apart.lat && apart.lon) {
       const url = `https://www.google.com/maps/search/?api=1&query=${apart.lat},${apart.lon}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     }
   };
 
-  if (isLoading) return <div className="flex justify-center items-center mt-48">
-    <div className="flex flex-col mx-auto max-w-sm mb-48">
-      <Loading />
-    <p className="text-gray-500 text-sm mt-5"> Apart Detayı Yükleniyor...</p>
-    </div>
-  </div>;
-  if (error) return <div className="flex flex-col mx-auto max-w-sm my-10">Hata: {JSON.stringify(error)}</div>;
-  if (!apart) return <div className="flex flex-col mx-auto max-w-sm my-10">Apart bulunamadı</div>;
-
-  return (
-    <div className="flex flex-col mx-auto max-w-sm mt-5 mb-10 gap-4 relative min-h-screen pb-24">
-     {/* Kampanya Duyuru Kartı */}
-     <div className="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-sm">
-      <div className="flex items-center gap-3">
-        <div className="bg-red-500 text-white p-2 rounded-full animate-pulse">
-          <FaExternalLinkAlt className="w-4 h-4" />
-        </div>
-        <div className="flex-1">
-          <h3 className="text-red-600 font-semibold text-sm">🔥 ERKEN KAYIT FIRSATI</h3>
-          <p className="text-gray-700 text-xs mt-1">
-            Sınırlı süre! Hemen fiyat bilgisini al, <span className="font-semibold text-red-600">erken kayıt kontenjanından yararlan !</span>
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center mt-48">
+        <div className="flex flex-col mx-auto max-w-sm mb-48">
+          <Loading />
+          <p className="text-gray-500 text-sm mt-5">
+            {" "}
+            Apart Detayı Yükleniyor...
           </p>
         </div>
       </div>
-      
-      {/* Mini CTA Button */}
-      <div className="mt-3 pt-2 border-t border-red-100">
-        <div className="flex items-center justify-center">
-          <div className="bg-green-500 text-white px-2 py-2 rounded-full text-xs animate-pulse">
-            <button onClick={handleWhatsappClick} className="text-xs text-white flex items-center gap-2">
-            <FaWhatsapp className="w-4 h-4" /> WhatsApp ile iletişime geç
-            </button>
-          </div>
-        </div>
+    );
+  if (error)
+    return (
+      <div className="flex flex-col mx-auto max-w-sm my-10">
+        Hata: {JSON.stringify(error)}
       </div>
-     </div>
+    );
+  if (!apart)
+    return (
+      <div className="flex flex-col mx-auto max-w-sm my-10">
+        Apart bulunamadı
+      </div>
+    );
+
+  return (
+    <div className="flex flex-col mx-auto max-w-sm mt-5 mb-10 gap-4 relative min-h-screen pb-24">
+      {/* Kampanya Duyuru Kartı */}
+ 
       <SwiperSlideImages images={apart?.images || []} />
 
       <div className="flex flex-col">
         <div className="flex flex-row justify-between px-4">
-          <h1 className="text-2xl font-medium">{apart?.name}</h1>
+          <div className="flex flex-row items-center gap-2">
+            <h1 className="text-2xl font-medium">{apart?.name}</h1>
+            <button 
+              onClick={() => setIsVerificationOpen(true)}
+              className="flex items-center justify-center w-8 h-8 bg-blue-100 hover:bg-green-200 rounded-full transition-colors"
+              title="Doğrulanmış konaklama"
+            >
+              <FaShieldAlt className="w-4 h-4 text-blue-600" />
+            </button>
+          </div>
           <div className="flex flex-row gap-3">
             <button onClick={handleShareClick}>
               <CiShare2 className="h-6 w-6 text-gray-500" />
             </button>
-            
+
             {/* Compare Button */}
             <button onClick={handleToggleCompare}>
-              <MdCompareArrows className={`h-6 w-6 ${isCompare ? 'text-blue-400' : 'text-gray-500'}`} />
+              <MdCompareArrows
+                className={`h-6 w-6 ${
+                  isCompare ? "text-blue-400" : "text-gray-500"
+                }`}
+              />
             </button>
-            
+
             {/* Favorite Button */}
             <button onClick={handleToggleFavorite}>
               {isFavorite ? (
@@ -192,15 +219,55 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </button>
           </div>
         </div>
-        
+
         {/* Share Modal */}
-        <ShareModal 
-          isOpen={isShareOpen} 
+        <ShareModal
+          isOpen={isShareOpen}
           onOpenChange={() => setIsShareOpen(!isShareOpen)}
           title={apart.name || "ApartHouse Detay"}
-          url={typeof window !== 'undefined' ? window.location.href : `https://aparthouse.com/${apartSlug}`}
+          url={
+            typeof window !== "undefined"
+              ? window.location.href
+              : `https://aparthouse.com/${apartSlug}`
+          }
         />
-        
+
+        {/* Verification Modal */}
+        <Modal 
+          isOpen={isVerificationOpen} 
+          onOpenChange={setIsVerificationOpen}
+          placement="center"
+          backdrop="blur"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <FaShieldAlt className="w-5 h-5 text-green-600" />
+                    <span>Doğrulanmış Konaklama</span>
+                  </div>
+                </ModalHeader>
+                <ModalBody>
+                  <div className="flex flex-col gap-3 text-center">
+                    <p className="text-gray-700">
+                      Bu konaklama Aparthouse yetkilileri tarafından yerinde ve gerekli Turizm Bakanlığı belgeleri görülerek onaylanmıştır.
+                    </p>
+                    <p className="text-gray-700 font-medium">
+                      Güvenle konaklayabilirsiniz. ✅
+                    </p>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" variant="light" onPress={onClose}>
+                    Tamam
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+
         {/* TABS */}
         <div className="mt-5">
           <Tabs
@@ -223,9 +290,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           <div className="mt-5 overflow-hidden flex flex-col gap-2 px-4">
             {/* AÇIKLAMA */}
             <div>
-              <p className="text-gray-500">
-                {apart?.info}
-              </p>
+              <p className="text-gray-500">{apart?.info}</p>
             </div>
 
             {/* ÖZET KISMI ADRES, OLANAKLAR, FİYAT DAHİL İÇERİKLER */}
@@ -239,9 +304,9 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             {/* Google Haritalar'da Aç Butonu */}
             {apart && apart.lat && apart.lon && (
               <div className="mt-2">
-                <Button 
-                  color="primary" 
-                  variant="ghost" 
+                <Button
+                  color="primary"
+                  variant="ghost"
                   startContent={<FaExternalLinkAlt />}
                   className="w-full"
                   onPress={openInGoogleMaps}
@@ -254,10 +319,13 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             {/* MESAFELER */}
             <div className="text-gray-500 flex flex-col gap-2 mt-5">
               <h3 className="font-medium text-sm">Üniversitelere Mesafeler:</h3>
-              
+
               {apart?.distances && apart.distances.length > 0 ? (
                 apart.distances.map((distance) => (
-                  <div key={distance.id} className="flex flex-col gap-2 truncate border-b-2 border-gray-200 pb-2">
+                  <div
+                    key={distance.id}
+                    className="flex flex-col gap-2 truncate border-b-2 border-gray-200 pb-2"
+                  >
                     <div className="flex flex-row items-center gap-2">
                       <SlGraduation className="h-4 w-4 text-gray-500" />
                       <h3 className="text-gray-700 font-medium min-w-20 max-w-48 truncate">
@@ -267,38 +335,51 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                     <div className="ml-6 flex flex-row justify-around items-center gap-3">
                       {distance.yurume > 0 && (
                         <div className="flex flex-row items-center gap-1">
-                          <FaPersonWalking className="h-4 w-4 text-gray-500" /> {distance.yurume} dk.
+                          <FaPersonWalking className="h-4 w-4 text-gray-500" />{" "}
+                          {distance.yurume} dk.
                         </div>
                       )}
                       {distance.tramvay > 0 && (
                         <div className="flex flex-row items-center gap-1">
-                          <FaTrainSubway className="h-4 w-4 text-gray-500" /> {distance.tramvay} dk.
+                          <FaTrainSubway className="h-4 w-4 text-gray-500" />{" "}
+                          {distance.tramvay} dk.
                         </div>
                       )}
                       {distance.otobus > 0 && (
                         <div className="flex flex-row items-center gap-1">
-                          <FaBus className="h-4 w-4 text-gray-500" /> {distance.otobus} dk.
+                          <FaBus className="h-4 w-4 text-gray-500" />{" "}
+                          {distance.otobus} dk.
                         </div>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400 italic">Mesafe bilgisi bulunamadı.</p>
+                <p className="text-gray-400 italic">
+                  Mesafe bilgisi bulunamadı.
+                </p>
               )}
             </div>
 
             {/* YEMEKLİ KART*/}
             {apart?.food && (
-              <Button variant="flat" className='w-full mt-1 first-letter:bg-white text-white h-12 p-0 px-1 border-2 border-primary rounded-xl' >
-                  <FaUtensils className='w-6 h-6 text-primary'/>
-                  <div className='text-sm text-primary '>
-                    <p>Bu konaklama <span className="font-bold">yemek hizmeti</span> vermektedir.</p>
-                    <p className="text-gray-500 text-xs">(Detaylar için  WhatsApp ile iletişime geçiniz.)</p>
-                    </div>
+              <Button
+                variant="flat"
+                className="w-full mt-1 first-letter:bg-white text-white h-12 p-0 px-1 border-2 border-primary rounded-xl"
+              >
+                <FaUtensils className="w-6 h-6 text-primary" />
+                <div className="text-sm text-primary ">
+                  <p>
+                    Bu konaklama{" "}
+                    <span className="font-bold">yemek hizmeti</span>{" "}
+                    vermektedir.
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    (Detaylar için WhatsApp ile iletişime geçiniz.)
+                  </p>
+                </div>
               </Button>
             )}
-
 
             {/* HİZMETLER */}
             <div className="mt-5 grid grid-cols-2 gap-4">
@@ -306,7 +387,9 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 <>
                   {/* Hizmetleri kategorilerine göre grupla */}
                   {Object.entries(
-                    apart.services.reduce<Record<string, typeof apart.services>>((acc, service) => {
+                    apart.services.reduce<
+                      Record<string, typeof apart.services>
+                    >((acc, service) => {
                       // Kategori adına göre grupla
                       if (!acc[service.category_name]) {
                         acc[service.category_name] = [];
@@ -316,9 +399,14 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                     }, {})
                   ).map(([categoryName, services]) => (
                     <div key={categoryName} className="col-span-1">
-                      <h2 className="text-gray-500 font-medium underline mb-3">{categoryName}</h2>
+                      <h2 className="text-gray-500 font-medium underline mb-3">
+                        {categoryName}
+                      </h2>
                       {services.map((service) => (
-                        <div key={service.id} className="flex flex-row items-center gap-2 mb-2">
+                        <div
+                          key={service.id}
+                          className="flex flex-row items-center gap-2 mb-2"
+                        >
                           {/* Şu an API'den icon gelmiyor, kategoriye göre varsayılan ikonlar kullanabiliriz */}
                           {categoryName === "Hizmetler" ? (
                             <FaCheck className="h-4 w-4 text-gray-500" />
@@ -336,8 +424,10 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                   ))}
                 </>
               )}
-              
-              {(!apart?.services || !Array.isArray(apart.services) || apart.services.length === 0) && (
+
+              {(!apart?.services ||
+                !Array.isArray(apart.services) ||
+                apart.services.length === 0) && (
                 <div className="col-span-2 text-gray-400 italic">
                   Hizmet bilgisi bulunamadı.
                 </div>
@@ -359,18 +449,18 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           <div className="mt-5">
             <h2 className="text-gray-600 font-medium mb-3">Konum Bilgisi</h2>
             {apart && <LocationViewer apart={apart} height="350px" />}
-            
+
             <div className="mt-4 text-sm text-gray-500">
               <p>Üniversite seçerek yürüme rotasını görebilirsiniz.</p>
               <p className="mt-1 text-xs">powered by Google Maps</p>
             </div>
-            
+
             {/* Google Haritalar'da Aç Butonu */}
             {apart && apart.lat && apart.lon && (
               <div className="mt-3">
-                <Button 
-                  color="primary" 
-                  variant="solid" 
+                <Button
+                  color="primary"
+                  variant="solid"
                   startContent={<FaExternalLinkAlt />}
                   className="w-full"
                   onPress={openInGoogleMaps}
@@ -390,11 +480,14 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
           </p>
 
           <div className="flex flex-col gap-4 mt-5">
-            <Link href={`mailto:${apart?.firma.mail || 'info@aparthouse.com'}`} target="_blank">
+            <Link
+              href={`mailto:${apart?.firma.mail || "info@aparthouse.com"}`}
+              target="_blank"
+            >
               <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
                 <FaRegEnvelope className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
-                  {apart?.firma.mail || 'info@aparthouse.com'}
+                  {apart?.firma.mail || "info@aparthouse.com"}
                 </p>
               </div>
             </Link>
@@ -407,14 +500,18 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
               </div>
             </Link>
 
-            <div 
-              onClick={() => openWhatsAppLink(apart?.firma.phone, apart?.name, ` https://www.aparthouse.com.tr/${apart?.slug}`)}
+            <div
+              onClick={() =>
+                openWhatsAppLink(
+                  apart?.firma.phone,
+                  apart?.name,
+                  ` https://www.aparthouse.com.tr/${apart?.slug}`
+                )
+              }
               className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <FaWhatsapp className="w-6 h-6 text-colorFirst" />
-              <p className="text-gray-500 text-md font-bold">
-                Whatsapp
-              </p>
+              <p className="text-gray-500 text-md font-bold">Whatsapp</p>
             </div>
           </div>
 
@@ -426,27 +523,31 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
       </div>
       {/* CONTACT BAR */}
       <div className="fixed bottom-[68px] left-0 right-0 bg-white py-2 z-50">
-        <ContactBar 
-          phone={apart?.firma.phone} 
-          price={apart?.price} 
+        <ContactBar
+          phone={apart?.firma.phone}
+          price={apart?.price}
           lat={apart?.lat}
           lon={apart?.lon}
-          apartName={apart?.apart_name || apart?.name} 
+          apartName={apart?.apart_name || apart?.name}
           apartSlug={apart?.slug}
           apartId={apart?.id}
           gender={
-            apart?.category?.name === 'Kız' ? 'K' :
-            apart?.category?.name === 'Erkek' ? 'E' :
-            apart?.category?.name === 'Karışık' ? 'K+E' : 'E'
+            apart?.category?.name === "Kız"
+              ? "K"
+              : apart?.category?.name === "Erkek"
+              ? "E"
+              : apart?.category?.name === "Karışık"
+              ? "K+E"
+              : "E"
           }
-          universities={apart?.distances?.map((distance) => distance.university.id) || []}
+          universities={
+            apart?.distances?.map((distance) => distance.university.id) || []
+          }
         />
       </div>
 
-        {/* Highlights */}
-          <HighlightsMobile />
-
-
+      {/* Highlights */}
+      <HighlightsMobile />
     </div>
   );
 };
