@@ -491,14 +491,14 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 </p>
               </div>
             </Link>
-            <Link href={`tel:+${apart?.firma.phone}`}>
+            {/* <Link href={`tel:+${apart?.firma.phone}`}>
               <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
                 <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
                   {formatPhoneNumber(apart?.firma.phone)}
                 </p>
               </div>
-            </Link>
+            </Link> */}
 
             <div
               onClick={() =>
@@ -515,7 +515,6 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
             </div>
           </div>
 
-          {/* MOBİLE FOOTER YAPILACAK */}
         </div>
 
         {/* blank */}
