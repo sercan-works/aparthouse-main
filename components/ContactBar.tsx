@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { FaMap, FaWhatsapp } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa6";
 import { Button } from '@heroui/react'
-import { openWhatsAppLink } from '@/app/utils/contacts';
+import { openWhatsAppLink, getPhoneLink } from '@/app/utils/contacts';
 import axios from 'axios';
 import WhatsAppModal from './WhatsAppModal';
+import { MdOutlineLocalPhone } from 'react-icons/md';
 
 interface ContactBarProps {
   phone: string;
@@ -24,9 +25,7 @@ const ContactBar: React.FC<ContactBarProps> = ({
   apartSlug, 
   apartId, 
   gender = 'E', 
-  universities = [],
-  lat,
-  lon
+  universities = []
 }) => {
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -65,6 +64,7 @@ const ContactBar: React.FC<ContactBarProps> = ({
   }
   
   
+  
   const apartUrl = apartSlug ? `https://www.aparthouse.com.tr/${apartSlug}` : undefined;
   const handleWhatsappClick = async () => {
     await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
@@ -78,11 +78,11 @@ const ContactBar: React.FC<ContactBarProps> = ({
       setIsWhatsAppModalOpen(true);
     }
   };
-  // const handleCallClick = async () => {
-  //   await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
-  //       apart: apartId,
-  //   });
-  // };
+  const handleCallClick = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-call-clicks/`, {
+        apart: apartId,
+    });
+  };
 
   return (
     <div className=''>
@@ -96,21 +96,21 @@ const ContactBar: React.FC<ContactBarProps> = ({
             </div>
         </div>
           
-          {/* <Button variant="flat" onPress={() => {
+          <Button variant="flat" onPress={() => {
             handleCallClick();
             window.open(getPhoneLink(phone), '_blank');
           }} className='bg-primary text-white h-12 w-1/2 p-0'>
             <MdOutlineLocalPhone className='w-6 h-6 text-white'/>
             <p>Ara</p>
-        </Button> */}
+        </Button>
 
       
-        <Button variant="bordered" onPress={() => {
+        {/* <Button variant="bordered" onPress={() => {
           window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`, '_blank');
         }} className=' text-primary h-12 w-1/2 p-0 px-1 border-2 border-primary rounded-xl' >
             <FaMap className='w-6 h-6 text-primary'/>
             <p className='text-sm text-primary'>Konum Bilgisi</p>
-        </Button>
+        </Button> */}
 
         <Button variant="flat" onPress={handleWhatsappClick} className='bg-primary text-white h-12 w-1/2 p-0 px-1 relative overflow-hidden'>
             <FaWhatsapp className='w-6 h-6 text-white rounded-full'/>

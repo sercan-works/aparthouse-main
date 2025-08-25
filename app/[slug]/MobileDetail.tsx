@@ -251,7 +251,7 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 <ModalBody>
                   <div className="flex flex-col gap-3 text-center">
                     <p className="text-gray-700">
-                      Bu konaklama Aparthouse yetkilileri tarafından yerinde ve gerekli Turizm Bakanlığı belgeleri görülerek onaylanmıştır.
+                      Bu konaklama Aparthouse saha ekibi tarafından yerinde görülerek onaylanmıştır.
                     </p>
                     <p className="text-gray-700 font-medium">
                       Güvenle konaklayabilirsiniz. ✅

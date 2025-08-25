@@ -72,13 +72,18 @@ export const getWhatsAppLink = (phone: string, apartName?: string, apartUrl?: st
 };
 
 /**
- * Creates a direct telephone call link
+ * Creates a direct telephone call link for automatic dialing
  * @param phone Phone number to call
- * @returns A formatted telephone URL
+ * @returns A formatted telephone URL that triggers automatic calling
  */
 export const getPhoneLink = (phone: string): string => {
+  if (!phone) return '#';
+  
+  // Format the phone number to Turkish standard (+905xxxxxxxx)
   const formattedPhone = formatTurkishPhoneNumber(phone);
-  return phone ? `tel:${formattedPhone}` : '#';
+  
+  // Return tel: protocol URL for automatic dialing
+  return `tel:${formattedPhone}`;
 };
 
 /**
