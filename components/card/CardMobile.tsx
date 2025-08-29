@@ -14,9 +14,11 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 // import { MdCompareArrows } from "react-icons/md";
 // import { useLanguage } from "@/i18n/context";
 // import PhoneIcon from "@/public/assets/icons/PhoneIcon.svg";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaWhatsapp } from "react-icons/fa6";
 import { Chip } from "@heroui/react";
 import { FaWalking } from "react-icons/fa";
+import { openWhatsAppLink } from '@/app/utils/contacts';
+import axios from 'axios';
 // import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
@@ -100,6 +102,22 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
       };
       sessionStorage.setItem("scroll_homepage", JSON.stringify(position));
     }
+  };
+
+  const handleWhatsappClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // API çağrısı - WhatsApp tıklamasını kaydet
+    if (apart.id) {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
+        apart: apart.id,
+      });
+    }
+    
+    // WhatsApp linkini aç
+    const apartUrl = apart.slug ? `https://www.aparthouse.com.tr/${apart.slug}` : undefined;
+    openWhatsAppLink(apart.phone || '', String(apart.apart_name || ''), apartUrl);
   };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
@@ -206,7 +224,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                   </p>
                   <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
                     <FaWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
-                    {`${apart.distances[0].yurume} dk`}
+                    {`${apart.distances?.[0]?.yurume || 0} dk`}
                   </p>
                 </div>
               ))}
@@ -249,9 +267,19 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
             </div>
           </div>
           {/* Hemen İncele butonu */}
-          <div className="flex items-center justify-center mt-auto border-2 border-colorFirst rounded-md p-1 w-full">
+          {/* <div className="flex items-center justify-center mt-auto border-2 border-colorFirst rounded-md p-1 w-full">
             <span className="text-xs font-light text-colorFirst">
               Hemen İncele
+            </span>
+          </div> */}
+          {/* Whatsapp Butonı */}
+          <div 
+            className="flex items-center justify-center mt-auto border-2 border-green-500 rounded-md p-1 w-full bg-green-50 cursor-pointer hover:bg-green-100 transition-colors"
+            onClick={handleWhatsappClick}
+          >
+            <FaWhatsapp className="w-4 h-4 text-green-500 mr-1" />
+            <span className="text-xs font-light text-green-500">
+              Fiyat Bilgisi Al
             </span>
           </div>
         </div>

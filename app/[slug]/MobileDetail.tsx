@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { CiShare2 } from "react-icons/ci";
-import { MdCompareArrows } from "react-icons/md";
+import { MdCompareArrows, MdLocalPhone } from "react-icons/md";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { SlGraduation } from "react-icons/sl";
 import {
@@ -30,28 +30,7 @@ import ShareModal from "@/components/modals/ShareModal";
 import LocationViewer from "@/components/maps/LocationViewer";
 import { openWhatsAppLink } from "../utils/contacts";
 import HighlightsMobile from "@/components/HighlightsMobile";
-
-// Telefon numarasını formatlamak için yardımcı fonksiyon
-// const formatPhoneNumber = (phone: string = ""): string => {
-//   // Başında 0 yoksa ekle
-//   let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
-
-//   // Sadece rakamları al
-//   formattedPhone = formattedPhone.replace(/\D/g, "");
-
-//   // İstenen formata dönüştür: "0 545 446 77 21"
-//   if (formattedPhone.length === 11) {
-//     return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(
-//       1,
-//       4
-//     )} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(
-//       7,
-//       9
-//     )} ${formattedPhone.slice(9, 11)}`;
-//   }
-
-//   return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
-// };
+import { formatPhoneNumber } from "../utils/phoneFormatter";
 
 const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
   const dispatch = useDispatch();
@@ -491,14 +470,14 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                 </p>
               </div>
             </Link>
-            {/* <Link href={`tel:+${apart?.firma.phone}`}>
+            <Link href={`tel:+${apart?.firma.phone}`}>
               <div className="flex flex-row items-center gap-2 justify-center h-12 p-0 px-1 border-2 border-colorFirst rounded-xl overflow-hidden">
-                <MdOutlineLocalPhone className="w-6 h-6 text-colorFirst" />
+                <MdLocalPhone className="w-6 h-6 text-colorFirst" />
                 <p className="text-gray-500 text-md font-bold">
                   {formatPhoneNumber(apart?.firma.phone)}
                 </p>
               </div>
-            </Link> */}
+            </Link>
 
             <div
               onClick={() =>

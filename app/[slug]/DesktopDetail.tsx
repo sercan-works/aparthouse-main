@@ -26,29 +26,8 @@ import LocationViewer from "@/components/maps/LocationViewer";
 import Loading from "@/components/ui/Loading";
 import { ApiApart } from "@/store/api/apartsApi";
 import { getWhatsAppLink } from "../utils/contacts";
+import { formatPhoneNumber } from "../utils/phoneFormatter";
 import axios from "axios";
-
-// Telefon numarasını formatlamak için yardımcı fonksiyon
-const formatPhoneNumber = (phone: string = ""): string => {
-  // Başında 0 yoksa ekle
-  let formattedPhone = phone.startsWith("0") ? phone : `0${phone}`;
-
-  // Sadece rakamları al
-  formattedPhone = formattedPhone.replace(/\D/g, "");
-
-  // İstenen formata dönüştür: "0 545 446 77 21"
-  if (formattedPhone.length === 11) {
-    return `${formattedPhone.slice(0, 1)} ${formattedPhone.slice(
-      1,
-      4
-    )} ${formattedPhone.slice(4, 7)} ${formattedPhone.slice(
-      7,
-      9
-    )} ${formattedPhone.slice(9, 11)}`;
-  }
-
-  return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
-};
 
 
 
