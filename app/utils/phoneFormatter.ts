@@ -23,3 +23,4 @@ export const formatPhoneNumber = (phone: string = ""): string => {
 
   return formattedPhone; // Format uygulanamadıysa olduğu gibi döndür
 };
+

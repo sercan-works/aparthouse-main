@@ -84,41 +84,39 @@ const FilterCard = ({
         </div>
 
         <div className="flex flex-row gap-2 flex-wrap">
-          {/* Cinsiyet Bilgisi */}
-          {apart.gender === "K" && (
-            <Chip size="sm" className="bg-colorFirst text-white text-xs">
-              Kız
-            </Chip>
-          )}
-          {apart.gender === "E" && (
-            <Chip size="sm" className="bg-colorSecond text-white text-xs">
-              Erkek
-            </Chip>
-          )}
-          {apart.gender === "K+E" && (
-            <Chip size="sm" className="bg-yellow-500 text-white text-xs">
-              Kız ve Erkek
-            </Chip>
-          )}
+          {/* Kategori Bilgileri */}
+          {Array.isArray(apart.category) ? apart.category.map((category: { id: number; name: string; icon: string; sexualty: string }) => {
+            let chipClassName = "";
+            
+            switch (category.name) {
+              case "Kız Yurt":
+                chipClassName = "bg-colorFirst text-white text-xs";
+                break;
+              case "Erkek Yurt":
+                chipClassName = "bg-colorSecond text-white text-xs";
+                break;
+              case "Yemekli Yurt":
+                chipClassName = "bg-orange-200 text-orange-700 text-xs";
+                break;
+              case "Apart Otel":
+                chipClassName = "bg-blue-200 text-blue-700 text-xs";
+                break;
+              default:
+                chipClassName = "bg-gray-200 text-gray-700 text-xs";
+            }
 
-          {/* Özellikler */}
-          {apart.food === true && (
-            <Chip size="sm" className="bg-orange-200 text-orange-700 text-xs">
-              Yemek
-            </Chip>
-          )}
+            return (
+              <Chip key={category.id} size="sm" className={chipClassName}>
+                {category.name}
+              </Chip>
+            );
+          }) : null}
         </div>
 
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex flex-row items-center gap-2">
             {StarReadOnly(0)}
             <h4 className="text-xs font-bold">0.0</h4>
-          </div>
-          <div className="text-md font-bold">
-            {apart.price}₺/
-            <span className="text-xs text-gray-500 font-normal">
-              {apart.price_type || "ay"}
-            </span>
           </div>
         </div>
       </div>

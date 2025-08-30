@@ -28,3 +28,4 @@ console.log('Test 4 - With spaces:', formatPhoneNumber('555 123 45 67'));
 console.log('Test 5 - With dashes:', formatPhoneNumber('555-123-45-67'));
 console.log('Test 6 - Empty string:', formatPhoneNumber(''));
 console.log('Test 7 - Short number:', formatPhoneNumber('123456'));
+
