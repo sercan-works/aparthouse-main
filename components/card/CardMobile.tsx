@@ -17,8 +17,8 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { FaEye, FaWhatsapp } from "react-icons/fa6";
 import { Chip } from "@heroui/react";
 import { FaWalking } from "react-icons/fa";
-import { openWhatsAppLink } from '@/app/utils/contacts';
-import axios from 'axios';
+import { openWhatsAppLink } from "@/app/utils/contacts";
+import axios from "axios";
 // import { FaInfoCircle } from "react-icons/fa";
 
 const CardMobile = ({ apart }: { apart: ApiApart }) => {
@@ -107,17 +107,26 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
   const handleWhatsappClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // API çağrısı - WhatsApp tıklamasını kaydet
     if (apart.id) {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`, {
-        apart: apart.id,
-      });
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/dashboard/apart-wp-clicks/`,
+        {
+          apart: apart.id
+        }
+      );
     }
-    
+
     // WhatsApp linkini aç
-    const apartUrl = apart.slug ? `https://www.aparthouse.com.tr/${apart.slug}` : undefined;
-    openWhatsAppLink(apart.phone || '', String(apart.apart_name || ''), apartUrl);
+    const apartUrl = apart.slug
+      ? `https://www.aparthouse.com.tr/${apart.slug}`
+      : undefined;
+    openWhatsAppLink(
+      apart.phone || "",
+      String(apart.apart_name || ""),
+      apartUrl
+    );
   };
 
   // Metni belirli bir uzunlukta kısaltmak için helper fonksiyon
@@ -125,6 +134,18 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
     if (!text) return "";
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
+  };
+
+  // Taşımalı servis hizmeti kontrolü
+  const hasTransportationService = () => {
+    if (!apart.services || !Array.isArray(apart.services)) return false;
+
+    return apart.services.some(
+      (service) =>
+        service.service_name === "Taşımalı Servis Hizmeti" &&
+        service.service_data &&
+        service.service_data.length > 0
+    );
   };
 
   return (
@@ -177,12 +198,26 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
             </button> */}
           </div>
 
-
-          {apart.food && (
-               <Chip size="sm" variant="flat" className="rounded-none bg-colorFirst text-white text-[10px] px-0 py-0 mt-24">
+          <div className="flex justify-between items-center gap-1">
+            {apart.food && (
+              <Chip
+                size="sm"
+                variant="flat"
+                className="rounded-none bg-colorFirst text-white text-[10px] px-0 py-0 mt-24"
+              >
                 Yemekli
-               </Chip>
-              )}
+              </Chip>
+            )}
+            {hasTransportationService() && (
+              <Chip
+                size="sm"
+                variant="flat"
+                className="rounded-none bg-colorFirst text-white text-[10px] px-0 py-0 mt-24"
+              >
+                Ücretsiz Servis
+              </Chip>
+            )}
+          </div>
         </div>
 
         {/* İçerik */}
@@ -220,7 +255,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
               {apart.distances.slice(0, 1).map((distance) => (
                 <div key={distance.id}>
                   <p className="text-[10px] text-gray-600">
-                    {truncateText(`${distance.university.name}`, 20)} 
+                    {truncateText(`${distance.university.name}`, 20)}
                   </p>
                   <p className="text-[10px] font-light text-gray-500 line-clamp-1 flex items-center">
                     <FaWalking className="w-3 h-3 text-gray-500 inline-block mr-1" />
@@ -249,7 +284,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                   />
                 </p>
               )} */}
-             
+
               {/* <p className="text-[10px] font-light text-gray-500 line-clamp-1">
                yürüme mesafesi
               </p> */}
@@ -263,7 +298,6 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
                    className="w-4 h-4"
                  />
                )} */}
-             
             </div>
           </div>
           {/* Hemen İncele butonu */}
@@ -273,7 +307,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
             </span>
           </div> */}
           {/* Whatsapp Butonı */}
-          <div 
+          <div
             className="flex items-center justify-center mt-auto border-2 border-green-500 rounded-md p-1 w-full bg-green-50 cursor-pointer hover:bg-green-100 transition-colors"
             onClick={handleWhatsappClick}
           >

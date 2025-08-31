@@ -59,10 +59,23 @@ const HighlightsMobile = () => {
   const handleApartViewed = (apartId: number) => {
     dispatch(addViewed(apartId));
   };
+  
+  // Taşımalı servis hizmeti kontrolü
+  const hasTransportationService = (apart: { services?: { service_name: string; service_data: string[] }[] }) => {
+    if (!apart.services || !Array.isArray(apart.services)) return false;
+
+    return apart.services.some(
+      (service) =>
+        service.service_name === "Taşımalı Servis Hizmeti" &&
+        service.service_data &&
+        service.service_data.length > 0
+    );
+  };
 
   if (!highlightAparts || highlightAparts.length === 0) {
     return null;
   }
+
 
   return (
     <div className="block md:hidden px-4 py-6">
@@ -101,6 +114,13 @@ const HighlightsMobile = () => {
                   <div className="absolute top-2 left-6 z-10 w-8 h-8 flex items-center justify-center">
                     <Chip color="primary" variant="solid" className="text-white text-xs font-light">
                       Yemekli
+                    </Chip>
+                  </div>
+                )}
+                {hasTransportationService(apart) && (
+                  <div className="absolute top-2 left-10 z-10 w-8 h-8 flex items-center justify-center">
+                    <Chip color="primary" variant="solid" className="text-white text-xs font-light">
+                      Ücretsiz Servis
                     </Chip>
                   </div>
                 )}
