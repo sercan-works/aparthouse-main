@@ -102,8 +102,11 @@ export interface ApiApart {
   };
   // Yeni servis formatı
   services: {
-    service_name: string;
-    service_data: string[];
+    id: number;
+    name: string;
+    icon: string;
+    category_name: string;
+    category_id: number;
   }[];
   bills: {
     id: number;

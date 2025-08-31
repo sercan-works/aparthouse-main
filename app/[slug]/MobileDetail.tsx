@@ -6,6 +6,7 @@ import { MdCompareArrows, MdLocalPhone } from "react-icons/md";
 import { GoHeart, GoLocation } from "react-icons/go";
 import { SlGraduation } from "react-icons/sl";
 import {
+  FaBusSimple,
   FaPersonWalking,
   FaRegEnvelope,
   FaTrainSubway,
@@ -143,6 +144,14 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
         </div>
       </div>
     );
+      // Taşımalı servis hizmeti kontrolü
+  const hasTransportationService = () => {
+    if (!apart?.services || !Array.isArray(apart?.services)) return false;
+
+    return apart.services.some(
+      (service) => service.category_name === "Taşımalı Servis Hizmeti"
+    );
+  };
   if (error)
     return (
       <div className="flex flex-col mx-auto max-w-sm my-10">
@@ -351,6 +360,26 @@ const MobileDetail: React.FC<{ apartSlug?: string }> = ({ apartSlug }) => {
                   <p>
                     Bu konaklama{" "}
                     <span className="font-bold">yemek hizmeti</span>{" "}
+                    vermektedir.
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    (Detaylar için WhatsApp ile iletişime geçiniz.)
+                  </p>
+                </div>
+              </Button>
+            )}
+
+            {/* SERVİS KART */}
+            {hasTransportationService() && (
+              <Button
+                variant="flat"
+                className="w-full mt-1 first-letter:bg-white text-white h-12 p-0 px-1 border-2 border-primary rounded-xl" 
+              >
+                <FaBusSimple className="w-6 h-6 text-primary" />
+                <div className="text-xs text-primary ">
+                  <p>
+                    Bu konaklama{" "}
+                    <span className="font-bold">taşımalı servis hizmeti</span>{" "}
                     vermektedir.
                   </p>
                   <p className="text-gray-500 text-xs">

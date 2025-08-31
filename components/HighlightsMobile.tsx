@@ -61,14 +61,11 @@ const HighlightsMobile = () => {
   };
   
   // Taşımalı servis hizmeti kontrolü
-  const hasTransportationService = (apart: { services?: { service_name: string; service_data: string[] }[] }) => {
+  const hasTransportationService = (apart: { services?: { category_name: string; id: number; name: string; icon: string; category_id: number }[] }) => {
     if (!apart.services || !Array.isArray(apart.services)) return false;
 
     return apart.services.some(
-      (service) =>
-        service.service_name === "Taşımalı Servis Hizmeti" &&
-        service.service_data &&
-        service.service_data.length > 0
+      (service) => service.category_name === "Taşımalı Servis Hizmeti"
     );
   };
 

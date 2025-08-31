@@ -141,10 +141,7 @@ const CardMobile = ({ apart }: { apart: ApiApart }) => {
     if (!apart.services || !Array.isArray(apart.services)) return false;
 
     return apart.services.some(
-      (service) =>
-        service.service_name === "Taşımalı Servis Hizmeti" &&
-        service.service_data &&
-        service.service_data.length > 0
+      (service) => service.category_name === "Taşımalı Servis Hizmeti"
     );
   };
 
