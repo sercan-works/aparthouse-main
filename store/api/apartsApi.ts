@@ -102,6 +102,7 @@ export interface ApiApart {
   };
   // Yeni servis formatı
   services: {
+    [x: string]: string;
     id: number;
     name: string;
     icon: string;
