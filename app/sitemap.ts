@@ -44,13 +44,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://aparthouse.com.tr',
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: 'https://aparthouse.com.tr/about',
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
+      priority: 0.6,
     },
     {
       url: 'https://aparthouse.com.tr/contact',
@@ -62,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://aparthouse.com.tr/login',
       lastModified: new Date(),
       changeFrequency: 'yearly' as const,
-      priority: 0.3,
+      priority: 0.1,
     },
     {
       url: 'https://aparthouse.com.tr/register',
