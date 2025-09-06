@@ -7,13 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin/'],
       },
-      {
-        userAgent: 'Googlebot',
-        allow: '/',
-        disallow: ['/api/', '/admin/'],
-      }
     ],
     sitemap: 'https://aparthouse.com.tr/sitemap.xml',
   };
