@@ -33,12 +33,12 @@ const nextConfig = {
         destination: process.env.NEXT_PUBLIC_API_URL 
           ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*` 
           : 'http://127.0.0.1:8000/api/:path*', // API route
-        // /api/auth yollarını hariç tut
-        has: [
+        // /api/auth yollarını hariç tut - robots.txt'yi etkilemez
+        missing: [
           {
             type: 'header',
-            key: 'host',
-            value: '(?!.*auth.*)',
+            key: 'user-agent',
+            value: 'Googlebot.*',
           },
         ],
       },
@@ -46,6 +46,25 @@ const nextConfig = {
       {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
+      },
+    ];
+  },
+
+  // Headers ayarları - robots.txt için
+  async headers() {
+    return [
+      {
+        source: '/robots.txt',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, s-maxage=3600',
+          },
+        ],
       },
     ];
   },
