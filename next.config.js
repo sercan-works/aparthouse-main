@@ -33,7 +33,7 @@ const nextConfig = {
         destination: process.env.NEXT_PUBLIC_API_URL 
           ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*` 
           : 'http://127.0.0.1:8000/api/:path*', // API route
-        // /api/auth yollarını hariç tut - robots.txt'yi etkilemez
+        // robots.txt ve sitemap.xml isteklerini hariç tut
         missing: [
           {
             type: 'header',
@@ -50,22 +50,10 @@ const nextConfig = {
     ];
   },
 
-  // Headers ayarları - robots.txt için
+  // Headers ayarları
   async headers() {
     return [
-      {
-        source: '/robots.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, s-maxage=3600',
-          },
-        ],
-      },
+      // robots.txt Next.js App Router tarafından otomatik olarak işlenir
     ];
   },
 };
