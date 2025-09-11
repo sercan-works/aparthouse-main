@@ -248,7 +248,7 @@ export default function Header() {
                  </div>
                </div>
                
-               <div className="flex items-center gap-3">
+               <div className="hidden items-center gap-3">
                  <div className="flex-shrink-0">
                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center animate-pulse">
                      <span className="text-blue-600 text-sm">💡</span>
