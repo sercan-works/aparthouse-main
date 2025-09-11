@@ -7,16 +7,158 @@ import Building from "@/public/assets/images/building.png";
 import GoogleLogo from "@/public/assets/images/google.png";
 import Girl from "@/public/assets/images/register_girl.png";
 import { Button, Input, Link, addToast } from "@heroui/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/store/api/authApi";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
+import { setCredentials } from "@/store/features/AuthSlice";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useLanguage } from "@/i18n/context";
+
+// DRF hata yanıtı için tip tanımlama
+interface DRFErrorResponse {
+  non_field_errors?: string[];
+  [key: string]: unknown;
+}
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isVisible2, setIsVisible2] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const { t } = useLanguage();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+
+  // reCAPTCHA değişiklik handler'ı
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token || "");
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const result = await signIn("google", { 
+        redirect: true, 
+        callbackUrl: `${window.location.origin}/`,
+        // Kullanıcı istemcisindeki redirect url'i belirtiyoruz
+      });
+      console.log("SignIn result:", result);
+    } catch (error) {
+      console.error("SignIn error:", error);
+      addToast({
+        title: "Giriş Hatası",
+        description: "Google ile giriş yapılırken bir hata oluştu.",
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async () => {
+    try {
+      if (!email || !password) {
+        addToast({
+          title: t('errors.loginError'),
+          description: t('auth.errors.emailPasswordRequired'),
+          color: "danger",
+        });
+        return;
+      }
+      
+      if (!captchaToken) {
+        addToast({
+          title: t('errors.loginError'),
+          description: t('auth.errors.captchaRequired'),
+          color: "danger",
+        });
+        return;
+      }
+
+      // RTK Query ile login
+      const result = await login({
+        email: email, 
+        password: password,
+        recaptcha: captchaToken
+      }).unwrap();
+      
+      // Kullanıcı adını güzelleştir - email kullanıcı adı olarak görünecekse, @ işaretinden öncesini alalım
+      let displayName = result.user.username;
+      if (displayName.includes('@')) {
+        displayName = displayName.split('@')[0];
+      }
+      
+      // Display name'i büyük harfle başlatalım
+      if (displayName && displayName.length > 0) {
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      }
+      
+      // Kullanıcı objesini güzelleştirelim
+      const enhancedUser = {
+        ...result.user,
+        displayName: displayName || result.user.username
+      };
+      
+      // Redux store'a kullanıcı bilgilerini ve token'ları kaydet
+      dispatch(setCredentials({
+        user: enhancedUser,
+        access: result.access,
+        refresh: result.refresh
+      }));
+
+      addToast({
+        title: t('auth.login'),
+        description: t('auth.errors.loginSuccess'),
+        color: "success",
+      });
+
+      // Ana sayfaya yönlendir
+      router.push('/');
+    } catch (error) {
+      console.error("Login error:", error);
+      
+      // DRF'den gelen hata mesajlarını kontrol et
+      let errorMessage = "Giriş yapılırken bir hata oluştu.";
+      
+      // Hata response kontrol - RTK Query format
+      if (error && typeof error === 'object' && 'data' in error) {
+        const errorData = error.data as DRFErrorResponse;
+        
+        if (errorData?.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+          errorMessage = errorData.non_field_errors.join(", ");
+        } else if (errorData && typeof errorData === 'object') {
+          const allErrors = Object.entries(errorData)
+            .map(([field, msgs]) => {
+              if (Array.isArray(msgs)) {
+                return `${field}: ${msgs.join(', ')}`;
+              }
+              return `${field}: ${String(msgs)}`;
+            })
+            .filter(Boolean)
+            .join('\n');
+          
+          if (allErrors) {
+            errorMessage = allErrors;
+          }
+        }
+      }
+      
+      addToast({
+        title: t('errors.loginError'),
+        description: errorMessage,
+        color: "danger",
+      });
+    }
+  };
 
   return (
-    <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3">
+    <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3 mb-20 md:mb-0">
       {/* ÜST KISIM */}
       <div className="flex flex-col p-10 justify-start lg:justify-center items-start lg:items-center gap-3 lg:gap-10  lg:col-span-1">
         <Link href="/">
@@ -27,8 +169,7 @@ const Login = () => {
         />
         </Link>
         <p className="lg:text-center text-gray-50 text-lg font-light max-w-[300px] lg:max-w-[1000px]">
-          Öğrencilere en iyi ve en güvenilir apart lokasyonlarını bulmaları için
-          burdayız...
+          {t('auth.studentDescription')}
         </p>
         <div className="hidden lg:block">
               <Image
@@ -64,12 +205,27 @@ const Login = () => {
             </div>
           </div>
           <div className="flex flex-col p-10 gap-3 lg:mt-20">
-            <h2 className="text-2xl">Giriş Yap</h2>
-            <p className="text-gray-500">
-              Lütfen aşağıdaki bilgileri doldurunuz.
+            <h2 className="text-2xl">{t('auth.login')}</h2>
+        
+            
+            <Button 
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-2 w-full md:w-1/2 border border-colorFirst"
+              onPress={handleGoogleLogin}
+              isLoading={isLoading}
+            >
+              {!isLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
+              {t('auth.googleLogin')}
+            </Button>
+            <p className="text-gray-500 text-center mt-2">
+              {t('auth.orSeparator')}
             </p>
-
-            <Input label="Email" type="email" variant="underlined" />
+            <Input 
+              label={t('auth.email')}
+              type="email" 
+              variant="underlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             <Input
               endContent={
@@ -86,41 +242,36 @@ const Login = () => {
                   )}
                 </button>
               }
-              label="Şifre"
-              placeholder="Şifrenizi giriniz"
+              label={t('auth.password')}
+              placeholder={t('auth.passwordPlaceholder')}
               type={isVisible ? "text" : "password"}
               variant="underlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6Lds1KMnAAAAAForux7vzs6OfM23C-a-XxUk_Vkq"}
+              onChange={onCaptchaChange}
+              className="my-4 flex justify-center"
+            />
 
-            <Button className="bg-colorFirst text-white font-bold mt-5" 
-            onPress={() =>
-              addToast({
-                title: "Toast title",
-                description: "Toast displayed successfully",
-                color: "secondary",
-              })
-            }
+            <Button 
+              className="bg-colorFirst text-white font-bold " 
+              onPress={handleEmailLogin}
+              isLoading={isLoginLoading || isLoading}
             >
-              Giriş Yap
+              {t('auth.login')}
             </Button>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-2">
               Hesabınız yok mu?{" "}
               <Link href="/register" className="text-colorFirst font-bold">
-                Kayıt ol
+                {t('auth.register')}
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-5">
-              - veya -
-            </p>
 
-            
-            <Button className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst">
-              <Image src={GoogleLogo} alt="google" width={20} height={20} />
-              Google ile Giriş Yap
-            </Button>
 
             {/* <RegisterSuccess /> */}
 
@@ -133,7 +284,7 @@ const Login = () => {
 
 export default Login;
 
-export const EyeSlashFilledIcon = (props) => {
+export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"
@@ -169,7 +320,7 @@ export const EyeSlashFilledIcon = (props) => {
   );
 };
 
-export const EyeFilledIcon = (props: any) => {
+export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"

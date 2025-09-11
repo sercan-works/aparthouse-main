@@ -2,18 +2,187 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Logo from "@/public/assets/logo.png";
 import Building from "@/public/assets/images/building.png";
 import GoogleLogo from "@/public/assets/images/google.png";
 import Girl from "@/public/assets/images/register_girl.png";
 import { Button, Input, Link, addToast } from "@heroui/react";
+import { useRegisterMutation } from "@/store/api/authApi";
+import { signIn } from "next-auth/react";
+import ReCAPTCHA from "react-google-recaptcha";
+
+// DRF hata yanıtı için tip tanımlama
+interface DRFErrorResponse {
+  non_field_errors?: string[];
+  [key: string]: unknown;
+}
 
 const Register = () => {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  // Form state
+  const [email, setEmail] = useState("");
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+
+  // Register mutation hook'unu kullan
+  const [register, { isLoading }] = useRegisterMutation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+
+  // reCAPTCHA değişiklik handler'ı
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token || "");
+  };
+
+  // Form doğrulama fonksiyonu
+  const validateForm = () => {
+    if (!email.trim()) {
+      addToast({
+        title: "Hata",
+        description: "E-posta adresi gereklidir",
+        color: "danger",
+      });
+      return false;
+    }
+
+    // Basit email validasyonu
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      addToast({
+        title: "Hata",
+        description: "Geçerli bir e-posta adresi giriniz",
+        color: "danger",
+      });
+      return false;
+    }
+
+    if (!password1) {
+      addToast({
+        title: "Hata",
+        description: "Şifre gereklidir",
+        color: "danger",
+      });
+      return false;
+    }
+
+    if (password1 !== password2) {
+      addToast({
+        title: "Hata",
+        description: "Şifreler eşleşmiyor",
+        color: "danger",
+      });
+      return false;
+    }
+
+    if (password1.length < 8) {
+      addToast({
+        title: "Hata",
+        description: "Şifre en az 8 karakter olmalıdır",
+        color: "danger",
+      });
+      return false;
+    }
+
+    if (!captchaToken) {
+      addToast({
+        title: "Hata",
+        description: "Lütfen robot olmadığınızı doğrulayın",
+        color: "danger",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  // Kayıt işlemi
+  const handleRegister = async () => {
+    // Form validasyonu
+    if (!validateForm()) return;
+
+    try {
+      // DRF'ye kayıt isteği gönder - email'i username olarak kullan
+      await register({ 
+        username: email, 
+        email, 
+        password1, 
+        password2,
+        recaptcha: captchaToken 
+      }).unwrap();
+
+      // Başarılı kayıt
+      addToast({
+        title: "Kayıt Başarılı",
+        description: "Hesabınız başarıyla oluşturuldu. Lütfen e-posta adresinize gönderilen doğrulama linkine tıklayarak hesabınızı aktifleştiriniz.",
+        color: "success",
+      });
+
+      // Login sayfasına yönlendir
+      router.push('/login');
+      
+    } catch (error) {
+      console.error("Kayıt hatası:", error);
+      
+      // Hata mesajını göster
+      let errorMessage = "Kayıt sırasında bir hata oluştu.";
+      
+      // Hata response kontrol
+      if (error && typeof error === 'object' && 'data' in error) {
+        const errorData = error.data as DRFErrorResponse;
+        
+        // Non-field errors kontrolü
+        if (errorData?.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+          errorMessage = errorData.non_field_errors.join(", ");
+        }
+        // Diğer alan hataları
+        else if (errorData && typeof errorData === 'object') {
+          const allErrors = Object.entries(errorData)
+            .map(([field, msgs]) => {
+              if (Array.isArray(msgs)) {
+                return `${field}: ${msgs.join(', ')}`;
+              }
+              return `${field}: ${String(msgs)}`;
+            })
+            .filter(Boolean)
+            .join('\n');
+          
+          if (allErrors) {
+            errorMessage = allErrors;
+          }
+        }
+      }
+      
+      addToast({
+        title: "Kayıt Hatası",
+        description: errorMessage,
+        color: "danger",
+      });
+    }
+  };
+
+  // Google ile giriş
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsGoogleLoading(true);
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Google SignIn error:", error);
+      addToast({
+        title: "Giriş Hatası",
+        description: "Google ile giriş yapılırken bir hata oluştu.",
+        color: "danger",
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="bg-colorFirst min-h-screen md:h-screen lg:grid lg:grid-cols-3">
@@ -64,13 +233,34 @@ const Register = () => {
             </div>
           </div>
           <div className="flex flex-col p-10 gap-3">
+
+            
+     
+
+            
+            <Button 
+              className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-0 w-full md:w-1/2 border border-colorFirst"
+              onPress={handleGoogleSignIn}
+              isLoading={isGoogleLoading}
+            >
+              {!isGoogleLoading && <Image src={GoogleLogo} alt="google" width={20} height={20} />}
+              Google ile Giriş Yap
+            </Button>
+            <p className="text-gray-500 text-center mt-0">
+              - veya -
+            </p>
             <h2 className="text-2xl">Kayıt Ol</h2>
             <p className="text-gray-500">
               Lütfen aşağıdaki bilgileri doldurunuz.
             </p>
-
-            <Input label="Ad - Soyad" type="text" variant="underlined" />
-            <Input label="Email" type="email" variant="underlined" />
+            
+            <Input 
+              label="Email" 
+              type="email" 
+              variant="underlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             <Input
               endContent={
@@ -91,6 +281,8 @@ const Register = () => {
               placeholder="Şifrenizi giriniz"
               type={isVisible ? "text" : "password"}
               variant="underlined"
+              value={password1}
+              onChange={(e) => setPassword1(e.target.value)}
             />
             <Input
               endContent={
@@ -111,36 +303,31 @@ const Register = () => {
               placeholder="Şifrenizi tekrar giriniz"
               type={isVisible2 ? "text" : "password"}
               variant="underlined"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
             />
 
-            <Button className="bg-colorFirst text-white font-bold mt-5" 
-            onPress={() =>
-              addToast({
-                title: "Toast title",
-                description: "Toast displayed successfully",
-                color: "secondary",
-              })
-            }
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6Lds1KMnAAAAAForux7vzs6OfM23C-a-XxUk_Vkq"}
+              onChange={onCaptchaChange}
+              className="my-4 flex justify-center"
+            />
+
+            <Button 
+              className="bg-colorFirst text-white font-bold mt-0"
+              onPress={handleRegister}
+              isLoading={isLoading}
             >
               Hesap Oluştur
             </Button>
 
-            <p className="text-gray-500 text-center mt-5">
+            <p className="text-gray-500 text-center mt-0 mb-20">
               Zaten bir hesabınız var mı?{" "}
               <Link href="/login" className="text-colorFirst font-bold">
                 Giriş Yap
               </Link>
             </p>
 
-            <p className="text-gray-500 text-center mt-5">
-              - veya -
-            </p>
-
-            
-            <Button className="flex justify-center items-center mx-auto bg-white text-colorFirst font-bold mt-5 w-full md:w-1/2 border border-colorFirst">
-              <Image src={GoogleLogo} alt="google" width={20} height={20} />
-              Google ile Giriş Yap
-            </Button>
 
             {/* <RegisterSuccess /> */}
 
@@ -153,7 +340,7 @@ const Register = () => {
 
 export default Register;
 
-export const EyeSlashFilledIcon = (props) => {
+export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"
@@ -189,7 +376,7 @@ export const EyeSlashFilledIcon = (props) => {
   );
 };
 
-export const EyeFilledIcon = (props: any) => {
+export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"

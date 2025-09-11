@@ -1,17 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithErrorHandling from './baseQueryWithErrorHandling';
     
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    baseQuery: fetchBaseQuery({ 
-        baseUrl: process.env.NEXT_PUBLIC_API_URL,
-        // prepareHeaders: (headers, { getState }) => {
-        //     const state = getState() as IRootState;
-        //     const token = "000000000000000000000";
-        //     if (token) {
-        //         headers.set('Authorization', `Bearer ${token}`);
-        //     }
-        //     return headers;
-        // },
-    }),
+    baseQuery: baseQueryWithErrorHandling,
     endpoints: () => ({}),
+    // Optimized cache settings for better UX
+    keepUnusedDataFor: 300, // 5 dakika veriyi saklıyoruz (30'dan 300'e çıkardık)
+    refetchOnMountOrArgChange: 120, // 2 dakika içinde mount olursa veriyi yeniden çekme (true yerine süre verdik)
+    refetchOnFocus: false, // Sayfa fokuslanırsa veriyi yeniden çekmiyoruz
+    refetchOnReconnect: true, // Bağlantı geri gelince veriyi yeniden çekiyoruz
 });

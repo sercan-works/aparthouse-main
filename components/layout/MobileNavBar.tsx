@@ -1,27 +1,320 @@
-import React from 'react'
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSession, signOut } from "next-auth/react";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearCredentials } from "@/store/features/AuthSlice";
+import { useLogoutMutation } from "@/store/api/authApi";
+import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import HomeIcon from '@/public/assets/icons/HomeIcon.svg'
-import SearchIcon from '@/public/assets/icons/SearchIcon.svg'
-import FavoritesIcon from '@/public/assets/icons/FavoritesIcon.svg'
 import UserIcon from '@/public/assets/icons/UserIcon.svg'
+import { MdCompareArrows } from "react-icons/md";
+import { RootState } from "@/store";
+import { BsHeart } from 'react-icons/bs';
+import { useLanguage } from '@/i18n/context';
+import { FaSignInAlt, FaUserPlus, FaBuilding, FaBlog, FaQuestion } from 'react-icons/fa';
+
+// Kullanıcı tipi için arayüz
+interface User {
+  email?: string;
+  displayName?: string;
+  username?: string;
+  image?: string;
+}
 
 const MobileNavBar = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
+  const [compareAparts, setCompareAparts] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const { t } = useLanguage();
+  
+  // Redux store kullanıcı durumunu al
+  const authState = useSelector((state: { auth: { user: User | null; isAuthenticated: boolean } }) => state.auth);
+  const reduxUser = authState?.user;
+  const reduxIsAuthenticated = authState?.isAuthenticated;
+  
+  // Karşılaştırma apartlarını Redux store'dan al
+  const { compareApartIds } = useSelector((state: RootState) => state.compare);
+  
+  // Favori apartları Redux store'dan al
+  const { favoriteApartIds } = useSelector((state: RootState) => state.favorite);
+  
+  // Google kimlik bilgilerini backend'e göndermek için hook
+  useGoogleAuth();
+  
+  // Backend logout
+  const [logout] = useLogoutMutation();
+
+  // İçerik oluşturma için kullanıcı bilgilerini belirle
+  // Next Auth session varsa veya Redux'ta kullanıcı varsa giriş yapmış kabul et
+  const isLoggedIn = !!session || reduxIsAuthenticated;
+  
+  // Kullanıcı bilgilerini belirle - Next Auth veya Redux'tan
+  const userEmail = session?.user?.email || reduxUser?.email || "";
+  const userName = session?.user?.name || reduxUser?.displayName || reduxUser?.username || reduxUser?.email || "Kullanıcı";
+  const userImage = session?.user?.image || null;
+
+  // localStorage'dan karşılaştırma apartlarını yükle
+  useEffect(() => {
+    const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
+    const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+    setCompareAparts(storedCompareAparts);
+    setFavorites(storedFavorites);
+  }, []);
+  
+  // Redux compareApartIds değiştiğinde karşılaştırma sayısını güncelle
+  useEffect(() => {
+    setCompareAparts(compareApartIds);
+  }, [compareApartIds]);
+  
+  // Redux favoriteApartIds değiştiğinde favori sayısını güncelle
+  useEffect(() => {
+    setFavorites(favoriteApartIds);
+  }, [favoriteApartIds]);
+  
+  // localStorage değişikliklerini dinle
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedCompareAparts = JSON.parse(localStorage.getItem('compareAparts') || '[]');
+      const storedFavorites = JSON.parse(localStorage.getItem('favoriteAparts') || '[]');
+      setCompareAparts(storedCompareAparts);
+      setFavorites(storedFavorites);
+    };
+    
+    // Storage event'ini dinle (farklı sekmelerde güncellemeler için)
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // User menü dışına tıklandığında menüyü kapat
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      // 1. Backend'den logout isteği yap
+      await logout({}).unwrap();
+      
+      // 2. Redux store'u temizle
+      dispatch(clearCredentials());
+      
+      // 3. NextAuth ile çıkış yap
+      await signOut({ callbackUrl: '/' });
+    } catch (error) {
+      console.error("Backend logout error:", error);
+      
+      // Hata olsa da Redux store'u temizle ve oturumu kapat
+      dispatch(clearCredentials());
+      await signOut({ callbackUrl: '/' });
+    }
+  };
+
   return (
-    <div className='fixed bottom-0 left-0 right-0 bg-white shadow-lg lg:hidden'>
-      <div className='px-4 py-2 flex justify-between items-center'>
-        <Link href="/">
+    <div className='md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-[1000] border-t border-gray-200 w-full' style={{ touchAction: 'none', transform: 'translateZ(0)' }}>
+      <div className='px-4 py-2 flex justify-between items-center h-16'>
+        <div 
+          className='flex flex-col justify-center items-center cursor-pointer' 
+          onClick={() => router.push('/', { scroll: false })}
+        >
           <Image src={HomeIcon} alt="Home" />
+          <p>{t('navigation.homeIcon')}</p>
+        </div>
+        <Link href="/favorites" className='flex flex-col justify-center items-center relative'>
+          <BsHeart className="w-6 h-6" />
+          <p>{t('navigation.favorites')}</p>
+          {favorites.length > 0 && (
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-rose-400 text-white text-xs rounded-full flex items-center justify-center">
+              {favorites.length}
+            </div>
+          )}
         </Link>
-        <Link href="/search">
-          <Image src={SearchIcon} alt="Search" />
+        
+        <Link href="/compare" className='flex flex-col justify-center items-center relative'>
+          <MdCompareArrows className="w-6 h-6" />
+          <p>{t('navigation.compare')}</p>
+          {compareAparts.length > 0 && (
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+              {compareAparts.length}
+            </div>
+          )}
         </Link>
-        <Link href="/favorites">
-          <Image src={FavoritesIcon} alt="Favorites" />
-        </Link>
-        <Link href="/profile">
-          <Image src={UserIcon} alt="User" />
-        </Link>
+        
+        {/* Kullanıcı profili bölümü */}
+        <div className="flex flex-col justify-center items-center relative" ref={userMenuRef}>
+          <div 
+            className="cursor-pointer flex flex-col items-center" 
+            onClick={toggleUserMenu}
+          >
+            {isLoggedIn && userImage ? (
+              <>
+                <Image 
+                  src={userImage} 
+                  alt="User" 
+                  width={24} 
+                  height={24} 
+                  className="rounded-full"
+                />
+                <p className='max-w-20 truncate'>{userName}</p>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-center items-center">
+                  {isLoggedIn ? (
+                    <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-gray-600">
+                        {userEmail.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  ) : (
+                    <Image src={UserIcon} alt="User" width={24} height={24} />
+                  )}
+                </div>
+                <p>{isLoggedIn ? t("navigation.profile") : t("navigation.menu")}</p>
+              </>
+            )}
+          </div>
+
+          {/* Kullanıcı Menü */}
+          {isUserMenuOpen && (
+            <div className="absolute bottom-16 right-0 w-60 bg-white rounded-md shadow-lg py-1 z-50">
+              {isLoggedIn ? (
+                <>
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900">
+                      {userName}
+                    </p>
+                    <p className="text-sm text-gray-500 truncate">
+                      {userEmail}
+                    </p>
+                  </div>
+                  <Link 
+                    href="/profile" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    Profil
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                  >
+                    Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    href="/login" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaSignInAlt className="w-4 h-4" />
+                    {t('navigation.login')}
+                  </Link>
+                  <Link 
+                    href="/register" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaUserPlus className="w-4 h-4" />
+                    {t('navigation.register')}
+                  </Link>
+                  <Link 
+                    href="https://business.aparthouse.com.tr" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaBuilding className="w-4 h-4" />
+                    {t('navigation.business')}
+                  </Link>
+                  <Link 
+                    href="/blog" 
+                    className="block px-4 py-2 text-sm text-colorFirst hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaBlog className="w-4 h-4" />
+                   Aparthouse {t('header.blogLink')}
+                  </Link>
+                  {/* sub menü kontrat linkleri */}
+                  <div className="border-t border-gray-100 pt-1 mt-1">
+{/* hakkımızda linki */}
+<Link 
+                    href="/about" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaBuilding className="w-4 h-4" />
+                    {t('navigation.about')}
+                  </Link>
+                  {/* yardım linki */}
+                  <Link 
+                    href="/help" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    <FaQuestion className="w-4 h-4" />
+                    {t('navigation.help')}
+                  </Link>
+
+                    {/* <p className="px-4 py-1 text-xs text-gray-500 font-medium">Yasal</p> */}
+                    {/* <Link 
+                      href="/gizlilik-politikasi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Gizlilik Politikası
+                    </Link>
+                    <Link 
+                      href="/kullanici-sozlesmesi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Kullanıcı Sözleşmesi
+                    </Link>
+                    <Link 
+                      href="/mesafeli-satis-sozlesmesi" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Mesafeli Satış Sözleşmesi
+                    </Link>
+                    <Link 
+                      href="/iptal-ve-iade-kosullari" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      İptal ve İade Koşulları
+                    </Link> */}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

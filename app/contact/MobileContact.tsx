@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import AboutImage from "@/public/assets/images/pink-phone.png";
-import Logo from "@/public/assets/logo.png";
 import BannerImage from "@/public/assets/images/banner_image_2.jpeg";
 import AMPButton from "@/components/helpers/AMPButton";
+import ContactForm from "@/components/helpers/ContactForm";
 
 const MobileAbout = () => {
   return (
@@ -67,7 +67,12 @@ const MobileAbout = () => {
           </div>
         </div>
         <AMPButton />
-        
+       <div className="mt-10">
+        <h1 className="text-xl font-normal text-start  bg-clip-text">
+          İletişime Geçin
+        </h1>
+      <ContactForm />
+       </div>
         
      
       </div>

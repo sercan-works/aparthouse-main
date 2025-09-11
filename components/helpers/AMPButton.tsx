@@ -5,7 +5,7 @@ import { Button } from '@heroui/react'
 
 const AMPButton = () => {
   return (
-      <Link href={process.env.KONAKLAMA_YONETIM_PANELI_URL || ""}>
+      <Link href="#">
         <Button className='bg-colorFirst text-white font-bold'>Konaklama Yönetim Paneli</Button>
       </Link>
   )

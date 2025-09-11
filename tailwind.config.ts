@@ -17,6 +17,8 @@ export default {
         colorThird: "#FE6CAC",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#C091D4",
+        secondary: "#7366FF",
       },
       fontFamily: {
         gilroy: ["Gilroy", "sans-serif"],
@@ -24,11 +26,17 @@ export default {
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
+        'marquee': 'marquee 10s linear infinite',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(10%)' },
+          '50%': { transform: 'translateX(-25%)' },
+          '100%': { transform: 'translateX(10%)' },
         },
       },
     },

@@ -34,3 +34,22 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+Konu: Aparthouse.com.tr web sitesini öğrencilere tanıtmak. sitenin mobil ve masaüstü görünümlerini ve özelliklerini göstermek.
+
+Scene 1 - Merhaba Aparthouse'a hoşgeldiniz. Burada sizleri en mükemmel konaklamarla buluşturuyoruz. Biz de bu süreci yaşadık üniversite heyecanı arasında konaklama arayışını minimuma indiriyoruz.
+
+Scene-2 - Aparthouse'da bir konaklamanın detaylarına kolaylıkla erişebilecek, sonuçları bütçe, üniveristeye mesefe, genel hizmetlerine göre filtreleyebileceksiniz.
+
+Scene-3- Aparthouse mobil ve masaüstünde rahatlıkla kullanabilirsiniz.
+
+Scene-4- Karşılaştırma ve favori özelliği ile size en önemli deneyimlerden birini sunuyoruz.
+
+Scene-5- Üye olup fırsatlardan ve bilgilendirmelerden yararlanabilirsiniz. Tamamen ücretsiz!
+
+Scene6- Beğendiğiniz konaklamaları yakınlarınızla paylaşabilirsiniz.
+
+Scene-7- Farklı dil seçenekleri ile birçok öğrenciye eşit deneyimi sunuyoruz.
+
+Scene-8- Daha fazlası için web sitemizi ziyaret edin.

@@ -1,0 +1,258 @@
+{
+  "header": {
+    "searchPlaceholder": "Arama Yap",
+    "mobileSearchPlaceholder": "Şehir, Apart Adı ile ara",
+    "blogLink": "Blog",
+    "mobileSubtitle": "Eskişehir Apartlar ve Yurtlar",
+    "infoTip": "İpucu",
+    "infoText": "Filtre menüsünden Üniversite seçerek size en uygun apart ve yurt seçeneklerini daraltabilirsiniz.",
+    "universityTitle": "Üniversitene yakın apartları keşfet",
+    "clear": "Temizle",
+    "more": "Daha Fazlası",
+    "universities": {
+      "anadolu": "Anadolu Üniversitesi",
+      "estu": "Eskişehir Teknik Ünv.",
+      "osmangazi": "Osmangazi Üniversitesi"
+    }
+  },
+  "navigation": {
+    "help": "Yardım",
+    "favorites": "Favoriler",
+    "compare": "Karşılaştırma",
+    "profile": "Profilim",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "logout": "Çıkış Yap",
+    "business": "Aparthouse Business",
+    "homeIcon": "Anasayfa",
+    "menu": "Menü",
+    "about": "Hakkımızda"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "googleLogin": "Google ile Giriş Yap",
+    "email": "Email",
+    "password": "Şifre",
+    "passwordPlaceholder": "Şifrenizi giriniz",
+    "passwordConfirm": "Şifre Tekrar",
+    "passwordConfirmPlaceholder": "Şifrenizi tekrar giriniz",
+    "createAccount": "Hesap Oluştur",
+    "alreadyHaveAccount": "Zaten bir hesabınız var mı?",
+    "orSeparator": "- veya -",
+    "pleaseFillInfo": "Lütfen aşağıdaki bilgileri doldurunuz.",
+    "captchaRequired": "Lütfen robot olmadığınızı doğrulayın",
+    "studentDescription": "Öğrencilere en iyi ve en güvenilir apart lokasyonlarını bulmaları için burdayız...",
+    "errors": {
+      "emailRequired": "E-posta adresi gereklidir",
+      "validEmail": "Geçerli bir e-posta adresi giriniz",
+      "passwordRequired": "Şifre gereklidir",
+      "passwordMismatch": "Şifreler eşleşmiyor",
+      "passwordLength": "Şifre en az 8 karakter olmalıdır",
+      "captchaRequired": "Lütfen robot olmadığınızı doğrulayın",
+      "registrationSuccess": "Hesabınız başarıyla oluşturuldu. Lütfen e-posta adresinize gönderilen doğrulama linkine tıklayarak hesabınızı aktifleştiriniz.",
+      "loginSuccess": "Başarıyla giriş yaptınız, yönlendiriliyorsunuz.",
+      "loginError": "Giriş yapılırken bir hata oluştu.",
+      "emailPasswordRequired": "Lütfen email ve şifre alanlarını doldurunuz.",
+      "googleLoginError": "Google ile giriş yapılırken bir hata oluştu.",
+      "registrationError": "Kayıt sırasında bir hata oluştu."
+    }
+  },
+  "profile": {
+    "title": "Profil Bilgilerim",
+    "edit": "Profil Bilgilerini Düzenle",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "username": "Kullanıcı Adı",
+    "email": "E-posta",
+    "authority": "Yetki",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "profileUpdateError": "Profil güncellenirken hata oluştu:"
+  },
+  "filter": {
+    "city": "Şehir",
+    "university": "Üniversite",
+    "apartType": "Apart Tipi",
+    "find": "Bul",
+    "filter": "Filtre",
+    "filters": "Filtreler",
+    "accommodationType": "Konaklama Kapsamı",
+    "multipleSelection": "Birden fazla seçenek seçebilirsiniz.",
+    "priceRange": "Fiyat Aralığı",
+    "min": "Min",
+    "max": "Max",
+    "loading": "Yükleniyor...",
+    "clearAllFilters": "Tüm Filtreler",
+    "search": "Ara",
+    "studentLifeStart": "Hadi öğrenci hayatına nerede başlayacağını seçelim...",
+    "favoriteCities": "Favori Şehirler",
+    "close": "Kapat",
+    "searchByAddress": "Adres girin ve arayın"
+  },
+  "contact": {
+    "firstName": "Ad soyad",
+    "email": "Email",
+    "phone": "Telefon",
+    "message": "Mesaj",
+    "messagePlaceholder": "Mesajınızı giriniz",
+    "kvkkAccept": "Kvkk metni okudum ve kabul ediyorum.",
+    "send": "Gönder",
+    "questions": "Sorularınız mı var?",
+    "thankYou": "İletişime geçtiğiniz için teşekkür ederiz!\nLütfen talep formunu doldurun.\nİyi günler!",
+    "accommodationOwner": "Konaklamanız mı var?",
+    "publishAccommodation": "Aparthouse ile konaklamanızı yayınlayın,yüzlerce öğrenci ile buluşun.",
+    "emailAddress": "E-posta Adresimiz",
+    "phoneNumbers": "Telefonlarımız",
+    "contactUs": "İletişime Geçin"
+  },
+  "help": {
+    "title": "ApartHouse Yardım Merkezi",
+    "description": "Size en iyi ev deneyimini sunmak için buradayız. Sorularınızı yanıtlamak ve emlak yolculuğunuzda size yardımcı olmak için her zaman hazırız.",
+    "backToHome": "Ana Sayfaya Dön",
+    "contactUs": "Bize Ulaşın",
+    "stillHaveQuestions": "Hala sorularınız mı var?",
+    "supportTeam": "Müşteri destek ekibimiz size yardımcı olmak için hazır.",
+    "contactSupportTeam": "Destek Ekibine Ulaşın"
+  },
+  "cards": {
+    "similarAparts": "Benzer Apart İlanları",
+    "recentlyAdded": "Son Eklenenler",
+    "recentDescription": "Son eklenen tüm apartlar, yenilenen özellikler, artan yerleşim imkanları ve daha fazlasını keşfedin.",
+    "seeAll": "Tümünü Gör",
+    "viewAll": "Tüm Apartları Görüntüle",
+    "priceStarting": "den başlayan fiyatlar",
+    "distances": "Üniversitelere Mesafeler:",
+    "walkingDistance": "Yürüme Mesafesi:",
+    "distanceNotFound": "Mesafe bilgisi bulunamadı.",
+    "minute": "dk",
+    "walkingRoute": "Yürüme rotası",
+    "selectUniversity": "Üniversite seçerek yürüme rotasını görebilirsiniz.",
+    "exploreAparts": "Apartları Keşfedin",
+    "viewed": "Görüntülendi",
+    "more": "Daha Fazla",
+    "featuredFeatures": "Öne Çıkan Özellikler",
+    "noFeatures": "Özellik bulunamadı"
+  },
+  "search": {
+    "searchResults": "Arama Sonuçları",
+    "searching": "Aranıyor...",
+    "noResults": "Sonuç bulunamadı"
+  },
+  "contactBar": {
+    "quickInfo": "Hızlı bilgi al",
+    "call": "Ara"
+  },
+  "contactBanner": {
+    "title": "İletişim Hattı",
+    "callNow": "Şimdi Ara",
+    "whatsapp": "WhatsApp"
+  },
+  "footer": {
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "clearHistory": "İnceleme Geçmişini Temizle",
+    "accommodations": "Konaklamalar",
+    "eskisehirApart": "Eskişehir Apart",
+    "eskisehirDorm": "Eskişehir Yurt",
+    "eskisehirGirlApart": "Eskişehir Kız Apart",
+    "eskisehirBoyApart": "Eskişehir Erkek Apart",
+    "eskisehirGirlDorm": "Eskişehir Kız Yurt",
+    "eskisehirBoyDorm": "Eskişehir Erkek Yurt",
+    "clearHistoryConfirm": "Tüm inceleme geçmişiniz silinecek. Onaylıyor musunuz?",
+    "historyCleared": "İnceleme geçmişiniz başarıyla temizlendi",
+    "followSocial": "Bizi Sosyal Medyada Takip Edin",
+    "copyright": "Tüm hakları saklıdır."
+  },
+  "pages": {
+    "notFound": "Sayfa Bulunamadı",
+    "notFoundDescription": "Aradığınız sayfa mevcut değil veya taşınmış olabilir. \nAşağıdaki önerilerden birini deneyebilir veya ana sayfaya geri dönebilirsiniz.",
+    "backToHome": "Ana Sayfaya Dön",
+    "searchAparts": "Apart Ara",
+    "suggestedAparts": "Önerilen Apartlar",
+    "suggestedDescription": "Belki bu apartlardan biri aradığınızı karşılayabilir",
+    "cantFind": "Aradığınızı bulamadınız mı?",
+    "allAparts": "Tüm Apartlar",
+    "newHome": "Hadi yeni evini bul!",
+    "compareTitle": "Karşılaştırın",
+    "compareDescription": "Yüzlerce konaklama arasından seçin, karşılaştırın \nsize en uygun yaşam alanının keyfine varın.",
+    "compareEmpty": "Karşılaştırma Listeniz Boş",
+    "compareEmptyDescription": "Karşılaştırmak istediğiniz apartları ekleyin.",
+    "favoritesTitle": "Favorileriniz",
+    "favoritesDescription": "Yüzlerce konaklama arasından seçin, \nfavorilerinize ekleyin \nkarar vermek için en koly yolu deneyin.",
+    "noFavorites": "Henüz hiç favori apartınız bulunmuyor.",
+    "endOfPage": "Sayfa Sonu",
+    "changeFilters": "Filtreleri Değiştir",
+    "checkLater": "Sonra Kontrol Et",
+    "totalAparts": "Toplam Apart",
+    "activeFilters": "Aktif Filtreler"
+  },
+  "about": {
+    "title": "Hakkımızda",
+    "description": "Aparthouse.com.tr'ın sizlere sunduğu ilanların \n önce bizim kontrolümüzden geçip,\n uygun koşullar ile yayınlandığını biliyor muydunuz?",
+    "journeyText": "Öğrenci yolculuğunu anlıyoruz, çünkü biz de bu süreci yaşadık...",
+    "companyDescription": "Aparthouse.com.tr, uluslararası veya yerel öğrenci konutları için yardımcı olur. 2024 yılında kurulduğundan beri, tecrübeli ekibimiz ile binlerce öğrencinin evini bulmasına yardımcı olmaktayız.\n\nÖğrenciler için özel olarak inşa edilmiş ve yönetilen en geniş ve özenle seçilmiş apart yelpazesine sahibiz. Bu, farklı üniversite yakınlarında çeşitli apartları keşfetmenizi ve karşılaştırmanızı sağlar, böylece doğru seçimi yapabilirsiniz.",
+    "choiceImportance": "Doğru apartı seçmek, güvenli ve ilham verici bir temel sağlar. Büyümenize ve yolculuğunuzdan en iyi şekilde yararlanmanıza yardımcı olur."
+  },
+  "cookie": {
+    "title": "Çerez Bildirimi",
+    "description": "Bu web sitesi, size daha iyi bir deneyim sunmak için çerezleri kullanmaktadır. Siteyi kullanmaya devam ederek çerez kullanımını kabul etmiş olursunuz.",
+    "reject": "Reddet",
+    "accept": "Kabul Et"
+  },
+  "share": {
+    "title": "Paylaş",
+    "copyLink": "Link Kopyala"
+  },
+  "language": {
+    "selector": "Dil Seçimi",
+    "placeholder": "Dil seçin"
+  },
+  "banner": {
+    "easyToFind": "Aparthouse ile öğrenci evini bulmak çok kolay"
+  },
+  "highlights": {
+    "centralDescription": "Ulaşım imkanlarına yürüme mesafesinde, birden fazla oda tipi seçeneği sunan, extra özellikli apart ve yurtları inceleyin ve yerinizi ayırtın.",
+    "title": "Öne Çıkanlar"
+  },
+  "pricing": {
+    "title": "Fiyatlandırma Planları",
+    "description": "Konaklamanızı yayınlamak için en uygun planı seçin",
+    "accommodationPublish": "Konaklama Yayınlama",
+    "oneAccommodation": "1 adet konaklama yayınlama",
+    "businessPanel": "Aparthouse Business Panel",
+    "onlineSupport": "Online Destek"
+  },
+  "errors": {
+    "configuration": "Sunucu yapılandırma hatası. Lütfen site yöneticisiyle iletişime geçin.",
+    "accessDenied": "Erişim reddedildi. Bu hesap için giriş yapmaya yetkiniz yok.",
+    "verification": "Doğrulama bağlantısı geçersiz veya süresi dolmuş.",
+    "oauthSignin": "OAuth sağlayıcısı ile oturum açılırken hata oluştu.",
+    "oauthCallback": "OAuth sağlayıcısından gelen yanıtta hata oluştu.",
+    "oauthCreateAccount": "OAuth hesabı oluşturulurken hata oluştu.",
+    "emailCreateAccount": "E-posta hesabı oluşturulurken hata oluştu.",
+    "callback": "OAuth geri arama işleminde hata oluştu.",
+    "oauthAccountNotLinked": "E-posta zaten farklı bir hesaba bağlı. Lütfen başka bir yöntem deneyin.",
+    "sessionRequired": "Bu sayfaya erişmek için oturum açmanız gerekiyor.",
+    "unknown": "Bilinmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+    "loginError": "Oturum Açma Hatası",
+    "backToLogin": "Giriş Sayfasına Dön",
+    "backToHome": "Ana Sayfaya Dön",
+    "error": "Hata!",
+    "noFilteredAparts": "Filtrelenmiş apart bulunamadı"
+  },
+  "blogCards": {
+    "recentPosts": "Son Blog Yazıları",
+    "seeAll": "Tümünü Gör"
+  },
+  "homeInfoBanner": {
+    "title": "Size en uygun konaklamayı bulmada yardımcı oluyoruz",
+    "description": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title1": "Gelişmiş Sonuçlar",
+    "description1": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title2": "Bütçe Dostu Konaklamalar",
+    "description2": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz.",
+    "title3": "Uluslararası Kapsam",
+    "description3": "Yüksek güvenlik, fiyat ve konaklama seçenekleri ile yüksek seviyeli memnuniyet içeren apart ve yurtları listeliyoruz ve güncelliyoruz."
+  }
+} 

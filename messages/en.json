@@ -1,0 +1,269 @@
+{
+  "header": {
+    "searchPlaceholder": "Search",
+    "blogLink": "Blog",
+    "mobileSearchPlaceholder": "Search by City, Apartment Name",
+    "mobileSubtitle": "Turkey's Student Housing",
+    "infoTip": "Tip",
+    "infoText": "You can narrow down the most suitable apartment and dormitory options by selecting University from the filter menu.",
+    "universityTitle": "Discover apartments near your university",
+    "clear": "Clear",
+    "more": "More",
+    "findStudentHome": "Find Student Housing in Turkey",
+    "universities": {
+      "anadolu": "Anadolu University",
+      "estu": "Eskişehir Technical Unv.",
+      "osmangazi": "Osmangazi University"
+    }
+  },
+  "navigation": {
+    "help": "Help",
+    "favorites": "Favorites",
+    "compare": "Compare",
+    "profile": "My Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "business": "Aparthouse Business",
+    "homeIcon": "Home",
+    "items": "items",
+    "menu": "Menu",
+    "about": "About Us"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "googleLogin": "Login with Google",
+    "email": "Email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "passwordConfirm": "Confirm Password",
+    "passwordConfirmPlaceholder": "Re-enter your password",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "orSeparator": "- or -",
+    "pleaseFillInfo": "Please fill in the following information.",
+    "captchaRequired": "Please verify that you are not a robot",
+    "studentDescription": "We are here to help students find the best and most reliable apartment locations...",
+    "errors": {
+      "emailRequired": "Email address is required",
+      "validEmail": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMismatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 8 characters",
+      "captchaRequired": "Please verify that you are not a robot",
+      "registrationSuccess": "Your account has been successfully created. Please click on the verification link sent to your email address to activate your account.",
+      "loginSuccess": "Successfully logged in, redirecting.",
+      "loginError": "An error occurred while logging in.",
+      "emailPasswordRequired": "Please fill in the email and password fields.",
+      "googleLoginError": "An error occurred while logging in with Google.",
+      "registrationError": "An error occurred during registration."
+    }
+  },
+  "profile": {
+    "title": "My Profile Information",
+    "edit": "Edit Profile Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "username": "Username",
+    "email": "Email",
+    "authority": "Authority",
+    "save": "Save",
+    "cancel": "Cancel",
+    "profileUpdateError": "Error occurred while updating profile:"
+  },
+  "filter": {
+    "city": "City",
+    "university": "University",
+    "apartType": "Apartment Type",
+    "find": "Find",
+    "filter": "Filter",
+    "filters": "Filters",
+    "accommodationType": "Accommodation Type",
+    "multipleSelection": "You can select multiple options.",
+    "priceRange": "Price Range",
+    "min": "Min",
+    "max": "Max",
+    "loading": "Loading...",
+    "clearAllFilters": "All Filters",
+    "search": "Search",
+    "studentLifeStart": "Let's choose where to start your student life...",
+    "favoriteCities": "Favorite Cities",
+    "close": "Close",
+    "searchByAddress": "Enter address and search"
+  },
+  "contact": {
+    "firstName": "First and Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "messagePlaceholder": "Enter your message",
+    "kvkkAccept": "I have read and accept the GDPR text.",
+    "send": "Send",
+    "questions": "Do you have questions?",
+    "thankYou": "Thank you for contacting us!\nPlease fill out the request form.\nHave a great day!",
+    "accommodationOwner": "Do you have accommodation?",
+    "publishAccommodation": "Publish your accommodation with Aparthouse, meet hundreds of students.",
+    "emailAddress": "Our Email Address",
+    "phoneNumbers": "Our Phone Numbers",
+    "contactUs": "Contact Us"
+  },
+  "help": {
+    "title": "ApartHouse Help Center",
+    "description": "We are here to provide you with the best home experience. We are always ready to answer your questions and help you on your real estate journey.",
+    "backToHome": "Back to Home",
+    "contactUs": "Contact Us",
+    "stillHaveQuestions": "Still have questions?",
+    "supportTeam": "Our customer support team is ready to help you.",
+    "contactSupportTeam": "Contact Support Team"
+  },
+  "cards": {
+    "similarAparts": "Similar Apartment Listings",
+    "recentlyAdded": "Recently Added",
+    "recentDescription": "Discover all recently added apartments, updated features, increased accommodation options and more.",
+    "seeAll": "See All",
+    "viewAll": "View All Apartments",
+    "priceStarting": "starting from",
+    "distances": "Distances to Universities:",
+    "walkingDistance": "Walking Distance:",
+    "distanceNotFound": "Distance information not found.",
+    "minute": "min",
+    "walkingRoute": "Walking route",
+    "selectUniversity": "You can see the walking route by selecting a university.",
+    "exploreAparts": "Explore Apartments",
+    "viewed": "Viewed",
+    "more": "More",
+    "featuredFeatures": "Featured Features",
+    "noFeatures": "No features found"
+  },
+  "search": {
+    "searchResults": "Search Results",
+    "searching": "Searching...",
+    "noResults": "No results found"
+  },
+  "contactBar": {
+    "quickInfo": "Get quick info",
+    "call": "Call"
+  },
+  "contactBanner": {
+    "title": "Contact Line",
+    "callNow": "Call Now",
+    "whatsapp": "WhatsApp"
+  },
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact",
+    "clearHistory": "Clear Viewing History",
+    "accommodations": "Accommodations",
+    "eskisehirApart": "Eskişehir Apartments",
+    "eskisehirDorm": "Eskişehir Dormitories",
+    "eskisehirGirlApart": "Eskişehir Girl Apartments",
+    "eskisehirBoyApart": "Eskişehir Boy Apartments",
+    "eskisehirGirlDorm": "Eskişehir Girl Dormitories",
+    "eskisehirBoyDorm": "Eskişehir Boy Dormitories",
+    "clearHistoryConfirm": "Your entire viewing history will be deleted. Do you approve?",
+    "historyCleared": "Your viewing history has been successfully cleared",
+    "followSocial": "Follow Us on Social Media",
+    "copyright": "All rights reserved."
+  },
+  "pages": {
+    "notFound": "Page Not Found",
+    "notFoundDescription": "The page you are looking for does not exist or may have been moved. \nYou can try one of the suggestions below or return to the homepage.",
+    "backToHome": "Back to Home",
+    "searchAparts": "Search Apartments",
+    "suggestedAparts": "Suggested Apartments",
+    "suggestedDescription": "Maybe one of these apartments can meet what you are looking for",
+    "cantFind": "Can't find what you're looking for?",
+    "allAparts": "All Apartments",
+    "newHome": "Let's find your new home!",
+    "compareTitle": "Compare",
+    "compareDescription": "Choose from hundreds of accommodations, compare \nenjoy the most suitable living space for you.",
+    "compareEmpty": "Your Comparison List is Empty",
+    "compareEmptyDescription": "Add apartments you want to compare.",
+    "favoritesTitle": "Your Favorites",
+    "favoritesDescription": "Choose from hundreds of accommodations, \nadd to your favorites \ntry the easiest way to decide.",
+    "noFavorites": "You don't have any favorite apartments yet.",
+    "endOfPage": "You have reached the end of the page",
+    "changeFilters": "You can change the filters for new apartments",
+    "checkLater": "or check later",
+    "totalAparts": "Total",
+    "activeFilters": "Active Filters"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "Did you know that the listings offered to you by Aparthouse.com.tr \n first go through our control,\n and are published under suitable conditions?",
+    "journeyText": "We understand the student journey, because we have experienced this process too...",
+    "companyDescription": "Aparthouse.com.tr helps with international or local student housing. Since its establishment in 2024, we have been helping thousands of students find their homes with our experienced team.\n\nWe have the widest and carefully selected range of apartments specially built and managed for students. This allows you to explore and compare various apartments near different universities, so you can make the right choice.",
+    "choiceImportance": "Choosing the right apartment provides a safe and inspiring foundation. It helps you grow and make the most of your journey."
+  },
+  "cookie": {
+    "title": "Cookie Notice",
+    "description": "This website uses cookies to provide you with a better experience. By continuing to use the site, you accept the use of cookies.",
+    "reject": "Reject",
+    "accept": "Accept"
+  },
+  "share": {
+    "title": "Share",
+    "copyLink": "Copy Link"
+  },
+  "language": {
+    "selector": "Language",
+    "placeholder": "Select language"
+  },
+  "banner": {
+    "easyToFind": "Finding a student home with Aparthouse is very easy"
+  },
+  "highlights": {
+    "centralDescription": "Explore and reserve apartments and dormitories with extra features that offer multiple room type options within walking distance of transportation facilities.",
+    "title": "Highlights"
+  },
+  "pricing": {
+    "title": "Pricing Plans",
+    "description": "Choose the most suitable plan to publish your accommodation",
+    "accommodationPublish": "Accommodation Publishing",
+    "oneAccommodation": "1 accommodation publication",
+    "businessPanel": "Aparthouse Business Panel",
+    "onlineSupport": "Online Support"
+  },
+  "errors": {
+    "configuration": "Server configuration error. Please contact the site administrator.",
+    "accessDenied": "Access denied. You do not have permission to log in to this account.",
+    "verification": "Verification link is invalid or expired.",
+    "oauthSignin": "An error occurred while signing in with the OAuth provider.",
+    "oauthCallback": "An error occurred in the response from the OAuth provider.",
+    "oauthCreateAccount": "An error occurred while creating the OAuth account.",
+    "emailCreateAccount": "An error occurred while creating the email account.",
+    "callback": "An error occurred in the OAuth callback process.",
+    "oauthAccountNotLinked": "Email is already linked to a different account. Please try another method.",
+    "sessionRequired": "You need to log in to access this page.",
+    "unknown": "An unknown error occurred. Please try again later.",
+    "loginError": "Login Error",
+    "backToLogin": "Back to Login Page",
+    "backToHome": "Back to Home",
+    "error": "Error!",
+    "noFilteredAparts": "No filtered apartments found"
+  },
+  "blogCards": {
+    "recentPosts": "Recent Blog Posts",
+    "seeAll": "See All"
+  },
+  "homeInfoBanner": {
+    "title": "We help you find the most suitable accommodation",
+    "description": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title1": "Advanced Results",
+    "description1": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title2": "Budget-Friendly Accommodations",
+    "description2": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction.",
+    "title3": "International Coverage",
+    "description3": "We list and update apartments and dormitories with high security, price, and accommodation options, including high-level satisfaction."
+  },
+  "blog": {
+    "description": "Student life, apartment selection and city guides are useful content."
+  },
+  "whatsappSupport": {
+    "title": "Need Help?",
+    "subtitle": "Chat with us in your language",
+    "buttonText": "WhatsApp Support",
+    "message": "Hello! I need help finding accommodation. Can you assist me in English?"
+  }
+} 

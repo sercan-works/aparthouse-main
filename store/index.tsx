@@ -1,16 +1,37 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import themeConfigSlice from '@/store/themeConfigSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { authApi } from './api/authApi';
 import { baseApi } from './api';
+import AuthSlice from './features/AuthSlice';
+import FilterSlice from './features/FilterSlice';
+import FavoriteSlice from './features/FavoriteSlice';
+import CompareSlice from './features/CompareSlice';
+import ViewedSlice from './features/ViewedSlice';
+import ApartSlice from './features/ApartSlice';
 
-const rootReducer = combineReducers({
-    themeConfig: themeConfigSlice,
+export const store = configureStore({
+  reducer: {
+    // API reducer'ları
+    [authApi.reducerPath]: authApi.reducer,
     [baseApi.reducerPath]: baseApi.reducer,
+    // Geleneksel reducers
+    auth: AuthSlice,
+    filter: FilterSlice,
+    favorite: FavoriteSlice,
+    compare: CompareSlice,
+    viewed: ViewedSlice,
+    apart: ApartSlice,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(
+      authApi.middleware, 
+      baseApi.middleware
+    ),
 });
 
-export default configureStore({
-    reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(baseApi.middleware),
-});
+// RTK Query'nin refetching yeteneklerini etkinleştirin
+setupListeners(store.dispatch);
 
-export type IRootState = ReturnType<typeof rootReducer>;
+// RootState ve AppDispatch tipleri
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
